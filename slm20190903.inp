@@ -1,0 +1,494 @@
+!--------------------------------------------------
+! slm20181206
+! by Toshi-Taka Ikeshoji 
+!--------------------------------------------------
+! 2017/04/27  作成
+! 2017/05/18  改変
+! 2018/11/21  laserprof.txt読み込み変更
+! 2018/12/06  整理、コメント類追加
+! 2019/06/29  パワー時間変動追加
+!--------------------------------------------------
+!
+/UIS,MSGPOP,3
+!
+/NOPR   
+KEYW,PR_SET,1   
+KEYW,PR_STRUC,0 
+KEYW,PR_THERM,1 
+KEYW,PR_FLUID,0 
+KEYW,PR_ELMAG,0 
+KEYW,MAGNOD,0   
+KEYW,MAGEDG,0   
+KEYW,MAGHFE,0   
+KEYW,MAGELC,0   
+KEYW,PR_MULTI,0 
+/GO 
+!*  
+/PREP7  
+
+!!! 解析領域設定
+!! Dimensions unit mm
+w2=0.50E-3      ! Margin in width direction
+ws=hatch        ! Scan pitch
+!L1=5.0E-3       ! Line to scan
+L1=0.1E-3   ! Line to scan
+L2=w2           ! Margin in scanning direction
+h1=6*pwdthick  ! Region depth
+h2=pwdthick     ! Podwer layer thickness
+h3=3*pwdthick   ! Fine mesh region depthw1=0.90E-3  ! Fine mesh region in width
+!
+PI=ACOS(-1)    ! 円周率
+!! 解析・要素分割設定
+es2= 25.0E-6    ! Fine mesh size
+es1=150.0E-6    ! Coarse mesh size!
+NN=L1/es2       ! Step per 1 scan line
+dy=L1/NN        ! A step distance of laser scanning
+dt=L1/svel/NN   ! Time duration for a step distance
+! Keypoints
+K,21,-w2-laser_r*4,           -L2-laser_r*4,    0.0
+K,22,-w2-laser_r*4,            L2+laser_r*4+L1, 0.0
+K,23, w2+laser_r*4+ws*(NS-1),  L2+laser_r*4+L1, 0.0
+K,24, w2+laser_r*4+ws*(NS-1), -L2-laser_r*4,    0.0
+K,25,-laser_r*4,           -laser_r*4,    0.0
+K,26,-laser_r*4,            laser_r*4+L1, 0.0
+K,27, laser_r*4+ws*(NS-1),  laser_r*4+L1, 0.0
+K,28, laser_r*4+ws*(NS-1), -laser_r*4,    0.0
+KGEN,2,21,28,1,0.0,0.0,-h2,20,0,0  ! 41-48
+KGEN,2,21,28,1,0.0,0.0,-h3,40,0,0  ! 61-68
+KGEN,2,21,24,1,0.0,0.0,-h1,60,0,0  ! 81-88 
+! Volumes
+V,25,26,27,28,45,46,47,48   ! Powder layer fine mesh
+VSEL,ALL
+CM,vpwdfine,VOLU
+V,45,46,47,48,65,66,67,68   ! Substrate fine mesh
+VSEL,ALL
+CMSEL,U,vpwdfine
+CM,vsubfine,VOLU
+V,21,22,23,24,41,42,43,44   ! Powder layer outer region 
+V,41,42,43,44,81,82,83,84   ! Substrate outer region
+VSEL,ALL
+VOVLAP,ALL
+!! 物性値ファイル読み込み
+/INPUT,%MATPROP%,inp
+!!! 要素分割
+ET,1,70     !要素タイプ定義
+MAT,3
+! Powder layer fine mesh
+CMSEL,S,vpwdfine
+ESIZE,es2
+MSHAPE,0,3D ! 3D hexahedral-shaped elements
+MSHKEY,1    ! Mapped mesh
+VMESH,ALL
+ALLSEL
+! Powder layer outer region 
+VSEL,S,LOC,Z,-h2,0.0
+CMSEL,U,vpwdfine
+ESIZE,es1
+MSHAPE,1,3D ! 3D tetrahedral-shaped elements
+MSHKEY,0    ! Free mesh
+VMESH,ALL
+ALLSEL
+! Substrate fine mesh
+MAT,1
+CMSEL,S,vsubfine
+ESIZE,es2
+MSHAPE,0,3D
+MSHKEY,1
+VMESH,ALL
+ALLSEL
+! Substrate outer region
+VSEL,S,LOC,Z,-h1,-h2
+CMSEL,U,vsubfine
+ESIZE,es1
+MSHAPE,1,3D
+MSHKEY,0
+VMESH,ALL
+ALLSEL
+/VIEW,1,1,1,1  
+! 
+!表面効果要素作成（熱伝達用）
+ET,2,152
+KEYOPT,2,8,2
+type,2
+NSEL,S,EXT
+ESURF
+!表面効果要素作成（熱流束用）
+et,3,152
+keyopt,3,8,1
+type,3
+nsel,r,loc,z,0
+esurf
+allsel
+!
+EPLOT
+FINISH
+!
+!!! 解析部
+/SOLU
+*DIM,flgstp,ARRAY,2
+flgstp(1,1)=0,0
+*CFOPEN,test,stp
+*VWRITE
+('stp/go  ,@step   , 1: stop, 0:go @step number')
+*VWRITE,flgstp(1)
+(F8.0)
+*CFCLOS
+!ソルバー設定
+antype,trans                           ! 過渡伝熱解析
+AUTOTS,ON
+LNSRCH,ON
+DELTIM,dt,dt/2000,dt,ON
+NEQIT,200  
+outres,all,last                        ! 結果データ出力頻度
+tunif,bsptemp                          ! 初期温度指定
+
+!! 初期温度設定
+TUNIF,bsptemp
+!! 境界条件設定
+ESEL,S,TYPE,,2                         !! ベースプレート熱伝達
+SFE,ALL,1,CONV,2,bsptemp               ! 
+SFE,all,1,conv,0,380                   ! 熱伝達係数
+ESEL,R,CENT,Z,0.0,1.0E-3               !! 雰囲気流体熱伝達
+SFE,all,1,conv,2,ambtemp               ! 雰囲気温度
+SFE,all,1,conv,0,20                    ! 熱伝達係数
+ALLSEL
+!! 荷重条件設定
+! Laser center location
+*DIM,xloc,,NN*NS
+*DIM,yloc,,NN*NS
+*DO,jj,0,NS-1,2                         ! 往路
+    *DO,ii,1,NN
+        xloc(ii+NN*jj)=ws*jj
+        yloc(ii+NN*jj)=(ii-1)*dy
+    *ENDDO
+*ENDDO
+*DO,jj,1,NS-1,2                         ! 復路
+    *DO,ii,1,NN
+        xloc(ii+NN*jj)=ws*jj
+        yloc(ii+NN*jj)=L1-(ii-1)*dy
+    *ENDDO
+*ENDDO
+!! Laser profile
+*dim,xyl,,4
+! x,y座標最大値，最小値取得
+*VREAD,xyl(1,1),%LASERPROFILE%,txt,,IJK,4,1,,1
+(4F12.8)
+xL1 = xyl(1)
+xL2 = xyl(2)
+yL1 = xyl(3)
+yL2 = xyl(4)
+! テーブルサイズの取得
+*dim,nnl,,2
+*VREAD,nnl(1,1),%LASERPROFILE%,txt,,IJK,2,1,,2
+(2F3.0)
+NNLX = nnl(1) ! table size in x
+NNLY = nnl(2) ! table size in y
+! テーブルの取得
+*DIM,edat,ARRAY,NNLX*NNLY  ! 配列の定義
+*DIM,lsrprf,table,NNLX,NNLY,,X,Y,,
+*TREAD,lsrprf(0,0),%LASERPROFILE%,txt,,4
+! 発熱条件用配列
+LOCAL,11,CART,0,0,0   ! レーザー照射部中心位置に座標系を作成
+*DIM,heatfn_mls,table,NNLX,NNLY,,X,Y,,11 ! 溶融池表面要素の発熱
+*DIM,heatfn_ptp,table,NNLX,NNLY,,X,Y,,11 ! 粉体層上部要素の発熱
+*DIM,heatfn_pbt,table,NNLX,NNLY,,X,Y,,11 ! 粉体層下部要素の発熱
+*DIM,heatfn_bsf,table,NNLX,NNLY,,X,Y,,11 ! 固体（比溶融）要素の発熱
+*DIM,heatfn_btm,table,NNLX,NNLY,,X,Y,,11 ! 粉体層下側固体要素の発熱
+!
+!!!Loop
+SAVE,%FTITLE%-0,db,,ALL                ! .dbファイル保存
+LOCAL,11,CART,0,0,0                    ! 局所座標系を作成
+!!! Initial dammy step to make uniform temp.
+TIME,dt*0.001
+SOLVE                                      
+*do,i,1,NN*NS                          ! NN*NS回ループする（※）
+!*do,i,1,1                              
+!*DO,i,1,10                             
+  *VREAD,flgstp(1,1),test,stp,,IJK,2,1,1,1
+  (F8.0)
+  *IF,flgstp(1),LT,0,THEN
+      *IF,flgstp(2),LE,i,THEN
+          *MSG,INFO,i,flgstp(1,1),flgstp(1,2)
+          At %G step, will STOP ......Flag %G Step %G
+          FINISH
+          *RETURN
+      *ENDIF
+  *ELSE
+      *MSG,INFO,flgstp(1,1),i
+        At %G step, will GO ......Flag %G Step %G
+  *ENDIF
+
+  TIME,i*dt                          ! 時間を指定
+
+  !!! HGEN (熱荷重)　負荷
+  !!! レーザー照射による発熱の設定
+  ESEL,S,TYPE,,1,1
+  BFEDELE,ALL,ALL,ALL
+                                      
+  LOCAL,11,CART,xloc(i),yloc(i),0   ! レーザー照射部中心位置に座標系を作成
+
+  ! 発熱境界条件適用
+  ! parameter list
+  ! enum ! 選択した要素の数
+  ! emin ! 選択した複数要素の中の最小要素番号
+  ! edat ! 選択した要素の番号を格納する配列
+  ! Components subset list
+  ! nmlt ! Nodes above liquidus
+  ! emlt ! Elements melt pool
+  ! emls ! Elements melt pool surface
+  ! eptp ! Elements powder layer at top
+  ! epbt ! Elements powder layer at bottom
+  ! ebsf ! Elements bulk surface
+  ! ebtm ! Elements bulk under powder layer
+  num_nmlt = 0 ! Numbee of nodes w/ temp. > liquidus
+  num_emlt = 0 ! Number of elements melt pool
+  num_emls = 0 ! Number of elements melt pool surface
+  num_eptp = 0 ! Number of elements powder layer at top
+  num_epbt = 0 ! Number of elements powder layer at bottom
+  num_ebsf = 0 ! Number of elements bulk surface
+  num_ebtm = 0 ! Number of elements bulk under powder layer
+  !　溶融池
+  NSEL,S,TEMP,,liquidus,, ! 液相点以上の節点
+  *GET,num_nmlt,NODE,,COUNT
+  *IF,num_nmlt,GT,0,THEN
+    CM,nmlt,NODE          ! Nodes above liquidus
+    ESEL,S,TYPE,,1,1
+    ESEL,R,MAT,,1,3
+    ESLN,R,1,ALL          ! 液相点以上の節点で囲まれた要素のみ選択
+    *GET,num_emlt,ELEM,,COUNT
+    *IF,num_emlt,GT,0,THEN
+      CM,emlt,ELEM       ! Element melt pool
+    *ENDIF
+    ESEL,R,CENT,Z,-es2,0.0
+    ESEL,R,CENT,X,xL1,xL2
+    ESEL,R,CENT,Y,yL1,yL2
+    *GET,num_emls,ELEM,,COUNT
+    *IF,num_emls,GT,0,THEN
+      CM,emls,ELEM        ! Element melt pool surface
+    *ENDIF
+  *ENDIF
+  ALLSEL
+  !　非溶融固相
+  ESEL,S,TYPE,,1
+  ESEL,R,MAT,,1,2
+  ESEL,R,CENT,Z,-es2,0.0
+  ESEL,R,CENT,X,xL1,xL2
+  ESEL,R,CENT,Y,yL1,yL2
+  *IF,num_emlt,GT,0,THEN
+    CMSEL,U,emlt          ! 溶融要素を除外
+  *ENDIF
+  *GET,num_ebsf,ELEM,,COUNT
+  *IF,num_ebsf,GT,0,THEN
+    CM,ebsf,ELEM          ! Element bulk surface
+  *ENDIF
+  ALLSEL
+  !  粉体層上部の粉体(溶融していない粉体層）
+  ESEL,S,TYPE,,1
+  ESEL,R,MAT,,3           ! 粉体を選択
+  ESEL,R,CENT,Z,-es2,0.0  ! 粉体の最上層を選択
+  ESEL,R,CENT,X,xL1,xL2   ! レーザプロファイルの範囲内を選択
+  ESEL,R,CENT,Y,yL1,yL2
+  *IF,num_emlt,GT,0,THEN
+    CMSEL,U,emlt          ! 溶融要素を除外
+  *ENDIF
+  *GET,num_eptp,ELEM,,COUNT
+  *IF,num_eptp,GT,0,THEN
+    CM,eptp,ELEM         ! Element powder top layer
+  *ENDIF
+  !  粉体層下部の粉体（上部が溶融していない粉体層）
+  num_=num_eptp           ! 選択要素数の取得
+  *IF,num_,GT,0,THEN
+    CMSEL,S,eptp
+    ! 溶融していない上部粉体層の要素番号を格納
+    *GET,emin,ELEM,,NUM,MIN ! 最小要素番号の取得
+    edat(1)=emin
+    *DO,ii,2,num_           ! 粉体層上部の粉体の要素番号取得
+      emin=ELNEXT(emin)     ! emin の次に大きな要素番号でeminを置き換え
+      edat(ii)=emin         ! 要素番号を格納
+    *ENDDO
+    ALLSEL
+    !  z方向下側の隣接要素探索
+    *DO,jj,1,num_
+      ez = edat(jj)
+      *GET,zmin,ELEM,edat(jj),CENT,Z
+      *DO,i i,1,6,1                    ! (注意) 六面体要素を仮定
+        *GET,ei,ELEM,edat(jj),ADJ,ii  ! 隣接要素番号取得
+        *IF,ei,GT,0,THEN              ! 隣接要素が存在すれば...
+          *GET,zi,ELEM,ei,CENT,Z      !   中心ｚ座標を取得
+          *IF,zi,LT,zmin,THEN         !   z座標が現在の最小のz座標
+            zmin = zi                 !   より小さければ交換
+            ez = ei
+          *ENDIF
+        *ENDIF
+      *ENDDO
+      edat(jj)=ez                     ! 最小のｚ座標を持つ要素を取得
+    *ENDDO
+    ESEL,S,ELEM,,edat(1)
+    *DO,ii,2,num_
+      ESEL,A,ELEM,,edat(ii)
+    *ENDDO
+    *GET,num_epbt,ELEM,,COUNT
+    *IF,num_epbt,GT,0,THEN
+      CM,epbt,ELEM                    ! Element powder bottom layer
+    *ENDIF
+  *ENDIF
+  !  粉体層下部の固相
+  *DO,jj,1,num_                     ! ｚ方向下側の隣接要素探索
+    ez = edat(jj)
+    *GET,zmin,ELEM,edat(jj),CENT,Z
+    *DO,ii,1,6,1
+      *GET,ei,ELEM,edat(jj),ADJ,ii
+      *IF,ei,GT,0,THEN              ! 隣接要素が存在すれば...
+        *GET,zi,ELEM,ei,CENT,Z
+        *IF,zi,LT,zmin,THEN
+          zmin = zi
+          ez = ei
+        *ENDIF
+      *ENDIF
+    *ENDDO
+    edat(jj)=ez
+  *ENDDO
+  ESEL,S,ELEM,,edat(1)
+  *DO,ii,2,num_
+    ESEL,A,ELEM,,edat(ii)
+  *ENDDO
+  CM,ebtm,ELEM ! Elements bulk under powder layer
+  *GET,num_ebtm,ELEM,,COUNT
+  ALLSEL
+
+  *IF,i*dt,LT,i*NN/2,THEN
+    coefl = laser_w/es2**3 ! (レーザ出力)/(細分割要素体積)
+  *ELSEIF,i*dt,LT,i*dt*NN/2+1.0E-6,THEN
+    coefl = 0.0 ! 
+  *ELSE
+    coefl = 1.5*laser_w/es2**3 ! (レーザ出力)/(細分割要素体積)
+  *ENDIF
+  *TOPER,heatfn_mls,lsrprf,ADD,lsrprf,ems_mls*coefl,0,0
+  *TOPER,heatfn_ptp,lsrprf,ADD,lsrprf,ems_ptp*coefl,0,0
+  *TOPER,heatfn_pbt,lsrprf,ADD,lsrprf,ems_pbt*coefl,0,0
+  *TOPER,heatfn_bsf,lsrprf,ADD,lsrprf,ems_bsf*coefl,0,0
+  *TOPER,heatfn_btm,lsrprf,ADD,lsrprf,ems_btm*coefl,0,0
+  
+  *IF,num_emls,GT,0,THEN
+    CMSEL,S,emls
+    BFE,all,HGEN,1,%heatfn_mls% ! 溶融池表面要素の発熱
+  *ENDIF
+  *IF,num_eptp,GT,0,THEN
+    CMSEL,S,eptp
+    BFE,all,HGEN,1,%heatfn_ptp% ! 粉体層上部要素の発熱
+  *ENDIF
+  *IF,num_epbt,GT,0,THEN
+    CMSEL,S,epbt
+    BFE,all,HGEN,1,%heatfn_pbt% ! 粉体層下部要素の発熱
+  *ENDIF
+  *IF,num_ebsf,GT,0,THEN
+    CMSEL,S,ebsf
+    BFE,all,HGEN,1,%heatfn_bsf% ! 固体（比溶融）要素の発熱
+  *ENDIF
+  *IF,num_ebtm,GT,0,THEN
+    CMSEL,S,ebtm
+    BFE,all,HGEN,1,%heatfn_btm% ! 粉体層下側固体要素の発熱
+  *ENDIF
+  CMDELE,nmlt
+  CMDELE,emlt
+  CMDELE,emls
+  CMDELE,eptp
+  CMDELE,epbt
+  CMDELE,ebsf
+  CMDELE,ebtm
+  ALLSEL
+  !!!解析実行
+  SOLVE						
+
+  htsum=0.0
+  ESEL,S,BFE,HGEN
+  *GET,num_hgen,ELEM,,COUNT
+  *DIM,elm_hgen,,num_hgen
+  *VGET,elm_hgen(1),ELEM,1,ELIST
+  *status,i
+  *status,num_hgen
+  *status,elm_hgen(1)
+  *IF,num_hgen,GT,0,THEN
+    ! HGEN負荷している要素番号を格納
+    !*GET,emin,ELEM,,NUM,MIN ! 最小要素番号の取得
+    !enum_=emin
+    !*GET,vhgen,ELEM,enum_,HGEN
+    !*GET,vvolu,ELEM,enum_,VOLU
+    ii=1
+    *GET,vhgen,ELEM,elm_hgen(ii),HGEN
+    *GET,vvolu,ELEM,elm_hgen(ii),VOLU
+    htsum=vhgen*vvolu
+    *status,i
+    !*status,emin
+    *status,ii
+    *status,elm_hgen(ii)
+    *status,vhgen
+    *status,vvolu
+    *status,htsum
+    *DO,ii,2,num_hgen
+      !emin=ELNEXT(emin)     ! emin の次に大きな要素番号でeminを置き換え
+      !enum_=emin
+      !*GET,vhgen,ELEM,enum_,HGEN
+      !*GET,vvolu,ELEM,enum_,VOLU
+      *GET,vhgen,ELEM,elm_hgen(i),HGEN
+      *GET,vvolu,ELEM,elm_hgen(i),VOLU
+      htsum=htsum+vhgen*vvolu
+      *status,i
+      !*status,emin
+      *status,ii
+      *status,elm_hgen(ii)
+      *status,vhgen
+      *status,vvolu
+      *status,htsum
+    *ENDDO
+  *ENDIF
+  *IF,i,GT,0,THEN
+    *CFOPEN,%FTITLE%,hgn,,APPEND
+  *ELSE
+    *CFOPEN,%FTITLE%,hgn,,
+    *VWRITE
+    ('Stp  , Num    , Input, W')
+  *ENDIF
+  *VWRITE,%i%,num_hgen,htsum
+  (F6.0,F8.0,E13.5)
+  *CFCLOS
+  ehgen=
+  ALLSEL
+
+	NSEL,S,TEMP,,liquidus,,		!!! 粉体溶融要素を粉体凝固部要素に変換            
+  ESEL,S,TYPE,,1
+  ESEL,R,MAT,,3
+  ESLN,R,1,ALL
+  MPCHG,2,all
+  ALLSEL
+
+  *if,MOD(i,20),EQ,0,then             !!! .dbファイル保存
+      SAVE,%FTITLE%-%i%,db,,ALL
+  *endif        
+*ENDDO
+!*RETURN
+!冷却過程
+ESEL,S,TYPE,,1,1
+bfedele,all,all,all
+ALLSEL
+*do,i,NN*NS+1,NN*(NS+1)              ! NN回ループする
+  TIME,i*dt                          ! 時間を指定 
+
+  solve                              !!! 解析実行
+
+  NSEL,S,TEMP,,liquidus,,            !!! 粉体溶融要素を粉体凝固部要素に変換
+  ESEL,S,TYPE,,1
+  ESEL,R,MAT,,3
+  ESLN,R,1,ALL
+  MPCHG,2,all
+  ALLSEL
+
+  !*if,MOD(i,10),EQ,0,then             !!! .dbファイル保存
+  *if,MOD(i,20),EQ,0,then             !!! .dbファイル保存
+    SAVE,%FTITLE%-%i%,db,,ALL
+  *endif
+*enddo
+!ループ終了
+SAVE,%FTITLE%,db,,ALL !.dbファイル保存
+FINISH
+                         

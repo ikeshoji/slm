@@ -1,0 +1,105 @@
+!--------------------------------------------------
+! Material property file
+! Alloy 718 (Inconel 718)
+! by Toshi-Taka Ikeshoji 
+!--------------------------------------------------
+! 2017/04/13  çÏê¨
+!--------------------------------------------------
+!
+liquidus=1336.85  ! âtëäì_ degC
+boiling=2626.85  ! ï¶ì_ degC 2900K
+pwdeps=0.43064 ! ï≤ëÃãÛåÑó¶
+TOFFSET,273.15
+!  
+/COM,*** Material property : Alloy 718  
+MPTEMP,,,,,,,,  
+MPTEMP,1,26.85
+MPTEMP,2,1254.85
+MPTEMP,3,1336.85
+MPTEMP,4,2626.85
+MPTEMP,5,2726.85
+! Enthalpy, J/m3
+MPDATA,ENTH,1,1,0.00000E+00
+MPDATA,ENTH,1,2,5.55309E+09
+MPDATA,ENTH,1,3,7.78701E+09
+MPDATA,ENTH,1,4,1.50789E+10
+MPDATA,ENTH,1,5,6.82189E+10
+! Density, kg/m3 
+MPDATA,DENS,1,1,8262.7
+MPDATA,DENS,1,2,7733.4
+MPDATA,DENS,1,3,7580.3
+MPDATA,DENS,1,4,6950.8
+MPDATA,DENS,1,5,6902.0
+!MPDATA,DENS,1,,2.59 
+! Thermal conductivity, W/(m K)
+MPDATA,KXX,1,1,10.872
+MPDATA,KXX,1,2,31.134
+MPDATA,KXX,1,3,26.795
+MPDATA,KXX,1,4,44.339
+MPDATA,KXX,1,5,45.699
+!MPDATA,KXX,1,,32.10/50
+!*
+/COM,*** Material property : Alloy 718 powder
+/COM,***   Once liuquidized and then solidified  
+MPTEMP,,,,,,,,  
+MPTEMP,1,26.85
+MPTEMP,2,1254.85
+MPTEMP,3,1336.85
+MPTEMP,4,2626.85
+MPTEMP,5,2726.85
+! Enthalpy, J/m3
+MPDATA,ENTH,2,1,(1-pwdeps)*0.00000E+00
+MPDATA,ENTH,2,2,(1-pwdeps)*5.55309E+09
+MPDATA,ENTH,2,3,(1-pwdeps)*7.78701E+09
+MPDATA,ENTH,2,4,(1-pwdeps)*1.50789E+10
+MPDATA,ENTH,2,5,(1-pwdeps)*6.82189E+10
+! Density, kg/m3 
+MPDATA,DENS,2,1,(1-pwdeps)*8262.7
+MPDATA,DENS,2,2,(1-pwdeps)*7733.4
+MPDATA,DENS,2,3,(1-pwdeps)*7580.3
+MPDATA,DENS,2,4,(1-pwdeps)*6950.8
+MPDATA,DENS,2,5,(1-pwdeps)*6902.0
+! Thermal conductivity, W/(m K)
+MPDATA,KXX,2,1,10.872
+MPDATA,KXX,2,2,31.134
+MPDATA,KXX,2,3,26.795
+MPDATA,KXX,2,4,44.339
+MPDATA,KXX,2,5,45.699
+!*
+/COM,*** Material property : Alloy 718 powder  
+MPTEMP,,,,,,,,  
+MPTEMP,1,26.85
+MPTEMP,2,1254.85
+MPTEMP,3,1336.85
+MPTEMP,4,2626.85
+MPTEMP,5,2726.85
+! Enthalpy, J/m3
+MPDATA,ENTH,3,1,(1-pwdeps)*0.00000E+00
+MPDATA,ENTH,3,2,(1-pwdeps)*5.55309E+09
+MPDATA,ENTH,3,3,(1-pwdeps)*7.78701E+09
+MPDATA,ENTH,3,4,(1-pwdeps)*1.50789E+10
+MPDATA,ENTH,3,5,(1-pwdeps)*6.82189E+10
+! Density, kg/m3 
+MPDATA,DENS,3,1,(1-pwdeps)*8262.7
+MPDATA,DENS,3,2,(1-pwdeps)*7733.4
+MPDATA,DENS,3,3,(1-pwdeps)*7580.3
+MPDATA,DENS,3,4,(1-pwdeps)*6950.8
+MPDATA,DENS,3,5,(1-pwdeps)*6902.0
+! Thermal conductivity, W/(m K)
+MPDATA,KXX,3,1,0.1933780
+MPDATA,KXX,3,2,0.6701607
+MPDATA,KXX,3,3,26.795
+MPDATA,KXX,3,4,44.339
+MPDATA,KXX,3,5,45.699
+!
+! ãzåıó¶
+ems_mls = 0.4 ! âtëäï\ñ  ãzåıó¶ 0.4 [1]
+ems_ptp = 0.6 ! ï≤ëÃï\ñ  ãzåıó¶ 0.6 [4']
+ems_pbt = 0.3 ! ï≤ëÃíÍñ  ãzåıó¶ 0.3 [3']
+ems_bsf = 0.2 ! å≈ëÃï\ñ  ãzåıó¶ 0.2 [4]
+ems_btm = 0.1 ! ï≤ëÃëwâ∫ë§å≈ëÃ ãzåıó¶ 0.1
+![1] Cagran, C., et al. (2009). "Normal Spectral Emissivity of the Industrially Used Alloys NiCr20TiAl, Inconel 718, X2CrNiMo18-14-3, and Another Austenitic Steel at 684.5 nm." International Journal of Thermophysics 30(4): 1300-1309.
+![3] Zhou, J., et al. (2009). "Numerical simulation of laser irradiation to a randomly packed bimodal powder bed." International Journal of Heat and Mass Transfer 52(13?14): 3137-3146.
+![3'] According to [3], the normalized heat flux for epsilon = 0.6 become almost half of top surface.
+![4] del Campo, L., et al. (2010). "Emissivity measurements on aeronautical alloys." Journal of Alloys and Compounds 489(2): 482-487.
+![4'] According to [4], the sandblaseted surface of IN718 has emissivity value of 0.6 at 2 micor-m wavelength.

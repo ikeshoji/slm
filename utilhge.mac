@@ -1,0 +1,62 @@
+!--------------------------------------------------------------------
+! UTILHGE.MAC
+! Macros to output HGE boundary conditions
+!--------------------------------------------------------------------
+! WRELMHGEN,ARG1,ARG2,ARG3,ARG4
+! ARG1 : filename
+! ARG2 : filename extension
+! ARG3 : write mode; (blank) = over written, APPEND = APPEND
+! ARG4 : Memo
+!
+WRELMHGEN
+!
+ESEL,A,BFE,HGEN,0.0,1e20    ! Element set is supposed to be selected 
+                            ! or confined already
+*GET,nhgn,ELEM,,COUNT       ! Number of elements with HGEN
+! Case :  No heat generation
+*IF,nhgn,LT,1,THEN
+    *CFOPEN,%ARG1%,%ARG2%,,%ARG3%
+    *VWRITE
+    ('No heat generation')
+    *CFCLOS
+    *GO,:ENDMAC
+*ENDIF
+! Case : Heat generaion
+*DIM,ehgn,,nhgn,7           ! Array for Element number, 
+                            ! heat generation rate, element volume,
+                            ! generated heat, and center position X,Y,Z
+*VGET,ehgn(1,1),ELEM,1,ELIST
+htsum=0.0   ! total heat generation 
+*DO,ii,1,nhgn
+    *GET,vhgen,ELEM,ehgn(ii,1),HGEN
+    *GET,vvolu,ELEM,ehgn(ii,1),VOLU
+    *GET,ehgn(ii,2),ELEM,ehgn(ii,1),HGEN
+    *GET,ehgn(ii,3),ELEM,ehgn(ii,1),VOLU
+    ehgn(ii,4)=ehgn(ii,2)*ehgn(ii,3)
+    *GET,ehgn(ii,5),ELEM,ehgn(ii,1),CENT,X
+    *GET,ehgn(ii,6),ELEM,ehgn(ii,1),CENT,Y
+    *GET,ehgn(ii,7),ELEM,ehgn(ii,1),CENT,Z
+    htsum=htsum+ehgn(ii,2)*ehgn(ii,3)
+    !
+    *MSG,INFO,ii,ehgn(ii,1),,ehgn(ii,2),ehgn(ii,3),ehgn(ii,4),ehgn(ii,5),ehgn(ii,6),ehgn(ii,7)
+    ENUM: %6.0F, HGEN:%13.5E, VOLU:%13.5E, HEAT:%13.5E, X:%13.5E, Y:%13.5E, Z:%13.5E
+    !
+*ENDDO
+! Data output
+*CFOPEN,%ARG1%,%ARG2%,,%ARG3%
+*VWRITE
+%ARG4%
+*VWRITE
+('Total heat, W')
+*VWRITE,htsum
+(E13.5)
+*VWRITE
+('Num   , HGEN, W/m3 , VOLU, m3   , HEAT, W    , LOC X, m   , LOC Y, m   , LOC Z, m   ')
+*VWRITE,ehgn(1,1),,ehgn(1,2),ehgn(1,3),ehgn(1,4),ehgn(1,5),ehgn(1,6),ehgn(1,7)
+(F6.0,6E13.5)
+*CFCLOS
+htsum=
+nhgn=
+ehgn=
+:ENDMAC
+/EOF
