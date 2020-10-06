@@ -26,7 +26,9 @@ KEYW,PR_MULTI,0
 !*  
 /PREP7  
 
-!!! 解析領域設定
+!!! -------------------------------------------------------
+!!! Calculation Region
+!!! -------------------------------------------------------
 !! Dimensions unit <m> (meter not millimeter!)
 w2=0.50E-3      ! Margin in width direction
 ws=hatch        ! Scan pitch
@@ -37,8 +39,8 @@ h1=6*pwdthick   ! Region depth
 h2=pwdthick     ! Podwer layer thickness
 h3=3*pwdthick   ! Fine mesh region depthw1=0.90E-3  ! Fine mesh region in width
 !
-PI=ACOS(-1)    ! 円周率
-!! 解析・要素分割設定
+PI=ACOS(-1)     ! number PI
+!! Setting for calculation and fe-meshing
 !es2= 25.0E-6    ! Fine mesh size
 nlay=4          ! Division number in layer depth
 es2= h2/nlay    ! Fine mesh size
@@ -124,8 +126,9 @@ allsel
 !
 EPLOT
 FINISH
-!
+!!! -------------------------------------------------------
 !!! 解析部
+!!! -------------------------------------------------------
 /SOLU
 *DIM,flgstp,ARRAY,2
 flgstp(1,1)=0,0
@@ -222,7 +225,7 @@ SOLVE
 
   TIME,i*dt                          ! 時間を指定
 
-  !!! HGEN (熱荷重)　負荷
+  !!! HGEN (熱荷重)負荷
   !!! レーザー照射による発熱の設定
   ESEL,S,TYPE,,1,1
   BFEDELE,ALL,ALL,ALL
