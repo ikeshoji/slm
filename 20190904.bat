@@ -10,5 +10,5 @@ REM SET out=%fld%\%fnm%%sfx%.out
 REM 19.2
 REM "C:\Program Files\ANSYS Inc\v192\ansys\bin\winx64\MAPDL.exe" -b -g -p aa_r -dis -mpi INTELMPI -np 16 -lch -dir %fld% -j %jbn% -i %inp% -o %out% -s read -l en-us -t -d win32   
 REM 2019R3
-"C:\Program Files\ANSYS Inc\v195\ansys\bin\winx64\MAPDL.exe" -b -g -p aa_r -dis -mpi INTELMPI -np 16 -lch -dir %fld% -j %jbn% -i %inp% -o %out% -s read -l en-us -t -d win32   
+"C:\Program Files\ANSYS Inc\v201\ansys\bin\winx64\MAPDL.exe" -b -g -p aa_r -dis -mpi INTELMPI -np 16 -lch -dir %fld% -j %jbn% -i %inp% -o %out% -s read -l en-us -t -d win32   
 PAUSE
