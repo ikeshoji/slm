@@ -27,19 +27,21 @@ KEYW,PR_MULTI,0
 /PREP7  
 
 !!! 解析領域設定
-!! Dimensions unit mm
+!! Dimensions unit <m> (meter not millimeter!)
 w2=0.50E-3      ! Margin in width direction
 ws=hatch        ! Scan pitch
-!L1=5.0E-3       ! Line to scan
-L1=0.1E-3   ! Line to scan
+!L1=5.0E-3      ! Line to scan
+L1=0.1E-3       ! Line to scan
 L2=w2           ! Margin in scanning direction
-h1=6*pwdthick  ! Region depth
+h1=6*pwdthick   ! Region depth
 h2=pwdthick     ! Podwer layer thickness
 h3=3*pwdthick   ! Fine mesh region depthw1=0.90E-3  ! Fine mesh region in width
 !
 PI=ACOS(-1)    ! 円周率
 !! 解析・要素分割設定
-es2= 25.0E-6    ! Fine mesh size
+!es2= 25.0E-6    ! Fine mesh size
+nlay=4          ! Division number in layer depth
+es2= h2/nlay    ! Fine mesh size
 es1=150.0E-6    ! Coarse mesh size!
 NN=L1/es2       ! Step per 1 scan line
 dy=L1/NN        ! A step distance of laser scanning
@@ -68,7 +70,7 @@ V,21,22,23,24,41,42,43,44   ! Powder layer outer region
 V,41,42,43,44,81,82,83,84   ! Substrate outer region
 VSEL,ALL
 VOVLAP,ALL
-!! 物性値ファイル読み込み
+!! Input from physical property file
 /INPUT,%MATPROP%,inp
 !!! 要素分割
 ET,1,70     !要素タイプ定義
