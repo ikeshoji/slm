@@ -1,14 +1,7 @@
 !--------------------------------------------------
-! slm20181206
+! slm20190903
 ! by Toshi-Taka Ikeshoji 
 !--------------------------------------------------
-! 2017/04/27  作成
-! 2017/05/18  改変
-! 2018/11/21  laserprof.txt読み込み変更
-! 2018/12/06  整理、コメント類追加
-! 2019/06/29  パワー時間変動追加
-!--------------------------------------------------
-!
 /UIS,MSGPOP,3
 !
 /NOPR   
@@ -26,7 +19,9 @@ KEYW,PR_MULTI,0
 !*  
 /PREP7  
 
+!--------------------------------------------------
 !!! 解析領域設定
+!--------------------------------------------------
 !! Dimensions unit <m> (meter not millimeter!)
 w2=0.50E-3      ! Margin in width direction
 ws=hatch        ! Scan pitch
@@ -35,7 +30,8 @@ L1=0.1E-3       ! Line to scan
 L2=w2           ! Margin in scanning direction
 h1=6*pwdthick   ! Region depth
 h2=pwdthick     ! Podwer layer thickness
-h3=3*pwdthick   ! Fine mesh region depthw1=0.90E-3  ! Fine mesh region in width
+h3=3*pwdthick   ! Fine mesh region in depth
+w1=0.90E-3      ! Fine mesh region in width
 !
 PI=ACOS(-1)    ! 円周率
 !! 解析・要素分割設定
@@ -124,8 +120,9 @@ allsel
 !
 EPLOT
 FINISH
-!
+!--------------------------------------------------
 !!! 解析部
+!--------------------------------------------------
 /SOLU
 *DIM,flgstp,ARRAY,2
 flgstp(1,1)=0,0
@@ -249,7 +246,7 @@ SOLVE
   num_epbt = 0 ! Number of elements powder layer at bottom
   num_ebsf = 0 ! Number of elements bulk surface
   num_ebtm = 0 ! Number of elements bulk under powder layer
-  !　溶融池
+  ! 溶融池
   NSEL,S,TEMP,,liquidus,, ! 液相点以上の節点
   *GET,num_nmlt,NODE,,COUNT
   *IF,num_nmlt,GT,0,THEN
@@ -270,7 +267,7 @@ SOLVE
     *ENDIF
   *ENDIF
   ALLSEL
-  !　非溶融固相
+  ! 非溶融固相
   ESEL,S,TYPE,,1
   ESEL,R,MAT,,1,2
   ESEL,R,CENT,Z,-es2,0.0
@@ -493,4 +490,7 @@ ALLSEL
 !ループ終了
 SAVE,%FTITLE%,db,,ALL !.dbファイル保存
 FINISH
+!--------------------------------------------------
+!!!  Terminal End
+!--------------------------------------------------
                          
