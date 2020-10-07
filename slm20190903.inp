@@ -243,7 +243,9 @@ SOLVE
   num_emlt = 0 ! Number of elements melt pool
   num_emls = 0 ! Number of elements melt pool surface
   num_eptp = 0 ! Number of elements powder layer at top
-  num_epbt = 0 ! Number of elements powder layer at bottom
+  *DO,kk,1,nlay
+    num_epbt%kk% = 0 ! Number of elements powder layer at kk-th layer from top
+  *ENDDO
   num_ebsf = 0 ! Number of elements bulk surface
   num_ebtm = 0 ! Number of elements bulk under powder layer
   ! 溶融池
@@ -307,29 +309,31 @@ SOLVE
     *ENDDO
     ALLSEL
     !  z方向下側の隣接要素探索
-    *DO,jj,1,num_
-      ez = edat(jj)
-      *GET,zmin,ELEM,edat(jj),CENT,Z
-      *DO,i i,1,6,1                    ! (注意) 六面体要素を仮定
-        *GET,ei,ELEM,edat(jj),ADJ,ii  ! 隣接要素番号取得
-        *IF,ei,GT,0,THEN              ! 隣接要素が存在すれば...
-          *GET,zi,ELEM,ei,CENT,Z      !   中心ｚ座標を取得
-          *IF,zi,LT,zmin,THEN         !   z座標が現在の最小のz座標
-            zmin = zi                 !   より小さければ交換
-            ez = ei
+    *DO,kk,1,nlay-1
+      *DO,jj,1,num_
+        ez = edat(jj)
+        *GET,zmin,ELEM,edat(jj),CENT,Z
+        *DO,i i,1,6,1                   ! (注意) 六面体要素を仮定
+          *GET,ei,ELEM,edat(jj),ADJ,ii  ! 隣接要素番号取得
+          *IF,ei,GT,0,THEN              ! 隣接要素が存在すれば...
+            *GET,zi,ELEM,ei,CENT,Z      !   中心ｚ座標を取得
+            *IF,zi,LT,zmin,THEN         !   z座標が現在の最小のz座標
+              zmin = zi                 !   より小さければ交換
+              ez = ei
+            *ENDIF
           *ENDIF
-        *ENDIF
+        *ENDDO
+        edat(jj)=ez                     ! 最小のｚ座標を持つ要素番号を取得
       *ENDDO
-      edat(jj)=ez                     ! 最小のｚ座標を持つ要素を取得
+      ESEL,S,ELEM,,edat(1)              ! edatに格納した要素番号の要素を選択
+      *DO,ii,2,num_
+        ESEL,A,ELEM,,edat(ii)
+      *ENDDO
+      *GET,num_epbt%kk%,ELEM,,COUNT         ! 選択した要素の数を取得
+      *IF,num_epbt%kk%,GT,0,THEN
+        CM,epbt%kk%,ELEM                    ! Element powder bottom layer
+      *ENDIF                            ! epbt: 要素グループ
     *ENDDO
-    ESEL,S,ELEM,,edat(1)
-    *DO,ii,2,num_
-      ESEL,A,ELEM,,edat(ii)
-    *ENDDO
-    *GET,num_epbt,ELEM,,COUNT
-    *IF,num_epbt,GT,0,THEN
-      CM,epbt,ELEM                    ! Element powder bottom layer
-    *ENDIF
   *ENDIF
   !  粉体層下部の固相
   *DO,jj,1,num_                     ! ｚ方向下側の隣接要素探索
@@ -376,10 +380,12 @@ SOLVE
     CMSEL,S,eptp
     BFE,all,HGEN,1,%heatfn_ptp% ! 粉体層上部要素の発熱
   *ENDIF
-  *IF,num_epbt,GT,0,THEN
-    CMSEL,S,epbt
-    BFE,all,HGEN,1,%heatfn_pbt% ! 粉体層下部要素の発熱
-  *ENDIF
+  *DO,kk,1,nlay-1,
+    *IF,num_epbt,GT,0,THEN
+      CMSEL,S,epbt%kk%
+      BFE,all,HGEN,1,%heatfn_pbt% ! 粉体層下部要素の発熱
+    *ENDIF
+  *ENDDO
   *IF,num_ebsf,GT,0,THEN
     CMSEL,S,ebsf
     BFE,all,HGEN,1,%heatfn_bsf% ! 固体（比溶融）要素の発熱
@@ -392,11 +398,13 @@ SOLVE
   CMDELE,emlt
   CMDELE,emls
   CMDELE,eptp
-  CMDELE,epbt
+  *DO,kk,1,nlay-1
+    CMDELE,epbt%kk%
+  *ENDDO
   CMDELE,ebsf
   CMDELE,ebtm
   ALLSEL
-  !!!解析実行
+  !! 解析実行
   SOLVE						
 
   htsum=0.0
