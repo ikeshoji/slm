@@ -16,11 +16,10 @@ KEYW,MAGHFE,0
 KEYW,MAGELC,0   
 KEYW,PR_MULTI,0 
 /GO 
-!*  
+!
 /PREP7  
-
 !--------------------------------------------------
-!!! ‰ğÍ—Ìˆæİ’è
+!!! Calculation region
 !--------------------------------------------------
 !! Dimensions unit <m> (meter not millimeter!)
 w2=0.50E-3      ! Margin in width direction
@@ -121,7 +120,7 @@ allsel
 EPLOT
 FINISH
 !--------------------------------------------------
-!!! ‰ğÍ•”
+!!! Analysing
 !--------------------------------------------------
 /SOLU
 *DIM,flgstp,ARRAY,2
