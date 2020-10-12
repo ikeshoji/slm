@@ -18,6 +18,7 @@ KEYW,PR_MULTI,0
 /GO 
 !
 /PREP7  
+ndbstep = 50
 !--------------------------------------------------
 !!! Calculation region
 !--------------------------------------------------
@@ -218,7 +219,7 @@ SOLVE
 
   TIME,i*dt                          ! 時間を指定
 
-  !!! HGEN (熱荷重)　負荷
+  !!! HGEN (熱荷重) 負荷
   !!! レーザー照射による発熱の設定
   ESEL,S,TYPE,,1,1
   BFEDELE,ALL,ALL,ALL
@@ -468,7 +469,7 @@ SOLVE
   MPCHG,2,all
   ALLSEL
 
-  *if,MOD(i,20),EQ,0,then             !!! .dbファイル保存
+  *if,MOD(i,ndbstep),EQ,0,then      !!! .dbファイル保存
       SAVE,%FTITLE%-%i%,db,,ALL
   *endif        
 *ENDDO
