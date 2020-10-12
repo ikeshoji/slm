@@ -1,0 +1,176 @@
+!--------------------------------------------------
+! mltplxyz50.inp
+! by Toshi-Taka Ikeshoji 
+!
+! —n—Z’r‚Ì‘å‚«‚³‚ÌŠT—ª‚ð“¾‚é
+!--------------------------------------------------
+! 2017/05/01  ì¬
+! 2017/05/15  C³
+! 2017/05/26  C³
+! 2017/06/02  mltplxyz44.inp‚©‚çmltplxyz50.inp
+! 2017/06/07  JOBNAME‚ÌŽæ‚èž‚Ý
+!--------------------------------------------------
+!
+*GET,fnmlt,ACTIVE,,JOBNAM
+/POST1
+!
+FILE,fnmlt,'rth,'.'
+!
+!liquidus = 1084.0
+!
+CSYS,0
+!
+SET,LAST
+*GET,stpnum,ACTIVE,0,SOLU,NCMLS
+!stpnum=400
+nstep=1 ! ƒf[ƒ^ŒvŽZŠÔŠu
+*status,stpnum
+
+*DIM,tim,,stpnum/nstep+1
+*DIM,dms,,stpnum/nstep+1,9 ! Col 1:xmin, 2:xmax, 3:ymin, 4:ymax, 5:zmin, 6:zmax
+                           !     7: xmax-xmin, 8: ymax-ymin, 9: zmax-zmin
+!
+! ect : —v‘f”(Count of Elements)
+ALLSEL
+*GET,ectall,ELEM,,COUNT
+*DIM,elnum,,ectall   ! —v‘f”Ô†Ši”[”z—ñ
+*DIM,elmsk,,ectall ! mask
+*DIM,eldms,,ectall,6 ! Col 1:xmin, 2:xmax, 3:ymin, 4:ymax, 5:zmin, 6:zmax
+! —v‘f”Ô†‚ÌŠi”[
+*DIM,nds,,20  ! —v‘f“àß“_DÅ‘å20ß“_‚ð‘z’è
+*DIM,tmsk,,20*(20-1)/2   ! mask
+*DIM,tdms,,20*(20-1)/2,3 ! Col 1:x, 2:y, 3:z  
+
+!SET,FIRST
+*DO,istp,1,stpnum,nstep
+  idx=NINT(istp/nstep)+1
+  SET,istp,LAST,1,  
+  *GET,tim_,ACTIVE,0,SET,TIME
+  tim(idx)=tim_
+  *status,istp
+  *status,tim_
+  !
+  ! ‰t‘Šü‰·“xi—Z“_j‚ðŠÜ‚Þ—v‘f‚ð‘I‘ði—n—Z’r‹«ŠE–Êj
+  ESEL,ALL
+  ESEL,S,TYPE,,1
+  NSEL,ALL
+  NSEL,S,TEMP,,liquidus,,
+  ESLN,R,0,ACTIVE
+  ESLN,U,1,ACTIVE
+  *GET,ect,ELEM,,COUNT
+  *STATUS,ect
+
+  *IF,ect,LT,1,*CYCLE ! —n—Z’rŠE–Ê‚ðŠÜ‚Þ—v‘f‚ª–³‚¢ê‡‚ÍDOƒ‹[ƒv‚ÌÅŒã‚Ö
+  
+  *VGET,elnum,ELEM,,ELIST
+  
+  *VFILL,elmsk,RAMP,0,0
+
+  *DO,ie,1,ect,
+    ESEL,S,ELEM,,elnum(ie)
+    NSLE,S,ACTIVE
+    *GET,nct,NODE,,COUNT    ! SOLID70‚È‚çnct = 8
+    *VGET,nds,NODE,,NLIST    ! —v‘f“à‚Ìß“_”Ô†Ši”[
+    ! —v‘f“à‚Ì‰t‘ŠüˆÊ’u(x,y,zj‚ÌÅ‘å’lCÅ¬’l‚ÌŽæ“¾
+    *VFILL,tmsk,RAMP,0,0
+    *DO,ii,1,3
+      *VFILL,tdms(1,ii),RAMP,0,0
+    *ENDDO
+    kct=0 ! tmsk,dms‚Ìi—LŒø‚Èj—v‘f”‚ð”‚¦‚éƒJƒEƒ“ƒ^
+    *DO,k1,1,nct  ! ß“_‘“–‚½‚è
+      x1=NX(nds(k1))
+      y1=NY(nds(k1))
+      z1=NZ(nds(k1))
+      t1=TEMP(nds(k1))
+      *DO,k2,k1+1,nct
+        kct=kct+1
+        t2=TEMP(nds(k2))
+        *IF,t1,NE,t2,THEN
+          t2lqd=(t2-liquidus)/(t2-t1)
+          lqdt1=(liquidus-t1)/(t2-t1)
+          tmsk(kct)=(t2lqd*lqdt1/ABS(t2lqd*lqdt1))>0
+          tdms(kct,1)=t2lqd*x1+lqdt1*NX(nds(k2))
+          tdms(kct,2)=t2lqd*y1+lqdt1*NY(nds(k2))
+          tdms(kct,3)=t2lqd*z1+lqdt1*NZ(nds(k2))
+        *ELSE
+          tmsk(kct)=0
+        *ENDIF
+      *ENDDO
+    *ENDDO
+
+    *DO,ii,1,3
+      *VMASK,tmsk
+      *VSCFUN,buf,MIN,tdms(1,ii)
+      eldms(ie,2*ii-1)=buf
+      *VMASK,tmsk
+      *VSCFUN,buf,MAX,tdms(1,ii)
+      eldms(ie,2*ii)=buf
+    *ENDDO
+    elmsk(ie)=1
+  *ENDDO
+
+  *DO,ii,1,3
+    *VMASK,elmsk  
+    *VSCFUN,buf,MIN,eldms(1,2*ii-1)
+    dms(idx,2*ii-1)=buf
+    *VMASK,elmsk  
+    *VSCFUN,buf,MAX,eldms(1,2*ii)
+    dms(idx,2*ii)=buf
+    dms(idx,ii+6)=dms(idx,2*ii)-dms(idx,2*ii-1)
+  *ENDDO
+
+  !*IF,istp,EQ,101,THEN
+  !  *CFOPEN,'tmp','mlt'
+  !  *VWRITE
+  !  ('Step ','element count')
+  !  *VWRITE,istp,ect
+  !  (F5.0,F13.0)
+  !  *VWRITE
+  !  ('          ','time         ',' x min       ',' x max       ',' y min       ',' y max       ',' z min       ',' z max       ',' dx          ',' dy          ',' dz          ')
+  !  *VWRITE,sequ,tim(idx),dms(idx,1),dms(idx,2),dms(idx,3),dms(idx,4),dms(idx,5),dms(idx,6),dms(idx,7),dms(idx,8),dms(idx,9)
+  !  (F10.0,E13.5,9E13.5)
+  !  *VWRITE
+  !  ('Step ','mask ','element #    ',' x min       ',' x max       ',' y min       ',' y max       ',' z min       ',' z max       ')
+  !  *VMASK,elmsk  
+  !  *VWRITE,sequ,elmsk(1),elnum(1),eldms(1,1),eldms(1,2),eldms(1,3),eldms(1,4),eldms(1,5),eldms(1,6)
+  !  (F5.0,F5.0,F13.0,6E13.5)
+  !  *CFCLOS
+  !*ENDIF
+
+*ENDDO
+
+! ’PˆÊ•ÏŠ·
+*VOPER,tim(1),tim(1),MULTI,1.0E+3,,  ! s >> ms
+*DO,ii,1,9
+    *VOPER,dms(1,ii),dms(1,ii),MULTI,1.0E+6,, ! m >> um
+*ENDDO
+
+*CFOPEN,%fnmlt%,'mlt'
+*VWRITE
+('Step ',' time, ms    ',' x min, um   ',' x max, um   ',' y min, um   ',' y max, um   ',' z min, um   ',' z max, um   ',' width, um   ',' length, um  ',' depth, um   ')
+*VWRITE,sequ,tim(1),dms(1,1),dms(1,2),dms(1,3),dms(1,4),dms(1,5),dms(1,6),dms(1,7),dms(1,8),dms(1,9)
+(F5.0,E13.5,9E13.5)
+*CFCLOS
+
+
+buf=
+x1=
+x2=
+y1=
+y2=
+z1=
+z2=
+t1=
+t2=
+:term00
+*DEL,tim
+*DEL,dms
+*DEL,elnum
+*DEL,elmsk
+*DEL,eldms
+*DEL,nds
+*DEL,tmsk
+*DEL,tdms  
+!
+FINISH
+! Module END
