@@ -25,7 +25,7 @@ MPDATA,ENTH,1,2,5.55309E+09
 MPDATA,ENTH,1,3,7.78701E+09
 MPDATA,ENTH,1,4,1.50789E+10
 MPDATA,ENTH,1,5,6.82189E+10
-MPDATA,ENTH,1,6,6.82189E+10
+!MPDATA,ENTH,1,6,6.82189E+10*1.1
 ! Density, kg/m3 
 MPDATA,DENS,1,1,8262.7
 MPDATA,DENS,1,2,7733.4
@@ -58,7 +58,7 @@ MPDATA,ENTH,2,2,(1-pwdeps)*5.55309E+09
 MPDATA,ENTH,2,3,(1-pwdeps)*7.78701E+09
 MPDATA,ENTH,2,4,(1-pwdeps)*1.50789E+10
 MPDATA,ENTH,2,5,(1-pwdeps)*6.82189E+10
-MPDATA,ENTH,2,6,(1-pwdeps)*6.82189E+10
+!MPDATA,ENTH,2,6,(1-pwdeps)*6.82189E+10*1.1
 ! Density, kg/m3 
 MPDATA,DENS,2,1,(1-pwdeps)*8262.7
 MPDATA,DENS,2,2,(1-pwdeps)*7733.4
@@ -81,14 +81,14 @@ MPTEMP,2,1254.85
 MPTEMP,3,1336.85
 MPTEMP,4,2626.85
 MPTEMP,5,2726.85
-MPTEMP,5,3726.85
+MPTEMP,6,3726.85
 ! Enthalpy, J/m3
 MPDATA,ENTH,3,1,(1-pwdeps)*0.00000E+00
 MPDATA,ENTH,3,2,(1-pwdeps)*5.55309E+09
 MPDATA,ENTH,3,3,(1-pwdeps)*7.78701E+09
 MPDATA,ENTH,3,4,(1-pwdeps)*1.50789E+10
 MPDATA,ENTH,3,5,(1-pwdeps)*6.82189E+10
-MPDATA,ENTH,3,6,(1-pwdeps)*6.82189E+10
+!MPDATA,ENTH,3,6,(1-pwdeps)*6.82189E+10*1.1
 ! Density, kg/m3 
 MPDATA,DENS,3,1,(1-pwdeps)*8262.7
 MPDATA,DENS,3,2,(1-pwdeps)*7733.4
@@ -105,10 +105,12 @@ MPDATA,KXX,3,5,45.699
 MPDATA,KXX,3,6,45.699
 !
 ! ‹zŒõ—¦
-ems_mls = 0.4 ! ‰t‘Š•\–Ê ‹zŒõ—¦ 0.4 [1]
-ems_ptp = 0.6 ! •²‘Ì•\–Ê ‹zŒõ—¦ 0.6 [4']
-ems_pbt = 0.3 ! •²‘Ì’ê–Ê ‹zŒõ—¦ 0.3 [3']
 ems_bsf = 0.2 ! ŒÅ‘Ì•\–Ê ‹zŒõ—¦ 0.2 [4]
+ems_mls = 0.4 ! ‰t‘Š•\–Ê ‹zŒõ—¦ 0.4 [1]
+!ems_ptp = 0.6 ! •²‘Ì•\–Ê ‹zŒõ—¦ 0.6 [4']
+!ems_pbt = 0.3 ! •²‘Ì’ê–Ê ‹zŒõ—¦ 0.3 [3']
+ems_ptp = 0.6 ! •²‘Ì•\–Ê ‹zŒõ—¦ 0.6
+ems_pbt = 0.1 ! •²‘Ì’ê–Ê ‹zŒõ—¦ 0.3
 ems_btm = 0.1 ! •²‘Ì‘w‰º‘¤ŒÅ‘Ì ‹zŒõ—¦ 0.1
 ![1] Cagran, C., et al. (2009). "Normal Spectral Emissivity of the Industrially Used Alloys NiCr20TiAl, Inconel 718, X2CrNiMo18-14-3, and Another Austenitic Steel at 684.5 nm." International Journal of Thermophysics 30(4): 1300-1309.
 ![3] Zhou, J., et al. (2009). "Numerical simulation of laser irradiation to a randomly packed bimodal powder bed." International Journal of Heat and Mass Transfer 52(13?14): 3137-3146.

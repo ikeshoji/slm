@@ -25,8 +25,9 @@ ndbstep = 25
 !! Dimensions unit <m> (meter not millimeter!)
 w2=0.50E-3      ! Margin in width direction
 ws=hatch        ! Scan pitch
-!L1=5.0E-3      ! Line to scan
-L1=0.1E-3       ! Line to scan
+!L1=5.0E-3       ! Line to scan
+!L1=0.1E-3       ! Line to scan
+L1=scan_len     ! Line to scan
 L2=w2           ! Margin in scanning direction
 h1=6*pwdthick   ! Region depth
 h2=pwdthick     ! Podwer layer thickness
@@ -431,18 +432,22 @@ SOLVE
     *CFOPEN,%FTITLE%,hgn,,APPEND
   *ELSE
     *CFOPEN,%FTITLE%,hgn,,
+    !*VWRITE
+    !('Stp  , Num   , Input, W   ,MP Srf , PW Top, PW Btm,BLK Srf, BLK Btm')
     *VWRITE
-    ('Stp  , Num   , Input, W   ,MP Srf , PW Top, PW Btm,BLK Srf, BLK Btm')
+    ('Stp  , Num   , Input, W   ,BLK Srf, MP Srf, PW Top, PW Bt1, PW Bt2, PW Bt3, BLK Btm')
   *ENDIF
-  *VWRITE,%i%,num_hgen,htsum,num_emls,num_eptp,num_epbt,num_ebsf,num_ebtm
-  (F6.0,F8.0,E13.5,5F8.0)
+  !*VWRITE,%i%,num_hgen,htsum,num_emls,num_eptp,num_epbt,num_ebsf,num_ebtm
+  !(F6.0,F8.0,E13.5,5F8.0)
+  *VWRITE,%i%,num_hgen,htsum,num_ebsf,num_emls,num_eptp,num_epbt1,num_epbt2,num_epbt3,num_ebtm
+  (F6.0,F8.0,E13.5,7F8.0)
   *CFCLOS
   elm_hgen=
   *SET,elm_hgen,
   ALLSEL
   
   !!! 粉体溶融要素を粉体凝固部要素に変換 
-	NSEL,S,TEMP,,liquidus,,
+  NSEL,S,TEMP,,liquidus,,
   ESEL,S,TYPE,,1
   ESEL,R,MAT,,3
   ESLN,R,1,ALL
@@ -458,7 +463,7 @@ SOLVE
 ESEL,S,TYPE,,1,1
 bfedele,all,all,all
 ALLSEL
-*do,i,NN*NS+1,NN*(NS+1)              ! NN回ループする
+*DO,i,NN*NS+1,NN*(NS+1)*0.1          ! NN*0.1回ループする
   TIME,i*dt                          ! 時間を指定 
 
   solve                              !!! 解析実行
@@ -470,11 +475,10 @@ ALLSEL
   MPCHG,2,all
   ALLSEL
 
-  !*if,MOD(i,10),EQ,0,then             !!! .dbファイル保存
-  *if,MOD(i,20),EQ,0,then             !!! .dbファイル保存
+  *IF,MOD(i,ndbstep),EQ,0,then             !!! .dbファイル保存
     SAVE,%FTITLE%-%i%,db,,ALL
-  *endif
-*enddo
+  *ENDIF
+*ENDDO
 !ループ終了
 SAVE,%FTITLE%,db,,ALL !.dbファイル保存
 FINISH
