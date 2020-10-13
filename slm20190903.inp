@@ -407,55 +407,37 @@ SOLVE
   !! âêÕé¿çs
   SOLVE						
 
-  !! 
+  !!! HGENã´äEèåèèoóÕ
   htsum=0.0
-  ESEL,S,BFE,HGEN
+  ALLSEL
+  ESEL,S,BFE,HGEN,0.0,1e20
   *GET,num_hgen,ELEM,,COUNT
   *DIM,elm_hgen,,num_hgen
   *VGET,elm_hgen(1),ELEM,1,ELIST
-  *status,i
-  *status,num_hgen
-  *status,elm_hgen(1)
   *IF,num_hgen,GT,0,THEN
-    ! HGENïââ◊ÇµÇƒÇ¢ÇÈóvëfî‘çÜÇäiî[
-    !*GET,emin,ELEM,,NUM,MIN ! ç≈è¨óvëfî‘çÜÇÃéÊìæ
-    !enum_=emin
-    !*GET,vhgen,ELEM,enum_,HGEN
-    !*GET,vvolu,ELEM,enum_,VOLU
-    ii=1
-    *GET,vhgen,ELEM,elm_hgen(ii),HGEN
-    *GET,vvolu,ELEM,elm_hgen(ii),VOLU
-    htsum=vhgen*vvolu
-    *status,i
-    !*status,emin
-    *status,ii
-    *status,elm_hgen(ii)
-    *status,vhgen
-    *status,vvolu
-    *status,htsum
-    *DO,ii,2,num_hgen
+    *DO,ii,1,num_hgen
       *GET,vhgen,ELEM,elm_hgen(ii),HGEN
       *GET,vvolu,ELEM,elm_hgen(ii),VOLU
       htsum=htsum+vhgen*vvolu
       *status,i
       *status,ii
-      *status,elm_hgen(ii)
+      *status,elm_hgen,ii,ii
       *status,vhgen
       *status,vvolu
       *status,htsum
     *ENDDO
   *ENDIF
-  *IF,i,GT,0,THEN
+  *IF,i,GT,1,THEN
     *CFOPEN,%FTITLE%,hgn,,APPEND
   *ELSE
     *CFOPEN,%FTITLE%,hgn,,
     *VWRITE
-    ('Stp  , Num    , Input, W')
+    ('Stp  , Num   , Input, W   ,MP Srf , PW Top, PW Btm,BLK Srf, BLK Btm')
   *ENDIF
-  *VWRITE,%i%,num_hgen,htsum
-  (F6.0,F8.0,E13.5)
+  *VWRITE,%i%,num_hgen,htsum,num_emls,num_eptp,num_epbt,num_ebsf,num_ebtm
+  (F6.0,F8.0,E13.5,5F8.0)
   *CFCLOS
-  ehgen=
+  elm_hgen=
   *SET,elm_hgen,
   ALLSEL
   
