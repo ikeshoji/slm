@@ -16,15 +16,13 @@
 !
 FILE,fnmlt,'rth,'.'
 !
-!liquidus = 1084.0
-!
 CSYS,0
 !
 SET,LAST
 *GET,stpnum,ACTIVE,0,SOLU,NCMLS
 !stpnum=400
-!nstep=1 ! データ計算間隔
-nstep=25 ! データ計算間隔
+nstep=1 ! データ計算間隔
+!nstep=25 ! データ計算間隔
 *status,stpnum
 
 *DIM,tim,,stpnum/nstep+1

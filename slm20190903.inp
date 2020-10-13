@@ -18,7 +18,7 @@ KEYW,PR_MULTI,0
 /GO 
 !
 /PREP7  
-ndbstep = 50
+ndbstep = 25
 !--------------------------------------------------
 !!! Calculation region
 !--------------------------------------------------
@@ -407,6 +407,7 @@ SOLVE
   !! ‰ğÍÀs
   SOLVE						
 
+  !! 
   htsum=0.0
   ESEL,S,BFE,HGEN
   *GET,num_hgen,ELEM,,COUNT
@@ -433,15 +434,10 @@ SOLVE
     *status,vvolu
     *status,htsum
     *DO,ii,2,num_hgen
-      !emin=ELNEXT(emin)     ! emin ‚ÌŸ‚É‘å‚«‚È—v‘f”Ô†‚Åemin‚ğ’u‚«Š·‚¦
-      !enum_=emin
-      !*GET,vhgen,ELEM,enum_,HGEN
-      !*GET,vvolu,ELEM,enum_,VOLU
-      *GET,vhgen,ELEM,elm_hgen(i),HGEN
-      *GET,vvolu,ELEM,elm_hgen(i),VOLU
+      *GET,vhgen,ELEM,elm_hgen(ii),HGEN
+      *GET,vvolu,ELEM,elm_hgen(ii),VOLU
       htsum=htsum+vhgen*vvolu
       *status,i
-      !*status,emin
       *status,ii
       *status,elm_hgen(ii)
       *status,vhgen
@@ -460,9 +456,11 @@ SOLVE
   (F6.0,F8.0,E13.5)
   *CFCLOS
   ehgen=
+  *SET,elm_hgen,
   ALLSEL
-
-	NSEL,S,TEMP,,liquidus,,		!!! •²‘Ì—n—Z—v‘f‚ğ•²‘Ì‹ÃŒÅ•”—v‘f‚É•ÏŠ·            
+  
+  !!! •²‘Ì—n—Z—v‘f‚ğ•²‘Ì‹ÃŒÅ•”—v‘f‚É•ÏŠ· 
+	NSEL,S,TEMP,,liquidus,,
   ESEL,S,TYPE,,1
   ESEL,R,MAT,,3
   ESLN,R,1,ALL
