@@ -1,0 +1,257 @@
+
+ ANSYS Academic Research                           
+
+
+ *------------------------------------------------------------------*
+ |                                                                  |
+ |   W E L C O M E   T O   T H E   A N S Y S (R)  P R O G R A M     |
+ |                                                                  |
+ *------------------------------------------------------------------*
+
+
+
+
+ ***************************************************************
+ *            ANSYS 2020 R1          LEGAL NOTICES             *
+ ***************************************************************
+ *                                                             *
+ * Copyright 1971-2020 ANSYS, Inc.  All rights reserved.       *
+ * Unauthorized use, distribution or duplication is            *
+ * prohibited.                                                 *
+ *                                                             *
+ * Ansys is a registered trademark of ANSYS, Inc. or its       *
+ * subsidiaries in the United States or other countries.       *
+ * See the ANSYS, Inc. online documentation or the ANSYS, Inc. *
+ * documentation CD or online help for the complete Legal      *
+ * Notice.                                                     *
+ *                                                             *
+ ***************************************************************
+ *                                                             *
+ * THIS ANSYS SOFTWARE PRODUCT AND PROGRAM DOCUMENTATION       *
+ * INCLUDE TRADE SECRETS AND CONFIDENTIAL AND PROPRIETARY      *
+ * PRODUCTS OF ANSYS, INC., ITS SUBSIDIARIES, OR LICENSORS.    *
+ * The software products and documentation are furnished by    *
+ * ANSYS, Inc. or its subsidiaries under a software license    *
+ * agreement that contains provisions concerning               *
+ * non-disclosure, copying, length and nature of use,          *
+ * compliance with exporting laws, warranties, disclaimers,    *
+ * limitations of liability, and remedies, and other           *
+ * provisions.  The software products and documentation may be *
+ * used, disclosed, transferred, or copied only in accordance  *
+ * with the terms and conditions of that software license      *
+ * agreement.                                                  *
+ *                                                             *
+ * ANSYS, Inc. is a UL registered                              *
+ * ISO 9001:2015 company.                                      *
+ *                                                             *
+ ***************************************************************
+ *                                                             *
+ * This product is subject to U.S. laws governing export and   *
+ * re-export.                                                  *
+ *                                                             *
+ * For U.S. Government users, except as specifically granted   *
+ * by the ANSYS, Inc. software license agreement, the use,     *
+ * duplication, or disclosure by the United States Government  *
+ * is subject to restrictions stated in the ANSYS, Inc.        *
+ * software license agreement and FAR 12.212 (for non-DOD      *
+ * licenses).                                                  *
+ *                                                             *
+ ***************************************************************
+
+ 2020 R1 
+     
+ Point Releases and Patches installed:   
+     
+ ANSYS, Inc. Products 2020 R1
+ SpaceClaim 2020 R1  
+ AIM 2020 R1 
+ Live (includes SpaceClaim) 2020 R1  
+ Autodyn 2020 R1 
+ CFD-Post only 2020 R1   
+ CFX (includes CFD-Post) 2020 R1 
+ Chemkin 2020 R1 
+ FENSAP-ICE 2020 R1  
+ Fluent (includes CFD-Post) 2020 R1  
+ Forte 2020 R1   
+ Polyflow (includes CFD-Post) 2020 R1
+ TurboGrid 2020 R1   
+ ICEM CFD 2020 R1
+ Aqwa 2020 R1
+ Customization Files for User Programmable Features 2020 R1  
+ Mechanical Products 2020 R1 
+ Additive 2020 R1
+ Icepak (includes CFD-Post) 2020 R1  
+ Remote Solve Manager Standalone Services 2020 R1
+ Viewer 2020 R1  
+ ACIS Geometry Interface 2020 R1 
+ AutoCAD Geometry Interface 2020 R1  
+ Catia, Version 4 Geometry Interface 2020 R1 
+ Catia, Version 5 Geometry Interface 2020 R1 
+ Catia, Version 6 Geometry Interface 2020 R1 
+ Creo Elements/Direct Modeling Geometry Interface 2020 R1
+ Creo Parametric Geometry Interface 2020 R1  
+ Inventor Geometry Interface 2020 R1 
+ JTOpen Geometry Interface 2020 R1   
+ NX Geometry Interface 2020 R1   
+ Parasolid Geometry Interface  2020 R1   
+ Solid Edge Geometry Interface 2020 R1   
+ SOLIDWORKS Geometry Interface 2020 R1   
+ ANSYS, Inc. License Manager 2020 R1 
+
+
+          *****  ANSYS COMMAND LINE ARGUMENTS  *****
+  INITIAL JOBNAME              = 20201013aa                                                                                                                                                                                                                                              
+  BATCH MODE REQUESTED (-b)    = LIST
+  INPUT FILE COPY MODE (-c)    = COPY
+  DISTRIBUTED MEMORY PARALLEL REQUESTED
+      16 PARALLEL PROCESSES REQUESTED WITH SINGLE THREAD PER PROCESS
+    TOTAL OF    16 CORES REQUESTED
+  DESIGNXPLORER REQUESTED
+  MPI OPTION                   = INTELMPI
+  INPUT FILE NAME              = D:\Github\slm\slm\fld\20201013aa.inp
+  OUTPUT FILE NAME             = D:\20201013\20201013aa.out
+  START-UP FILE MODE           = READ  
+  STOP FILE MODE               = READ  
+  GRAPHICS DEVICE REQUESTED    = win32   
+  GRAPHICAL ENTRY              = YES   
+  LANGUAGE                     = en-us               
+  INITIAL DIRECTORY = D:\20201013
+
+ RELEASE= 2020 R1              BUILD= 20.1      UP20191203   VERSION=WINDOWS x64 
+ CURRENT JOBNAME=20201013aa0  00:52:55  OCT 13, 2020 CP=      0.344
+
+
+ RUN SETUP PROCEDURE FROM FILE= C:\Program Files\ANSYS Inc\v201\ANSYS\apdl\start.ans
+
+ /INPUT FILE= C:\Program Files\ANSYS Inc\v201\ANSYS\apdl\start.ans  LINE=       0
+
+ ***** END OF INPUT ENCOUNTERED *****
+
+ PURGE ALL SOLUTION AND POST DATA
+ SAVE ALL MODEL DATA
+
+ ALL CURRENT ANSYS DATA WRITTEN TO FILE NAME= 20201013aa.db
+  FOR POSSIBLE RESUME FROM THIS POINT
+
+
+ NUMBER OF WARNING MESSAGES ENCOUNTERED=          0
+ NUMBER OF ERROR   MESSAGES ENCOUNTERED=          0
+
++--------- D I S T R I B U T E D   A N S Y S   S T A T I S T I C S ------------+
+
+Release: 2020 R1            Build: 20.1       Update: UP20191203   Platform: WINDOWS x64 
+Date Run: 10/13/2020   Time: 00:52     Process ID: 11820
+Operating System: Windows 10  (Build: 19041)
+
+Processor Model: Intel(R) Xeon(R) Gold 6126 CPU @ 2.60GHz
+
+Compiler: Intel(R) FORTRAN Compiler Version 19.0.0  (Build: 20190206)
+          Intel(R) C/C++ Compiler Version 19.0.0  (Build: 20190206)
+          Intel(R) Math Kernel Library Version 2019.0.3 Product Build 20190125
+
+Number of machines requested            :    1
+Total number of cores available         :   24
+Number of physical cores available      :   24
+Number of processes requested           :   16
+Number of threads per process requested :    1
+Total number of cores requested         :   16 (Distributed Memory Parallel)               
+MPI Type: INTELMPI
+MPI Version: Intel(R) MPI Library 2018 Update 3 for Windows* OS
+
+
+GPU Acceleration: Not Requested
+
+Job Name: 20201013aa0
+Input File: 20201013aa.inp
+
+  Core                Machine Name   Working Directory
+ -----------------------------------------------------
+     0         VT2.kuring-am.local   D:\20201013
+     1         VT2.kuring-am.local   D:\20201013
+     2         VT2.kuring-am.local   D:\20201013
+     3         VT2.kuring-am.local   D:\20201013
+     4         VT2.kuring-am.local   D:\20201013
+     5         VT2.kuring-am.local   D:\20201013
+     6         VT2.kuring-am.local   D:\20201013
+     7         VT2.kuring-am.local   D:\20201013
+     8         VT2.kuring-am.local   D:\20201013
+     9         VT2.kuring-am.local   D:\20201013
+    10         VT2.kuring-am.local   D:\20201013
+    11         VT2.kuring-am.local   D:\20201013
+    12         VT2.kuring-am.local   D:\20201013
+    13         VT2.kuring-am.local   D:\20201013
+    14         VT2.kuring-am.local   D:\20201013
+    15         VT2.kuring-am.local   D:\20201013
+ 
+Latency time from master to core     1 =    1.883 microseconds
+Latency time from master to core     2 =    1.876 microseconds
+Latency time from master to core     3 =    1.841 microseconds
+Latency time from master to core     4 =    1.870 microseconds
+Latency time from master to core     5 =    1.880 microseconds
+Latency time from master to core     6 =    1.862 microseconds
+Latency time from master to core     7 =    1.861 microseconds
+Latency time from master to core     8 =    2.275 microseconds
+Latency time from master to core     9 =    2.202 microseconds
+Latency time from master to core    10 =    2.227 microseconds
+Latency time from master to core    11 =    2.152 microseconds
+Latency time from master to core    12 =    2.224 microseconds
+Latency time from master to core    13 =    2.163 microseconds
+Latency time from master to core    14 =    2.345 microseconds
+Latency time from master to core    15 =    2.243 microseconds
+ 
+Communication speed from master to core     1 =  6433.45 MB/sec
+Communication speed from master to core     2 =  6743.60 MB/sec
+Communication speed from master to core     3 =  6752.94 MB/sec
+Communication speed from master to core     4 =  6663.06 MB/sec
+Communication speed from master to core     5 =  6638.73 MB/sec
+Communication speed from master to core     6 =  6640.71 MB/sec
+Communication speed from master to core     7 =  6810.83 MB/sec
+Communication speed from master to core     8 =  3867.44 MB/sec
+Communication speed from master to core     9 =  3923.28 MB/sec
+Communication speed from master to core    10 =  3897.74 MB/sec
+Communication speed from master to core    11 =  3905.87 MB/sec
+Communication speed from master to core    12 =  3904.15 MB/sec
+Communication speed from master to core    13 =  3847.36 MB/sec
+Communication speed from master to core    14 =  3899.72 MB/sec
+Communication speed from master to core    15 =  3881.69 MB/sec
+
+Total CPU time for main thread                    :        0.8 seconds
+Total CPU time summed for all threads             :        0.8 seconds
+
+Elapsed time spent obtaining a license            :        0.5 seconds
+Elapsed time spent pre-processing model (/PREP7)  :        0.0 seconds
+Elapsed time spent solution - preprocessing       :        0.0 seconds
+Elapsed time spent computing solution             :        0.0 seconds
+Elapsed time spent solution - postprocessing      :        0.0 seconds
+Elapsed time spent post-processing model (/POST1) :        0.0 seconds
+ 
+
+Maximum total memory used                         :       78.0 MB
+Maximum total memory allocated                    :    17472.0 MB
+Total physical memory available                   :        191 GB
+
+Total amount of I/O written to disk               :        0.0 GB
+Total amount of I/O read from disk                :        0.0 GB
+
++------ E N D   D I S T R I B U T E D   A N S Y S   S T A T I S T I C S -------+
+
+
+ *---------------------------------------------------------------------------*
+ |                                                                           |
+ |                       DISTRIBUTED ANSYS RUN COMPLETED                     |
+ |                                                                           |
+ |---------------------------------------------------------------------------|
+ |                                                                           |
+ | Ansys 2020 R1               Build 20.1         UP20191203     WINDOWS x64 |
+ |                                                                           |
+ |---------------------------------------------------------------------------|
+ |                                                                           |
+ | Database Requested(-db)  1024 MB    Scratch Memory Requested      1024 MB |
+ | Maximum Database Used       1 MB    Maximum Scratch Memory Used      2 MB |
+ |                                                                           |
+ |---------------------------------------------------------------------------|
+ |                                                                           |
+ |        CP Time      (sec) =          0.750       Time  =  00:52:55        |
+ |        Elapsed Time (sec) =          2.000       Date  =  10/13/2020      |
+ |                                                                           |
+ *---------------------------------------------------------------------------*

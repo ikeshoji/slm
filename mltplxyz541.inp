@@ -14,18 +14,16 @@
 *GET,fnmlt,ACTIVE,,JOBNAM
 /POST1
 !
-FILE,fnmlt,'rth,'.'
-!
-!liquidus = 1084.0
-!
+FILE,fnmlt,'rth','.'
 CSYS,0
 !
 SET,LAST
 *GET,stpnum,ACTIVE,0,SOLU,NCMLS
 !stpnum=400
-nstep=1 ! データ計算間隔
+!nstep=1 ! データ計算間隔
+nstep=25 ! データ計算間隔
 *status,stpnum
-
+*DIM,stp,,stpnum/nstep+1
 *DIM,tim,,stpnum/nstep+1
 *DIM,dms,,stpnum/nstep+1,9 ! Col 1:xmin, 2:xmax, 3:ymin, 4:ymax, 5:zmin, 6:zmax
                            !     7: xmax-xmin, 8: ymax-ymin, 9: zmax-zmin
@@ -46,6 +44,7 @@ ALLSEL
   idx=NINT(istp/nstep)+1
   SET,istp,LAST,1,  
   *GET,tim_,ACTIVE,0,SET,TIME
+  stp(idx)=istp
   tim(idx)=tim_
   *status,istp
   *status,tim_
@@ -118,25 +117,6 @@ ALLSEL
     dms(idx,2*ii)=buf
     dms(idx,ii+6)=dms(idx,2*ii)-dms(idx,2*ii-1)
   *ENDDO
-
-  !*IF,istp,EQ,101,THEN
-  !  *CFOPEN,'tmp','mlt'
-  !  *VWRITE
-  !  ('Step ','element count')
-  !  *VWRITE,istp,ect
-  !  (F5.0,F13.0)
-  !  *VWRITE
-  !  ('          ','time         ',' x min       ',' x max       ',' y min       ',' y max       ',' z min       ',' z max       ',' dx          ',' dy          ',' dz          ')
-  !  *VWRITE,sequ,tim(idx),dms(idx,1),dms(idx,2),dms(idx,3),dms(idx,4),dms(idx,5),dms(idx,6),dms(idx,7),dms(idx,8),dms(idx,9)
-  !  (F10.0,E13.5,9E13.5)
-  !  *VWRITE
-  !  ('Step ','mask ','element #    ',' x min       ',' x max       ',' y min       ',' y max       ',' z min       ',' z max       ')
-  !  *VMASK,elmsk  
-  !  *VWRITE,sequ,elmsk(1),elnum(1),eldms(1,1),eldms(1,2),eldms(1,3),eldms(1,4),eldms(1,5),eldms(1,6)
-  !  (F5.0,F5.0,F13.0,6E13.5)
-  !  *CFCLOS
-  !*ENDIF
-
 *ENDDO
 
 ! 単位変換
@@ -148,7 +128,9 @@ ALLSEL
 *CFOPEN,%fnmlt%,'mlt'
 *VWRITE
 ('Step ',' time, ms    ',' x min, um   ',' x max, um   ',' y min, um   ',' y max, um   ',' z min, um   ',' z max, um   ',' width, um   ',' length, um  ',' depth, um   ')
-*VWRITE,sequ,tim(1),dms(1,1),dms(1,2),dms(1,3),dms(1,4),dms(1,5),dms(1,6),dms(1,7),dms(1,8),dms(1,9)
+!*VWRITE,sequ,tim(1),dms(1,1),dms(1,2),dms(1,3),dms(1,4),dms(1,5),dms(1,6),dms(1,7),dms(1,8),dms(1,9)
+!(F5.0,E13.5,9E13.5)
+*VWRITE,stp(1),tim(1),dms(1,1),dms(1,2),dms(1,3),dms(1,4),dms(1,5),dms(1,6),dms(1,7),dms(1,8),dms(1,9)
 (F5.0,E13.5,9E13.5)
 *CFCLOS
 

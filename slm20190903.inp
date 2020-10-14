@@ -1,14 +1,7 @@
 !--------------------------------------------------
-! slm20181206
+! slm20190903
 ! by Toshi-Taka Ikeshoji 
 !--------------------------------------------------
-! 2017/04/27  作成
-! 2017/05/18  改変
-! 2018/11/21  laserprof.txt読み込み変更
-! 2018/12/06  整理、コメント類追加
-! 2019/06/29  パワー時間変動追加
-!--------------------------------------------------
-!
 /UIS,MSGPOP,3
 !
 /NOPR   
@@ -23,23 +16,29 @@ KEYW,MAGHFE,0
 KEYW,MAGELC,0   
 KEYW,PR_MULTI,0 
 /GO 
-!*  
+!
 /PREP7  
-
-!!! 解析領域設定
-!! Dimensions unit mm
+ndbstep = 25
+!--------------------------------------------------
+!!! Calculation region
+!--------------------------------------------------
+!! Dimensions unit <m> (meter not millimeter!)
 w2=0.50E-3      ! Margin in width direction
 ws=hatch        ! Scan pitch
 !L1=5.0E-3       ! Line to scan
-L1=0.1E-3   ! Line to scan
+!L1=0.1E-3       ! Line to scan
+L1=scan_len     ! Line to scan
 L2=w2           ! Margin in scanning direction
-h1=6*pwdthick  ! Region depth
+h1=6*pwdthick   ! Region depth
 h2=pwdthick     ! Podwer layer thickness
-h3=3*pwdthick   ! Fine mesh region depthw1=0.90E-3  ! Fine mesh region in width
+h3=3*pwdthick   ! Fine mesh region in depth
+w1=0.90E-3      ! Fine mesh region in width
 !
 PI=ACOS(-1)    ! 円周率
 !! 解析・要素分割設定
-es2= 25.0E-6    ! Fine mesh size
+!es2= 25.0E-6    ! Fine mesh size
+nlay=4          ! Division number in layer depth
+es2= h2/nlay    ! Fine mesh size
 es1=150.0E-6    ! Coarse mesh size!
 NN=L1/es2       ! Step per 1 scan line
 dy=L1/NN        ! A step distance of laser scanning
@@ -68,7 +67,7 @@ V,21,22,23,24,41,42,43,44   ! Powder layer outer region
 V,41,42,43,44,81,82,83,84   ! Substrate outer region
 VSEL,ALL
 VOVLAP,ALL
-!! 物性値ファイル読み込み
+!! Input from physical property file
 /INPUT,%MATPROP%,inp
 !!! 要素分割
 ET,1,70     !要素タイプ定義
@@ -122,8 +121,9 @@ allsel
 !
 EPLOT
 FINISH
-!
-!!! 解析部
+!--------------------------------------------------
+!!! Analysing
+!--------------------------------------------------
 /SOLU
 *DIM,flgstp,ARRAY,2
 flgstp(1,1)=0,0
@@ -220,7 +220,7 @@ SOLVE
 
   TIME,i*dt                          ! 時間を指定
 
-  !!! HGEN (熱荷重)　負荷
+  !!! HGEN (熱荷重) 負荷
   !!! レーザー照射による発熱の設定
   ESEL,S,TYPE,,1,1
   BFEDELE,ALL,ALL,ALL
@@ -244,10 +244,12 @@ SOLVE
   num_emlt = 0 ! Number of elements melt pool
   num_emls = 0 ! Number of elements melt pool surface
   num_eptp = 0 ! Number of elements powder layer at top
-  num_epbt = 0 ! Number of elements powder layer at bottom
+  *DO,kk,1,nlay
+    num_epbt%kk% = 0 ! Number of elements powder layer at kk-th layer from top
+  *ENDDO
   num_ebsf = 0 ! Number of elements bulk surface
   num_ebtm = 0 ! Number of elements bulk under powder layer
-  !　溶融池
+  ! 溶融池
   NSEL,S,TEMP,,liquidus,, ! 液相点以上の節点
   *GET,num_nmlt,NODE,,COUNT
   *IF,num_nmlt,GT,0,THEN
@@ -268,7 +270,7 @@ SOLVE
     *ENDIF
   *ENDIF
   ALLSEL
-  !　非溶融固相
+  ! 非溶融固相
   ESEL,S,TYPE,,1
   ESEL,R,MAT,,1,2
   ESEL,R,CENT,Z,-es2,0.0
@@ -308,29 +310,31 @@ SOLVE
     *ENDDO
     ALLSEL
     !  z方向下側の隣接要素探索
-    *DO,jj,1,num_
-      ez = edat(jj)
-      *GET,zmin,ELEM,edat(jj),CENT,Z
-      *DO,i i,1,6,1                    ! (注意) 六面体要素を仮定
-        *GET,ei,ELEM,edat(jj),ADJ,ii  ! 隣接要素番号取得
-        *IF,ei,GT,0,THEN              ! 隣接要素が存在すれば...
-          *GET,zi,ELEM,ei,CENT,Z      !   中心ｚ座標を取得
-          *IF,zi,LT,zmin,THEN         !   z座標が現在の最小のz座標
-            zmin = zi                 !   より小さければ交換
-            ez = ei
+    *DO,kk,1,nlay-1
+      *DO,jj,1,num_
+        ez = edat(jj)
+        *GET,zmin,ELEM,edat(jj),CENT,Z
+        *DO,i i,1,6,1                   ! (注意) 六面体要素を仮定
+          *GET,ei,ELEM,edat(jj),ADJ,ii  ! 隣接要素番号取得
+          *IF,ei,GT,0,THEN              ! 隣接要素が存在すれば...
+            *GET,zi,ELEM,ei,CENT,Z      !   中心ｚ座標を取得
+            *IF,zi,LT,zmin,THEN         !   z座標が現在の最小のz座標
+              zmin = zi                 !   より小さければ交換
+              ez = ei
+            *ENDIF
           *ENDIF
-        *ENDIF
+        *ENDDO
+        edat(jj)=ez                     ! 最小のｚ座標を持つ要素番号を取得
       *ENDDO
-      edat(jj)=ez                     ! 最小のｚ座標を持つ要素を取得
+      ESEL,S,ELEM,,edat(1)              ! edatに格納した要素番号の要素を選択
+      *DO,ii,2,num_
+        ESEL,A,ELEM,,edat(ii)
+      *ENDDO
+      *GET,num_epbt%kk%,ELEM,,COUNT         ! 選択した要素の数を取得
+      *IF,num_epbt%kk%,GT,0,THEN
+        CM,epbt%kk%,ELEM                    ! Element powder bottom layer
+      *ENDIF                            ! epbt: 要素グループ
     *ENDDO
-    ESEL,S,ELEM,,edat(1)
-    *DO,ii,2,num_
-      ESEL,A,ELEM,,edat(ii)
-    *ENDDO
-    *GET,num_epbt,ELEM,,COUNT
-    *IF,num_epbt,GT,0,THEN
-      CM,epbt,ELEM                    ! Element powder bottom layer
-    *ENDIF
   *ENDIF
   !  粉体層下部の固相
   *DO,jj,1,num_                     ! ｚ方向下側の隣接要素探索
@@ -377,10 +381,12 @@ SOLVE
     CMSEL,S,eptp
     BFE,all,HGEN,1,%heatfn_ptp% ! 粉体層上部要素の発熱
   *ENDIF
-  *IF,num_epbt,GT,0,THEN
-    CMSEL,S,epbt
-    BFE,all,HGEN,1,%heatfn_pbt% ! 粉体層下部要素の発熱
-  *ENDIF
+  *DO,kk,1,nlay-1,
+    *IF,num_epbt,GT,0,THEN
+      CMSEL,S,epbt%kk%
+      BFE,all,HGEN,1,%heatfn_pbt% ! 粉体層下部要素の発熱
+    *ENDIF
+  *ENDDO
   *IF,num_ebsf,GT,0,THEN
     CMSEL,S,ebsf
     BFE,all,HGEN,1,%heatfn_bsf% ! 固体（比溶融）要素の発熱
@@ -393,76 +399,62 @@ SOLVE
   CMDELE,emlt
   CMDELE,emls
   CMDELE,eptp
-  CMDELE,epbt
+  *DO,kk,1,nlay-1
+    CMDELE,epbt%kk%
+  *ENDDO
   CMDELE,ebsf
   CMDELE,ebtm
   ALLSEL
-  !!!解析実行
+  !! 解析実行
   SOLVE						
 
+  !!! HGEN境界条件出力
   htsum=0.0
-  ESEL,S,BFE,HGEN
+  ALLSEL
+  ESEL,S,BFE,HGEN,0.0,1e20
   *GET,num_hgen,ELEM,,COUNT
   *DIM,elm_hgen,,num_hgen
   *VGET,elm_hgen(1),ELEM,1,ELIST
-  *status,i
-  *status,num_hgen
-  *status,elm_hgen(1)
   *IF,num_hgen,GT,0,THEN
-    ! HGEN負荷している要素番号を格納
-    !*GET,emin,ELEM,,NUM,MIN ! 最小要素番号の取得
-    !enum_=emin
-    !*GET,vhgen,ELEM,enum_,HGEN
-    !*GET,vvolu,ELEM,enum_,VOLU
-    ii=1
-    *GET,vhgen,ELEM,elm_hgen(ii),HGEN
-    *GET,vvolu,ELEM,elm_hgen(ii),VOLU
-    htsum=vhgen*vvolu
-    *status,i
-    !*status,emin
-    *status,ii
-    *status,elm_hgen(ii)
-    *status,vhgen
-    *status,vvolu
-    *status,htsum
-    *DO,ii,2,num_hgen
-      !emin=ELNEXT(emin)     ! emin の次に大きな要素番号でeminを置き換え
-      !enum_=emin
-      !*GET,vhgen,ELEM,enum_,HGEN
-      !*GET,vvolu,ELEM,enum_,VOLU
-      *GET,vhgen,ELEM,elm_hgen(i),HGEN
-      *GET,vvolu,ELEM,elm_hgen(i),VOLU
+    *DO,ii,1,num_hgen
+      *GET,vhgen,ELEM,elm_hgen(ii),HGEN
+      *GET,vvolu,ELEM,elm_hgen(ii),VOLU
       htsum=htsum+vhgen*vvolu
       *status,i
-      !*status,emin
       *status,ii
-      *status,elm_hgen(ii)
+      *status,elm_hgen,ii,ii
       *status,vhgen
       *status,vvolu
       *status,htsum
     *ENDDO
   *ENDIF
-  *IF,i,GT,0,THEN
+  *IF,i,GT,1,THEN
     *CFOPEN,%FTITLE%,hgn,,APPEND
   *ELSE
     *CFOPEN,%FTITLE%,hgn,,
+    !*VWRITE
+    !('Stp  , Num   , Input, W   ,MP Srf , PW Top, PW Btm,BLK Srf, BLK Btm')
     *VWRITE
-    ('Stp  , Num    , Input, W')
+    ('Stp  , Num   , Input, W   ,BLK Srf, MP Srf, PW Top, PW Bt1, PW Bt2, PW Bt3, BLK Btm')
   *ENDIF
-  *VWRITE,%i%,num_hgen,htsum
-  (F6.0,F8.0,E13.5)
+  !*VWRITE,%i%,num_hgen,htsum,num_emls,num_eptp,num_epbt,num_ebsf,num_ebtm
+  !(F6.0,F8.0,E13.5,5F8.0)
+  *VWRITE,%i%,num_hgen,htsum,num_ebsf,num_emls,num_eptp,num_epbt1,num_epbt2,num_epbt3,num_ebtm
+  (F6.0,F8.0,E13.5,7F8.0)
   *CFCLOS
-  ehgen=
+  elm_hgen=
+  *SET,elm_hgen,
   ALLSEL
-
-	NSEL,S,TEMP,,liquidus,,		!!! 粉体溶融要素を粉体凝固部要素に変換            
+  
+  !!! 粉体溶融要素を粉体凝固部要素に変換 
+  NSEL,S,TEMP,,liquidus,,
   ESEL,S,TYPE,,1
   ESEL,R,MAT,,3
   ESLN,R,1,ALL
   MPCHG,2,all
   ALLSEL
 
-  *if,MOD(i,20),EQ,0,then             !!! .dbファイル保存
+  *if,MOD(i,ndbstep),EQ,0,then      !!! .dbファイル保存
       SAVE,%FTITLE%-%i%,db,,ALL
   *endif        
 *ENDDO
@@ -471,7 +463,7 @@ SOLVE
 ESEL,S,TYPE,,1,1
 bfedele,all,all,all
 ALLSEL
-*do,i,NN*NS+1,NN*(NS+1)              ! NN回ループする
+*DO,i,NN*NS+1,NN*(NS+1)*0.1          ! NN*0.1回ループする
   TIME,i*dt                          ! 時間を指定 
 
   solve                              !!! 解析実行
@@ -483,12 +475,14 @@ ALLSEL
   MPCHG,2,all
   ALLSEL
 
-  !*if,MOD(i,10),EQ,0,then             !!! .dbファイル保存
-  *if,MOD(i,20),EQ,0,then             !!! .dbファイル保存
+  *IF,MOD(i,ndbstep),EQ,0,then             !!! .dbファイル保存
     SAVE,%FTITLE%-%i%,db,,ALL
-  *endif
-*enddo
+  *ENDIF
+*ENDDO
 !ループ終了
 SAVE,%FTITLE%,db,,ALL !.dbファイル保存
 FINISH
+!--------------------------------------------------
+!!!  Terminal End
+!--------------------------------------------------
                          
