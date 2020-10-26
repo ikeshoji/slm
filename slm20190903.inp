@@ -25,8 +25,6 @@ ndbstep = 25
 !! Dimensions unit <m> (meter not millimeter!)
 w2=0.50E-3      ! Margin in width direction
 ws=hatch        ! Scan pitch
-!L1=5.0E-3       ! Line to scan
-!L1=0.1E-3       ! Line to scan
 L1=scan_len     ! Line to scan
 L2=w2           ! Margin in scanning direction
 h1=6*pwdthick   ! Region depth
@@ -36,7 +34,6 @@ w1=0.90E-3      ! Fine mesh region in width
 !
 PI=ACOS(-1)    ! 円周率
 !! 解析・要素分割設定
-!es2= 25.0E-6    ! Fine mesh size
 nlay=4          ! Division number in layer depth
 es2= h2/nlay    ! Fine mesh size
 es1=150.0E-6    ! Coarse mesh size!
@@ -134,23 +131,21 @@ flgstp(1,1)=0,0
 (F8.0)
 *CFCLOS
 !ソルバー設定
-antype,trans                           ! 過渡伝熱解析
+ANTYPE,TRANS                           ! 過渡伝熱解析
 AUTOTS,ON
 LNSRCH,ON
 DELTIM,dt,dt/2000,dt,ON
 NEQIT,200  
-outres,all,last                        ! 結果データ出力頻度
-tunif,bsptemp                          ! 初期温度指定
-
+OUTRES,ALL,LAST                        ! 結果データ出力頻度
 !! 初期温度設定
 TUNIF,bsptemp
 !! 境界条件設定
 ESEL,S,TYPE,,2                         !! ベースプレート熱伝達
 SFE,ALL,1,CONV,2,bsptemp               ! 
-SFE,all,1,conv,0,380                   ! 熱伝達係数
+SFE,ALL,1,CONV,0,380                   ! 熱伝達係数
 ESEL,R,CENT,Z,0.0,1.0E-3               !! 雰囲気流体熱伝達
-SFE,all,1,conv,2,ambtemp               ! 雰囲気温度
-SFE,all,1,conv,0,20                    ! 熱伝達係数
+SFE,ALL,1,CONV,2,ambtemp               ! 雰囲気温度
+SFE,ALL,1,CONV,0,20                    ! 熱伝達係数
 ALLSEL
 !! 荷重条件設定
 ! Laser center location
@@ -201,9 +196,7 @@ LOCAL,11,CART,0,0,0                    ! 局所座標系を作成
 !!! Initial dammy step to make uniform temp.
 TIME,dt*0.001
 SOLVE                                      
-*do,i,1,NN*NS                          ! NN*NS回ループする（※）
-!*do,i,1,1                              
-!*DO,i,1,10                             
+*DO,i,1,NN*NS                          ! NN*NS回ループする（※）
   *VREAD,flgstp(1,1),test,stp,,IJK,2,1,1,1
   (F8.0)
   *IF,flgstp(1),LT,0,THEN
@@ -420,25 +413,21 @@ SOLVE
       *GET,vhgen,ELEM,elm_hgen(ii),HGEN
       *GET,vvolu,ELEM,elm_hgen(ii),VOLU
       htsum=htsum+vhgen*vvolu
-      *status,i
-      *status,ii
-      *status,elm_hgen,ii,ii
-      *status,vhgen
-      *status,vvolu
-      *status,htsum
+      !*status,i
+      !*status,ii
+      !*status,elm_hgen,ii,ii
+      !*status,vhgen
+      !*status,vvolu
+      !*status,htsum
     *ENDDO
   *ENDIF
   *IF,i,GT,1,THEN
     *CFOPEN,%FTITLE%,hgn,,APPEND
   *ELSE
     *CFOPEN,%FTITLE%,hgn,,
-    !*VWRITE
-    !('Stp  , Num   , Input, W   ,MP Srf , PW Top, PW Btm,BLK Srf, BLK Btm')
     *VWRITE
     ('Stp  , Num   , Input, W   ,BLK Srf, MP Srf, PW Top, PW Bt1, PW Bt2, PW Bt3, BLK Btm')
   *ENDIF
-  !*VWRITE,%i%,num_hgen,htsum,num_emls,num_eptp,num_epbt,num_ebsf,num_ebtm
-  !(F6.0,F8.0,E13.5,5F8.0)
   *VWRITE,%i%,num_hgen,htsum,num_ebsf,num_emls,num_eptp,num_epbt1,num_epbt2,num_epbt3,num_ebtm
   (F6.0,F8.0,E13.5,7F8.0)
   *CFCLOS
@@ -454,19 +443,18 @@ SOLVE
   MPCHG,2,all
   ALLSEL
 
-  *if,MOD(i,ndbstep),EQ,0,then      !!! .dbファイル保存
+  *IF,MOD(i,ndbstep),EQ,0,then      !!! .dbファイル保存
       SAVE,%FTITLE%-%i%,db,,ALL
-  *endif        
+  *ENDIF        
 *ENDDO
 !*RETURN
 !冷却過程
 ESEL,S,TYPE,,1,1
 bfedele,all,all,all
 ALLSEL
-*DO,i,NN*NS+1,NN*(NS+1)*0.1          ! NN*0.1回ループする
-  TIME,i*dt                          ! 時間を指定 
-
-  solve                              !!! 解析実行
+*DO,i,NN*NS+1,NN*NS+1+NN*0.1       ! NN*0.1回ループする
+  TIME,i*dt                        ! 時間を指定 
+  SOLVE                            !!! 解析実行
 
   NSEL,S,TEMP,,liquidus,,            !!! 粉体溶融要素を粉体凝固部要素に変換
   ESEL,S,TYPE,,1
