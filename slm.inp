@@ -458,7 +458,7 @@ SOLVE
       *VWRITE
       ('Stp  , Num   , Input, W   ,BLK Srf, MP Srf, PW Top, PW Bt1, PW Bt2, PW Bt3, BLK Btm')
     *ENDIF
-    *VWRITE,%i%,num_hgen,htsum,num_ebsf,num_emls,num_eptp,num_epbt1,num_epbt2,num_epbt3,num_ebtm
+    *VWRITE,%i+(j-1)*(NN*ND)%,num_hgen,htsum,num_ebsf,num_emls,num_eptp,num_epbt1,num_epbt2,num_epbt3,num_ebtm
     (F6.0,F8.0,E13.5,7F8.0)
     *CFCLOS
     elm_hgen=
