@@ -224,7 +224,8 @@ LOCAL,11,CART,0,0,0                    ! 局所座標系を作成
 TIME,dt*0.0001
 SOLVE
 *DO,j,1,NS                             ! Loop for lines                 
-  *DO,i,1,NN                             ! Loop for a line scanning
+  *DO,i,1,NN                           ! Loop for a line scanning
+    idx=i+(j-1)*(NN+ND)
     *VREAD,flgstp(1,1),test,stp,,IJK,2,1,1,1
     (F8.0)
     *IF,flgstp(1),LT,0,THEN
@@ -239,14 +240,14 @@ SOLVE
           At %G step, will GO ......Flag %G Step %G
     *ENDIF
 
-    TIME,ITIME(i+(j-1)*(NN+ND))                          ! 時間を指定
+    TIME,ITIME(idx)                    ! 時間を指定
 
     !!! HGEN (熱荷重) 負荷
     !!! レーザー照射による発熱の設定
     ESEL,S,TYPE,,1,1
     BFEDELE,ALL,ALL,ALL
                                         
-    LOCAL,11,CART,xloc(i),yloc(i),0   ! レーザー照射部中心位置に座標系を作成
+    LOCAL,11,CART,xloc(idx),yloc(idx),0   ! レーザー照射部中心位置に座標系を作成
 
     ! 発熱境界条件適用
     ! parameter list
@@ -450,7 +451,7 @@ SOLVE
       *VWRITE
       ('Stp  , Num   , Input, W   ,BLK Srf, MP Srf, PW Top, PW Bt1, PW Bt2, PW Bt3, BLK Btm')
     *ENDIF
-    *VWRITE,%i+(j-1)*(NN*ND)%,num_hgen,htsum,num_ebsf,num_emls,num_eptp,num_epbt1,num_epbt2,num_epbt3,num_ebtm
+    *VWRITE,%idx%,num_hgen,htsum,num_ebsf,num_emls,num_eptp,num_epbt1,num_epbt2,num_epbt3,num_ebtm
     (F6.0,F8.0,E13.5,7F8.0)
     *CFCLOS
     elm_hgen=
@@ -466,7 +467,7 @@ SOLVE
     ALLSEL
 
     *IF,MOD(i,ndbstep),EQ,0,then      !!! .dbファイル保存
-      SAVE,%FTITLE%-%i+(j-1)*(NN*ND)%,db,,ALL
+      SAVE,%FTITLE%-%idx%,db,,ALL
     *ENDIF        
   *ENDDO
   !*RETURN
