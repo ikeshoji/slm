@@ -478,7 +478,7 @@ SOLVE
   ESEL,S,TYPE,,1,1
   bfedele,all,all,all
   ALLSEL
-  *DO,i,ND,1                         ! ND回ループする
+  *DO,i,1,ND,1                       ! ND回ループする
     idx=i+NN+(j-1)*(NN+ND)
     TIME,ITIME(idx)                  ! 時間を指定 
     SOLVE                            !!! 解析実行
