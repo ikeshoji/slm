@@ -157,24 +157,22 @@ ALLSEL
 *DIM,xloc,,(NN+ND)*NS
 *DIM,yloc,,(NN+ND)*NS
 *DO,jj,0,NS-1,2                         ! âùòH
-    *DO,ii,1,NN
-        xloc(ii+(NN+ND)*jj)=ws*jj
-        yloc(ii+(NN+ND)*jj)=(ii-1)*dy
-    *ENDDO
-    *DO,ii,NN+1,NN+ND
-        xloc(ii+(NN+ND)*jj)=ws*jj
-        yloc(ii+(NN+ND)*jj)=(NN-1)*dy
-    *ENDDO
+    idx=(NN+ND)*jj+1
+    *VLEN,NN+ND,1
+    *VFILL,xloc(idx),RAMP,ws*jj,0
+    *VLEN,NN,1
+    *VFILL,yloc(idx),RAMP,0,dy
+    *VLEN,ND,1
+    *VFILL,yloc(idx+NN),RAMP,dy*NN,0
 *ENDDO
 *DO,jj,1,NS-1,2                         ! ïúòH
-    *DO,ii,1,NN
-        xloc(ii+(NN+ND)*jj)=ws*jj
-        yloc(ii+(NN+ND)*jj)=L1-(ii-1)*dy
-    *ENDDO
-    *DO,ii,NN+1,NN+ND
-        xloc(ii+(NN+ND)*jj)=ws*jj
-        yloc(ii+(NN+ND)*jj)=L1-(NN-1)*dy
-    *ENDDO
+    idx=(NN+ND)*jj+1
+    *VLEN,NN+ND,1
+    *VFILL,xloc(idx),RAMP,ws*jj,0
+    *VLEN,NN,1
+    *VFILL,yloc(idx),RAMP,dy*NN,-dy
+    *VLEN,ND,1
+    *VFILL,yloc(idx+NN),RAMP,0,0
 *ENDDO
 !! Laser profile
 *dim,xyl,,4
