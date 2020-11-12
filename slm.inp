@@ -241,7 +241,7 @@ SOLVE
           At %G step, will GO ......Flag %G Step %G
     *ENDIF
 
-    TIME,i*dt                          ! 時間を指定
+    TIME,ITIME(i+(j-1)*(NN+ND))                          ! 時間を指定
 
     !!! HGEN (熱荷重) 負荷
     !!! レーザー照射による発熱の設定
@@ -474,29 +474,26 @@ SOLVE
     ALLSEL
 
     *IF,MOD(i,ndbstep),EQ,0,then      !!! .dbファイル保存
-        SAVE,%FTITLE%-%i%,db,,ALL
+      SAVE,%FTITLE%-%i+(j-1)*(NN*ND)%,db,,ALL
     *ENDIF        
   *ENDDO
-*ENDDO
-!*RETURN
-!冷却過程
-ESEL,S,TYPE,,1,1
-bfedele,all,all,all
-ALLSEL
-*DO,i,NN*NS+1,NN*NS+1+NN*0.1       ! NN*0.1回ループする
-  TIME,i*dt                        ! 時間を指定 
-  SOLVE                            !!! 解析実行
-
-  NSEL,S,TEMP,,liquidus,,            !!! 粉体溶融要素を粉体凝固部要素に変換
-  ESEL,S,TYPE,,1
-  ESEL,R,MAT,,3
-  ESLN,R,1,ALL
-  MPCHG,2,all
+  !*RETURN
+  ! レーザ走査線の間/冷却過程
+  ESEL,S,TYPE,,1,1
+  bfedele,all,all,all
   ALLSEL
+  *DO,i,ND,1                         ! ND回ループする
+    TIME,ITIME(i+NN+(j-1)*(NN+ND))   ! 時間を指定 
+    SOLVE                            !!! 解析実行
 
-  *IF,MOD(i,ndbstep),EQ,0,then             !!! .dbファイル保存
-    SAVE,%FTITLE%-%i%,db,,ALL
-  *ENDIF
+    NSEL,S,TEMP,,liquidus,,          !!! 粉体溶融要素を粉体凝固部要素に変換
+    ESEL,S,TYPE,,1
+    ESEL,R,MAT,,3
+    ESLN,R,1,ALL
+    MPCHG,2,all
+    ALLSEL
+  *ENDDO
+  SAVE,%FTITLE%-%j*(NN*ND)-1%,db,,ALL !!! .dbファイル保存
 *ENDDO
 !ループ終了
 SAVE,%FTITLE%,db,,ALL !.dbファイル保存
