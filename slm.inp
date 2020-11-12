@@ -470,8 +470,8 @@ SOLVE
       SAVE,%FTITLE%-%idx%,db,,ALL
     *ENDIF        
   *ENDDO
-  *IF,MOD(i,ndbstep),NE,0,then        !!! .dbファイル保存
-    SAVE,%FTITLE%-%idx%,db,,ALL
+  *IF,MOD(NN,ndbstep),NE,0,then        !!! .dbファイル保存
+    SAVE,%FTITLE%-%NN+(j-1)*(NN+ND)%,db,,ALL
   *ENDIF        
   !*RETURN
   ! レーザ走査線の間/冷却過程
