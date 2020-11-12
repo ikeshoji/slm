@@ -441,12 +441,6 @@ SOLVE
         *GET,vhgen,ELEM,elm_hgen(ii),HGEN
         *GET,vvolu,ELEM,elm_hgen(ii),VOLU
         htsum=htsum+vhgen*vvolu
-        !*status,i
-        !*status,ii
-        !*status,elm_hgen,ii,ii
-        !*status,vhgen
-        !*status,vvolu
-        !*status,htsum
       *ENDDO
     *ENDIF
     *IF,i,GT,1,THEN
