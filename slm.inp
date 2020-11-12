@@ -493,7 +493,7 @@ SOLVE
     MPCHG,2,all
     ALLSEL
   *ENDDO
-  SAVE,%FTITLE%-%j*(NN*ND)-1%,db,,ALL !!! .db�t�@�C���ۑ�
+  SAVE,%FTITLE%-%j*(NN+ND)-1%,db,,ALL !!! .db�t�@�C���ۑ�
 *ENDDO
 !���[�v�I��
 SAVE,%FTITLE%,db,,ALL !.db�t�@�C���ۑ�
