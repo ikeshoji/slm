@@ -470,13 +470,17 @@ SOLVE
       SAVE,%FTITLE%-%idx%,db,,ALL
     *ENDIF        
   *ENDDO
+  *IF,MOD(i,ndbstep),NE,0,then        !!! .dbファイル保存
+    SAVE,%FTITLE%-%idx%,db,,ALL
+  *ENDIF        
   !*RETURN
   ! レーザ走査線の間/冷却過程
   ESEL,S,TYPE,,1,1
   bfedele,all,all,all
   ALLSEL
   *DO,i,ND,1                         ! ND回ループする
-    TIME,ITIME(i+NN+(j-1)*(NN+ND))   ! 時間を指定 
+    idx=i+NN+(j-1)*(NN+ND)
+    TIME,ITIME(idx)                  ! 時間を指定 
     SOLVE                            !!! 解析実行
 
     NSEL,S,TEMP,,liquidus,,          !!! 粉体溶融要素を粉体凝固部要素に変換
@@ -486,7 +490,7 @@ SOLVE
     MPCHG,2,all
     ALLSEL
   *ENDDO
-  SAVE,%FTITLE%-%j*(NN+ND)-1%,db,,ALL !!! .dbファイル保存
+  SAVE,%FTITLE%-%idx%,db,,ALL        !!! .dbファイル保存
 *ENDDO
 !ループ終了
 SAVE,%FTITLE%,db,,ALL !.dbファイル保存
