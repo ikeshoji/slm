@@ -1,12 +1,13 @@
 /BATCH
 /CLEAR
 !--------------------------------------------------
-! slmcond.inp
-! A template for slm.inp's condition input
+! 20200913a.inp
 ! by Toshi-Taka Ikeshoji
 !
 ! - - - - - - - - - - - - - - - - - - - - - - - - -
-! 
+! ?n?Z?????V?~?????[?V?????????????t?@?C??
+!--------------------------------------------------
+! 2020/09/10 ????
 !--------------------------------------------------
 FINISH
 /CLEAR
@@ -19,11 +20,11 @@ directory = strbuf(1)
 /CWD,%directory%
 /TITLE,%ftitle%
 /FILNAME,%ftitle%
-! 物性値
-MATPROP='in718' !拡張子 .inp
-! レーザープロファイル
-LASERPROFILE='lp102-125' !拡張子 .txt
-! 造形条件
+! ?¨???l
+MATPROP='in718' !?g???q .inp
+! ???[?U?[?v???t?@?C??
+LASERPROFILE='lp102-125' !?g???q .txt
+! ???`????
 laser_d=1.000E-4	! Spot size diameter, m
 laser_w=2.000E+2	! Input laser power, W
 svel=1.200E+0	! Scan velocity, m/s
@@ -32,13 +33,12 @@ pwdthick=5.000E-5	! Podwer layer thickness, m
 ambtemp=5.000E+1	! Ambient temperature, degC
 bsptemp=1.000E+2	! Baseplate temperture, degC
 laser_r=0.5*laser_d ! Spot size radius, m
-!解析設定
-NS=2
-DWELL=50E-3    ! dwelling time between scanning lines, s
-!!! 溶融凝固シミュレーション
-/input,slm,inp
+!????????
+NS=1
+!!! ?n?Z?????V?~?????[?V????
+/input,slm20190903,inp
 !
-! 追加 input ルーチン
+! ???? input ???[?`??
 /input,mltplxyz541,inp! xyz srf
 /input,mltplxyz601,inp! xyz btm
 !
