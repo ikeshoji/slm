@@ -293,7 +293,7 @@ SOLVE
       *IF,num_emls,GT,0,THEN
         CM,emls,ELEM        ! Element melt pool surface
       *ENDIF
-    *ENDIFgit
+    *ENDIF
     ALLSEL
     ! ��n�Z�ő�
     ESEL,S,TYPE,,1
