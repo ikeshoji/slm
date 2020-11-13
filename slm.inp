@@ -36,8 +36,8 @@ h2=pwdthick     ! Podwer layer thickness
 h3=3*pwdthick   ! Fine mesh region in depth
 w1=0.90E-3      ! Fine mesh region in width
 !
-PI=ACOS(-1)    ! ‰~Žü—¦
-!! ‰ðÍE—v‘f•ªŠ„Ý’è
+PI=ACOS(-1)    ! ï¿½~ï¿½ï¿½ï¿½ï¿½
+!! ï¿½ï¿½ÍEï¿½vï¿½fï¿½ï¿½ï¿½ï¿½ï¿½Ý’ï¿½
 nlay=4          ! Division number in layer depth
 es2= h2/nlay    ! Fine mesh size
 es1=150.0E-6    ! Coarse mesh size!
@@ -71,8 +71,8 @@ VSEL,ALL
 VOVLAP,ALL
 !! Input from physical property file
 /INPUT,%MATPROP%,inp
-!!! —v‘f•ªŠ„
-ET,1,70     !—v‘fƒ^ƒCƒv’è‹`
+!!! ï¿½vï¿½fï¿½ï¿½ï¿½ï¿½
+ET,1,70     !ï¿½vï¿½fï¿½^ï¿½Cï¿½vï¿½ï¿½`
 MAT,3
 ! Powder layer fine mesh
 CMSEL,S,vpwdfine
@@ -107,13 +107,13 @@ VMESH,ALL
 ALLSEL
 /VIEW,1,1,1,1  
 ! 
-!•\–ÊŒø‰Ê—v‘fì¬i”M“`’B—pj
+!ï¿½\ï¿½ÊŒï¿½ï¿½Ê—vï¿½fï¿½ì¬ï¿½iï¿½Mï¿½`ï¿½Bï¿½pï¿½j
 ET,2,152
 KEYOPT,2,8,2
 type,2
 NSEL,S,EXT
 ESURF
-!•\–ÊŒø‰Ê—v‘fì¬i”M—¬‘©—pj
+!ï¿½\ï¿½ÊŒï¿½ï¿½Ê—vï¿½fï¿½ì¬ï¿½iï¿½Mï¿½ï¿½ï¿½ï¿½ï¿½pï¿½j
 et,3,152
 keyopt,3,8,1
 type,3
@@ -135,28 +135,28 @@ flgstp(1,1)=0,0
 *VWRITE,flgstp(1)
 (F8.0)
 *CFCLOS
-!ƒ\ƒ‹ƒo[Ý’è
-ANTYPE,TRANS                           ! ‰ß“n“`”M‰ðÍ
+!ï¿½\ï¿½ï¿½ï¿½oï¿½[ï¿½Ý’ï¿½
+ANTYPE,TRANS                           ! ï¿½ß“nï¿½`ï¿½Mï¿½ï¿½ï¿½
 AUTOTS,ON
 LNSRCH,ON
 DELTIM,dt,dt/2000,dt,ON
 NEQIT,200  
-OUTRES,ALL,LAST                        ! Œ‹‰Êƒf[ƒ^o—Í•p“x
-!! ‰Šú‰·“xÝ’è
+OUTRES,ALL,LAST                        ! ï¿½ï¿½ï¿½Êƒfï¿½[ï¿½^ï¿½oï¿½Í•pï¿½x
+!! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½Ý’ï¿½
 TUNIF,bsptemp
-!! ‹«ŠEðŒÝ’è
-ESEL,S,TYPE,,2                         !! ƒx[ƒXƒvƒŒ[ƒg”M“`’B
+!! ï¿½ï¿½ï¿½Eï¿½ï¿½ï¿½ï¿½ï¿½Ý’ï¿½
+ESEL,S,TYPE,,2                         !! ï¿½xï¿½[ï¿½Xï¿½vï¿½ï¿½ï¿½[ï¿½gï¿½Mï¿½`ï¿½B
 SFE,ALL,1,CONV,2,bsptemp               ! 
-SFE,ALL,1,CONV,0,380                   ! ”M“`’BŒW”
-ESEL,R,CENT,Z,0.0,1.0E-3               !! •µˆÍ‹C—¬‘Ì”M“`’B
-SFE,ALL,1,CONV,2,ambtemp               ! •µˆÍ‹C‰·“x
-SFE,ALL,1,CONV,0,20                    ! ”M“`’BŒW”
+SFE,ALL,1,CONV,0,380                   ! ï¿½Mï¿½`ï¿½Bï¿½Wï¿½ï¿½
+ESEL,R,CENT,Z,0.0,1.0E-3               !! ï¿½ï¿½ï¿½Í‹Cï¿½ï¿½ï¿½Ì”Mï¿½`ï¿½B
+SFE,ALL,1,CONV,2,ambtemp               ! ï¿½ï¿½ï¿½Í‹Cï¿½ï¿½ï¿½x
+SFE,ALL,1,CONV,0,20                    ! ï¿½Mï¿½`ï¿½Bï¿½Wï¿½ï¿½
 ALLSEL
-!! ‰×dðŒÝ’è
+!! ï¿½×dï¿½ï¿½ï¿½ï¿½ï¿½Ý’ï¿½
 ! Laser center location
 *DIM,xloc,,(NN+ND)*NS
 *DIM,yloc,,(NN+ND)*NS
-*DO,jj,0,NS-1,2                         ! ‰˜H
+*DO,jj,0,NS-1,2                         ! ï¿½ï¿½ï¿½H
     idx=(NN+ND)*jj+1
     *VLEN,NN+ND,1
     *VFILL,xloc(idx),RAMP,ws*jj,0
@@ -165,7 +165,7 @@ ALLSEL
     *VLEN,ND,1
     *VFILL,yloc(idx+NN),RAMP,dy*NN,0
 *ENDDO
-*DO,jj,1,NS-1,2                         ! •œ˜H
+*DO,jj,1,NS-1,2                         ! ï¿½ï¿½ï¿½H
     idx=(NN+ND)*jj+1
     *VLEN,NN+ND,1
     *VFILL,xloc(idx),RAMP,ws*jj,0
@@ -176,31 +176,31 @@ ALLSEL
 *ENDDO
 !! Laser profile
 *dim,xyl,,4
-! x,yÀ•WÅ‘å’lCÅ¬’lŽæ“¾
+! x,yï¿½ï¿½ï¿½Wï¿½Å‘ï¿½lï¿½Cï¿½Åï¿½ï¿½lï¿½æ“¾
 *VREAD,xyl(1,1),%LASERPROFILE%,txt,,IJK,4,1,,1
 (4F12.8)
 xL1 = xyl(1)
 xL2 = xyl(2)
 yL1 = xyl(3)
 yL2 = xyl(4)
-! ƒe[ƒuƒ‹ƒTƒCƒY‚ÌŽæ“¾
+! ï¿½eï¿½[ï¿½uï¿½ï¿½ï¿½Tï¿½Cï¿½Yï¿½ÌŽæ“¾
 *dim,nnl,,2
 *VREAD,nnl(1,1),%LASERPROFILE%,txt,,IJK,2,1,,2
 (2F3.0)
 NNLX = nnl(1) ! table size in x
 NNLY = nnl(2) ! table size in y
-! ƒe[ƒuƒ‹‚ÌŽæ“¾
-*DIM,edat,ARRAY,NNLX*NNLY  ! ”z—ñ‚Ì’è‹`
+! ï¿½eï¿½[ï¿½uï¿½ï¿½ï¿½ÌŽæ“¾
+*DIM,edat,ARRAY,NNLX*NNLY  ! ï¿½zï¿½ï¿½Ì’ï¿½`
 *DIM,lsrprf,table,NNLX,NNLY,,X,Y,,
 *TREAD,lsrprf(0,0),%LASERPROFILE%,txt,,4
-! ”­”MðŒ—p”z—ñ
-LOCAL,11,CART,0,0,0   ! ƒŒ[ƒU[ÆŽË•”’†SˆÊ’u‚ÉÀ•WŒn‚ðì¬
-*DIM,heatfn_mls,table,NNLX,NNLY,,X,Y,,11 ! —n—Z’r•\–Ê—v‘f‚Ì”­”M
-*DIM,heatfn_ptp,table,NNLX,NNLY,,X,Y,,11 ! •²‘Ì‘wã•”—v‘f‚Ì”­”M
-*DIM,heatfn_pbt,table,NNLX,NNLY,,X,Y,,11 ! •²‘Ì‘w‰º•”—v‘f‚Ì”­”M
-*DIM,heatfn_bsf,table,NNLX,NNLY,,X,Y,,11 ! ŒÅ‘Ìi”ä—n—Zj—v‘f‚Ì”­”M
-*DIM,heatfn_btm,table,NNLX,NNLY,,X,Y,,11 ! •²‘Ì‘w‰º‘¤ŒÅ‘Ì—v‘f‚Ì”­”M
-!! ŽžÝ’è
+! ï¿½ï¿½ï¿½Mï¿½ï¿½ï¿½ï¿½ï¿½pï¿½zï¿½ï¿½
+LOCAL,11,CART,0,0,0   ! ï¿½ï¿½ï¿½[ï¿½Uï¿½[ï¿½ÆŽË•ï¿½ï¿½ï¿½ï¿½Sï¿½Ê’uï¿½Éï¿½ï¿½Wï¿½nï¿½ï¿½ï¿½ì¬
+*DIM,heatfn_mls,table,NNLX,NNLY,,X,Y,,11 ! ï¿½nï¿½Zï¿½rï¿½\ï¿½Ê—vï¿½fï¿½Ì”ï¿½ï¿½M
+*DIM,heatfn_ptp,table,NNLX,NNLY,,X,Y,,11 ! ï¿½ï¿½ï¿½Ì‘wï¿½ã•”ï¿½vï¿½fï¿½Ì”ï¿½ï¿½M
+*DIM,heatfn_pbt,table,NNLX,NNLY,,X,Y,,11 ! ï¿½ï¿½ï¿½Ì‘wï¿½ï¿½ï¿½ï¿½ï¿½vï¿½fï¿½Ì”ï¿½ï¿½M
+*DIM,heatfn_bsf,table,NNLX,NNLY,,X,Y,,11 ! ï¿½Å‘Ìiï¿½ï¿½nï¿½Zï¿½jï¿½vï¿½fï¿½Ì”ï¿½ï¿½M
+*DIM,heatfn_btm,table,NNLX,NNLY,,X,Y,,11 ! ï¿½ï¿½ï¿½Ì‘wï¿½ï¿½ï¿½ï¿½ï¿½Å‘Ì—vï¿½fï¿½Ì”ï¿½ï¿½M
+!! ï¿½ï¿½ï¿½ï¿½ï¿½Ý’ï¿½
 *DIM,ITIME,,(NN+ND)*NS
 *VFILL,ITIME,RAMP,0,0
 *DIM,ITMDW,,ND
@@ -221,42 +221,42 @@ PP=(LOG(DWELL)-LOG(ND1*dt))/(ND2*LOG(dt))
 *ENDDO
 !
 !!!Loop
-SAVE,%FTITLE%-0,db,,ALL                ! .dbƒtƒ@ƒCƒ‹•Û‘¶
-LOCAL,11,CART,0,0,0                    ! ‹ÇŠÀ•WŒn‚ðì¬
+SAVE,%FTITLE%-0,db,,ALL                ! .dbï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Û‘ï¿½
+LOCAL,11,CART,0,0,0                    ! ï¿½Çï¿½ï¿½ï¿½ï¿½Wï¿½nï¿½ï¿½ï¿½ì¬
 !!! Initial dammy step to make uniform temp.
 TIME,dt*0.0001
 SOLVE
 *DO,j,1,NS                             ! Loop for lines                 
   *DO,i,1,NN                           ! Loop for a line scanning
     idx=i+(j-1)*(NN+ND)
-    *VREAD,flgstp(1,1),test,stp,,IJK,2,1,1,1
+    *VREAD,flgstp(1),test,stp,,IJK,2,1,1,1
     (F8.0)
-    *IF,flgstp(1,1),LT,0,THEN
-        *IF,flgstp(1,2),LE,idx,THEN
-            *MSG,INFO,idx,flgstp(1,1),flgstp(1,2)
+    *IF,flgstp(1),LT,0,THEN
+        *IF,flgstp(2),LE,idx,THEN
+            *MSG,INFO,idx,flgstp(1),flgstp(2)
             At %G step, will STOP ......Flag %G Step %G
             FINISH
             *RETURN
         *ENDIF
     *ELSE
-        *MSG,INFO,idx,flgstp(1,1),flgstp(1,2)
+        *MSG,INFO,idx,flgstp(1),flgstp(2)
           At %G step, will GO ......Flag %G Step %G
     *ENDIF
 
-    TIME,ITIME(idx)                    ! ŽžŠÔ‚ðŽw’è
+    TIME,ITIME(idx)                    ! ï¿½ï¿½ï¿½Ô‚ï¿½ï¿½wï¿½ï¿½
 
-    !!! HGEN (”M‰×d) •‰‰×
-    !!! ƒŒ[ƒU[ÆŽË‚É‚æ‚é”­”M‚ÌÝ’è
+    !!! HGEN (ï¿½Mï¿½×d) ï¿½ï¿½ï¿½ï¿½
+    !!! ï¿½ï¿½ï¿½[ï¿½Uï¿½[ï¿½ÆŽË‚É‚ï¿½é”­ï¿½Mï¿½ÌÝ’ï¿½
     ESEL,S,TYPE,,1,1
     BFEDELE,ALL,ALL,ALL
                                         
-    LOCAL,11,CART,xloc(idx),yloc(idx),0   ! ƒŒ[ƒU[ÆŽË•”’†SˆÊ’u‚ÉÀ•WŒn‚ðì¬
+    LOCAL,11,CART,xloc(idx),yloc(idx),0   ! ï¿½ï¿½ï¿½[ï¿½Uï¿½[ï¿½ÆŽË•ï¿½ï¿½ï¿½ï¿½Sï¿½Ê’uï¿½Éï¿½ï¿½Wï¿½nï¿½ï¿½ï¿½ì¬
 
-    ! ”­”M‹«ŠEðŒ“K—p
+    ! ï¿½ï¿½ï¿½Mï¿½ï¿½ï¿½Eï¿½ï¿½ï¿½ï¿½ï¿½Kï¿½p
     ! parameter list
-    ! enum ! ‘I‘ð‚µ‚½—v‘f‚Ì”
-    ! emin ! ‘I‘ð‚µ‚½•¡”—v‘f‚Ì’†‚ÌÅ¬—v‘f”Ô†
-    ! edat ! ‘I‘ð‚µ‚½—v‘f‚Ì”Ô†‚ðŠi”[‚·‚é”z—ñ
+    ! enum ! ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½fï¿½Ìï¿½
+    ! emin ! ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½fï¿½Ì’ï¿½ï¿½ÌÅï¿½ï¿½vï¿½fï¿½Ôï¿½
+    ! edat ! ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½fï¿½Ì”Ôï¿½ï¿½ï¿½ï¿½iï¿½[ï¿½ï¿½ï¿½ï¿½zï¿½ï¿½
     ! Components subset list
     ! nmlt ! Nodes above liquidus
     ! emlt ! Elements melt pool
@@ -274,14 +274,14 @@ SOLVE
     *ENDDO
     num_ebsf = 0 ! Number of elements bulk surface
     num_ebtm = 0 ! Number of elements bulk under powder layer
-    ! —n—Z’r
-    NSEL,S,TEMP,,liquidus,, ! ‰t‘Š“_ˆÈã‚Ìß“_
+    ! ï¿½nï¿½Zï¿½r
+    NSEL,S,TEMP,,liquidus,, ! ï¿½tï¿½ï¿½ï¿½_ï¿½Èï¿½Ìß“_
     *GET,num_nmlt,NODE,,COUNT
     *IF,num_nmlt,GT,0,THEN
       CM,nmlt,NODE          ! Nodes above liquidus
       ESEL,S,TYPE,,1,1
       ESEL,R,MAT,,1,3
-      ESLN,R,1,ALL          ! ‰t‘Š“_ˆÈã‚Ìß“_‚ÅˆÍ‚Ü‚ê‚½—v‘f‚Ì‚Ý‘I‘ð
+      ESLN,R,1,ALL          ! ï¿½tï¿½ï¿½ï¿½_ï¿½Èï¿½Ìß“_ï¿½ÅˆÍ‚Ü‚ê‚½ï¿½vï¿½fï¿½Ì‚Ý‘Iï¿½ï¿½
       *GET,num_emlt,ELEM,,COUNT
       *IF,num_emlt,GT,0,THEN
         CM,emlt,ELEM       ! Element melt pool
@@ -295,79 +295,79 @@ SOLVE
       *ENDIF
     *ENDIFgit
     ALLSEL
-    ! ”ñ—n—ZŒÅ‘Š
+    ! ï¿½ï¿½nï¿½Zï¿½Å‘ï¿½
     ESEL,S,TYPE,,1
     ESEL,R,MAT,,1,2
     ESEL,R,CENT,Z,-es2,0.0
     ESEL,R,CENT,X,xL1,xL2
     ESEL,R,CENT,Y,yL1,yL2
     *IF,num_emlt,GT,0,THEN
-      CMSEL,U,emlt          ! —n—Z—v‘f‚ðœŠO
+      CMSEL,U,emlt          ! ï¿½nï¿½Zï¿½vï¿½fï¿½ï¿½ï¿½ï¿½ï¿½O
     *ENDIF
     *GET,num_ebsf,ELEM,,COUNT
     *IF,num_ebsf,GT,0,THEN
       CM,ebsf,ELEM          ! Element bulk surface
     *ENDIF
     ALLSEL
-    !  •²‘Ì‘wã•”‚Ì•²‘Ì(—n—Z‚µ‚Ä‚¢‚È‚¢•²‘Ì‘wj
+    !  ï¿½ï¿½ï¿½Ì‘wï¿½ã•”ï¿½Ì•ï¿½ï¿½ï¿½(ï¿½nï¿½Zï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½Ì‘wï¿½j
     ESEL,S,TYPE,,1
-    ESEL,R,MAT,,3           ! •²‘Ì‚ð‘I‘ð
-    ESEL,R,CENT,Z,-es2,0.0  ! •²‘Ì‚ÌÅã‘w‚ð‘I‘ð
-    ESEL,R,CENT,X,xL1,xL2   ! ƒŒ[ƒUƒvƒƒtƒ@ƒCƒ‹‚Ì”ÍˆÍ“à‚ð‘I‘ð
+    ESEL,R,MAT,,3           ! ï¿½ï¿½ï¿½Ì‚ï¿½Iï¿½ï¿½
+    ESEL,R,CENT,Z,-es2,0.0  ! ï¿½ï¿½ï¿½Ì‚ÌÅï¿½wï¿½ï¿½Iï¿½ï¿½
+    ESEL,R,CENT,X,xL1,xL2   ! ï¿½ï¿½ï¿½[ï¿½Uï¿½vï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Ì”ÍˆÍ“ï¿½ï¿½ï¿½Iï¿½ï¿½
     ESEL,R,CENT,Y,yL1,yL2
     *IF,num_emlt,GT,0,THEN
-      CMSEL,U,emlt          ! —n—Z—v‘f‚ðœŠO
+      CMSEL,U,emlt          ! ï¿½nï¿½Zï¿½vï¿½fï¿½ï¿½ï¿½ï¿½ï¿½O
     *ENDIF
     *GET,num_eptp,ELEM,,COUNT
     *IF,num_eptp,GT,0,THEN
       CM,eptp,ELEM         ! Element powder top layer
     *ENDIF
-    !  •²‘Ì‘w‰º•”‚Ì•²‘Ìiã•”‚ª—n—Z‚µ‚Ä‚¢‚È‚¢•²‘Ì‘wj
-    num_=num_eptp           ! ‘I‘ð—v‘f”‚ÌŽæ“¾
+    !  ï¿½ï¿½ï¿½Ì‘wï¿½ï¿½ï¿½ï¿½ï¿½Ì•ï¿½ï¿½Ìiï¿½ã•”ï¿½ï¿½ï¿½nï¿½Zï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½Ì‘wï¿½j
+    num_=num_eptp           ! ï¿½Iï¿½ï¿½vï¿½fï¿½ï¿½ï¿½ÌŽæ“¾
     *IF,num_,GT,0,THEN
       CMSEL,S,eptp
-      ! —n—Z‚µ‚Ä‚¢‚È‚¢ã•”•²‘Ì‘w‚Ì—v‘f”Ô†‚ðŠi”[
-      *GET,emin,ELEM,,NUM,MIN ! Å¬—v‘f”Ô†‚ÌŽæ“¾
+      ! ï¿½nï¿½Zï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ã•”ï¿½ï¿½ï¿½Ì‘wï¿½Ì—vï¿½fï¿½Ôï¿½ï¿½ï¿½ï¿½iï¿½[
+      *GET,emin,ELEM,,NUM,MIN ! ï¿½Åï¿½ï¿½vï¿½fï¿½Ôï¿½ï¿½ÌŽæ“¾
       edat(1)=emin
-      *DO,ii,2,num_           ! •²‘Ì‘wã•”‚Ì•²‘Ì‚Ì—v‘f”Ô†Žæ“¾
-        emin=ELNEXT(emin)     ! emin ‚ÌŽŸ‚É‘å‚«‚È—v‘f”Ô†‚Åemin‚ð’u‚«Š·‚¦
-        edat(ii)=emin         ! —v‘f”Ô†‚ðŠi”[
+      *DO,ii,2,num_           ! ï¿½ï¿½ï¿½Ì‘wï¿½ã•”ï¿½Ì•ï¿½ï¿½Ì‚Ì—vï¿½fï¿½Ôï¿½ï¿½æ“¾
+        emin=ELNEXT(emin)     ! emin ï¿½ÌŽï¿½ï¿½É‘å‚«ï¿½È—vï¿½fï¿½Ôï¿½ï¿½ï¿½eminï¿½ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        edat(ii)=emin         ! ï¿½vï¿½fï¿½Ôï¿½ï¿½ï¿½ï¿½iï¿½[
       *ENDDO
       ALLSEL
-      !  z•ûŒü‰º‘¤‚Ì—×Ú—v‘f’Tõ
+      !  zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì—×Ú—vï¿½fï¿½Tï¿½ï¿½
       *DO,kk,1,nlay-1
         *DO,jj,1,num_
           ez = edat(jj)
           *GET,zmin,ELEM,edat(jj),CENT,Z
-          *DO,i i,1,6,1                   ! (’ˆÓ) ˜Z–Ê‘Ì—v‘f‚ð‰¼’è
-            *GET,ei,ELEM,edat(jj),ADJ,ii  ! —×Ú—v‘f”Ô†Žæ“¾
-            *IF,ei,GT,0,THEN              ! —×Ú—v‘f‚ª‘¶Ý‚·‚ê‚Î...
-              *GET,zi,ELEM,ei,CENT,Z      !   ’†S‚šÀ•W‚ðŽæ“¾
-              *IF,zi,LT,zmin,THEN         !   zÀ•W‚ªŒ»Ý‚ÌÅ¬‚ÌzÀ•W
-                zmin = zi                 !   ‚æ‚è¬‚³‚¯‚ê‚ÎŒðŠ·
+          *DO,i i,1,6,1                   ! (ï¿½ï¿½ï¿½ï¿½) ï¿½Zï¿½Ê‘Ì—vï¿½fï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            *GET,ei,ELEM,edat(jj),ADJ,ii  ! ï¿½×Ú—vï¿½fï¿½Ôï¿½ï¿½æ“¾
+            *IF,ei,GT,0,THEN              ! ï¿½×Ú—vï¿½fï¿½ï¿½ï¿½ï¿½ï¿½Ý‚ï¿½ï¿½ï¿½ï¿½...
+              *GET,zi,ELEM,ei,CENT,Z      !   ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½æ“¾
+              *IF,zi,LT,zmin,THEN         !   zï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Ý‚ÌÅï¿½ï¿½ï¿½zï¿½ï¿½ï¿½W
+                zmin = zi                 !   ï¿½ï¿½è¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎŒï¿½ï¿½ï¿½
                 ez = ei
               *ENDIF
             *ENDIF
           *ENDDO
-          edat(jj)=ez                     ! Å¬‚Ì‚šÀ•W‚ðŽ‚Â—v‘f”Ô†‚ðŽæ“¾
+          edat(jj)=ez                     ! ï¿½Åï¿½ï¿½Ì‚ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Â—vï¿½fï¿½Ôï¿½ï¿½ï¿½ï¿½æ“¾
         *ENDDO
-        ESEL,S,ELEM,,edat(1)              ! edat‚ÉŠi”[‚µ‚½—v‘f”Ô†‚Ì—v‘f‚ð‘I‘ð
+        ESEL,S,ELEM,,edat(1)              ! edatï¿½ÉŠiï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½fï¿½Ôï¿½ï¿½Ì—vï¿½fï¿½ï¿½Iï¿½ï¿½
         *DO,ii,2,num_
           ESEL,A,ELEM,,edat(ii)
         *ENDDO
-        *GET,num_epbt%kk%,ELEM,,COUNT         ! ‘I‘ð‚µ‚½—v‘f‚Ì”‚ðŽæ“¾
+        *GET,num_epbt%kk%,ELEM,,COUNT         ! ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½fï¿½Ìï¿½ï¿½ï¿½ï¿½æ“¾
         *IF,num_epbt%kk%,GT,0,THEN
           CM,epbt%kk%,ELEM                    ! Element powder bottom layer
-        *ENDIF                            ! epbt: —v‘fƒOƒ‹[ƒv
+        *ENDIF                            ! epbt: ï¿½vï¿½fï¿½Oï¿½ï¿½ï¿½[ï¿½v
       *ENDDO
     *ENDIF
-    !  •²‘Ì‘w‰º•”‚ÌŒÅ‘Š
-    *DO,jj,1,num_                     ! ‚š•ûŒü‰º‘¤‚Ì—×Ú—v‘f’Tõ
+    !  ï¿½ï¿½ï¿½Ì‘wï¿½ï¿½ï¿½ï¿½ï¿½ÌŒÅ‘ï¿½
+    *DO,jj,1,num_                     ! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì—×Ú—vï¿½fï¿½Tï¿½ï¿½
       ez = edat(jj)
       *GET,zmin,ELEM,edat(jj),CENT,Z
       *DO,ii,1,6,1
         *GET,ei,ELEM,edat(jj),ADJ,ii
-        *IF,ei,GT,0,THEN              ! —×Ú—v‘f‚ª‘¶Ý‚·‚ê‚Î...
+        *IF,ei,GT,0,THEN              ! ï¿½×Ú—vï¿½fï¿½ï¿½ï¿½ï¿½ï¿½Ý‚ï¿½ï¿½ï¿½ï¿½...
           *GET,zi,ELEM,ei,CENT,Z
           *IF,zi,LT,zmin,THEN
             zmin = zi
@@ -386,11 +386,11 @@ SOLVE
     ALLSEL
 
     *IF,i*dt,LT,i*NN/2,THEN
-      coefl = laser_w/es2**3 ! (ƒŒ[ƒUo—Í)/(×•ªŠ„—v‘f‘ÌÏ)
+      coefl = laser_w/es2**3 ! (ï¿½ï¿½ï¿½[ï¿½Uï¿½oï¿½ï¿½)/(ï¿½×•ï¿½ï¿½ï¿½ï¿½vï¿½fï¿½Ìï¿½)
     *ELSEIF,i*dt,LT,i*dt*NN/2+1.0E-6,THEN
       coefl = 0.0 ! 
     *ELSE
-      coefl = 1.5*laser_w/es2**3 ! (ƒŒ[ƒUo—Í)/(×•ªŠ„—v‘f‘ÌÏ)
+      coefl = 1.5*laser_w/es2**3 ! (ï¿½ï¿½ï¿½[ï¿½Uï¿½oï¿½ï¿½)/(ï¿½×•ï¿½ï¿½ï¿½ï¿½vï¿½fï¿½Ìï¿½)
     *ENDIF
     *TOPER,heatfn_mls,lsrprf,ADD,lsrprf,ems_mls*coefl,0,0
     *TOPER,heatfn_ptp,lsrprf,ADD,lsrprf,ems_ptp*coefl,0,0
@@ -400,25 +400,25 @@ SOLVE
     
     *IF,num_emls,GT,0,THEN
       CMSEL,S,emls
-      BFE,all,HGEN,1,%heatfn_mls% ! —n—Z’r•\–Ê—v‘f‚Ì”­”M
+      BFE,all,HGEN,1,%heatfn_mls% ! ï¿½nï¿½Zï¿½rï¿½\ï¿½Ê—vï¿½fï¿½Ì”ï¿½ï¿½M
     *ENDIF
     *IF,num_eptp,GT,0,THEN
       CMSEL,S,eptp
-      BFE,all,HGEN,1,%heatfn_ptp% ! •²‘Ì‘wã•”—v‘f‚Ì”­”M
+      BFE,all,HGEN,1,%heatfn_ptp% ! ï¿½ï¿½ï¿½Ì‘wï¿½ã•”ï¿½vï¿½fï¿½Ì”ï¿½ï¿½M
     *ENDIF
     *DO,kk,1,nlay-1,
       *IF,num_epbt,GT,0,THEN
         CMSEL,S,epbt%kk%
-        BFE,all,HGEN,1,%heatfn_pbt% ! •²‘Ì‘w‰º•”—v‘f‚Ì”­”M
+        BFE,all,HGEN,1,%heatfn_pbt% ! ï¿½ï¿½ï¿½Ì‘wï¿½ï¿½ï¿½ï¿½ï¿½vï¿½fï¿½Ì”ï¿½ï¿½M
       *ENDIF
     *ENDDO
     *IF,num_ebsf,GT,0,THEN
       CMSEL,S,ebsf
-      BFE,all,HGEN,1,%heatfn_bsf% ! ŒÅ‘Ìi”ä—n—Zj—v‘f‚Ì”­”M
+      BFE,all,HGEN,1,%heatfn_bsf% ! ï¿½Å‘Ìiï¿½ï¿½nï¿½Zï¿½jï¿½vï¿½fï¿½Ì”ï¿½ï¿½M
     *ENDIF
     *IF,num_ebtm,GT,0,THEN
       CMSEL,S,ebtm
-      BFE,all,HGEN,1,%heatfn_btm% ! •²‘Ì‘w‰º‘¤ŒÅ‘Ì—v‘f‚Ì”­”M
+      BFE,all,HGEN,1,%heatfn_btm% ! ï¿½ï¿½ï¿½Ì‘wï¿½ï¿½ï¿½ï¿½ï¿½Å‘Ì—vï¿½fï¿½Ì”ï¿½ï¿½M
     *ENDIF
     CMDELE,nmlt
     CMDELE,emlt
@@ -430,10 +430,10 @@ SOLVE
     CMDELE,ebsf
     CMDELE,ebtm
     ALLSEL
-    !! ‰ðÍŽÀs
+    !! ï¿½ï¿½ÍŽï¿½ï¿½s
     SOLVE						
 
-    !!! HGEN‹«ŠEðŒo—Í
+    !!! HGENï¿½ï¿½ï¿½Eï¿½ï¿½ï¿½ï¿½ï¿½oï¿½ï¿½
     htsum=0.0
     ALLSEL
     ESEL,S,BFE,HGEN,0.0,1e20
@@ -461,7 +461,7 @@ SOLVE
     *SET,elm_hgen,
     ALLSEL
     
-    !!! •²‘Ì—n—Z—v‘f‚ð•²‘Ì‹ÃŒÅ•”—v‘f‚É•ÏŠ· 
+    !!! ï¿½ï¿½ï¿½Ì—nï¿½Zï¿½vï¿½fï¿½ð•²‘Ì‹ÃŒÅ•ï¿½ï¿½vï¿½fï¿½É•ÏŠï¿½ 
     NSEL,S,TEMP,,liquidus,,
     ESEL,S,TYPE,,1
     ESEL,R,MAT,,3
@@ -469,34 +469,34 @@ SOLVE
     MPCHG,2,all
     ALLSEL
 
-    *IF,MOD(i,ndbstep),EQ,0,then      !!! .dbƒtƒ@ƒCƒ‹•Û‘¶
+    *IF,MOD(i,ndbstep),EQ,0,then      !!! .dbï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Û‘ï¿½
       SAVE,%FTITLE%-%idx%,db,,ALL
     *ENDIF        
   *ENDDO
-  *IF,MOD(NN,ndbstep),NE,0,then        !!! .dbƒtƒ@ƒCƒ‹•Û‘¶
+  *IF,MOD(NN,ndbstep),NE,0,then        !!! .dbï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Û‘ï¿½
     SAVE,%FTITLE%-%NN+(j-1)*(NN+ND)%,db,,ALL
   *ENDIF        
   !*RETURN
-  ! ƒŒ[ƒU‘–¸ü‚ÌŠÔ/—â‹p‰ß’ö
+  ! ï¿½ï¿½ï¿½[ï¿½Uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÌŠï¿½/ï¿½ï¿½pï¿½ß’ï¿½
   ESEL,S,TYPE,,1,1
   bfedele,all,all,all
   ALLSEL
-  *DO,i,1,ND,1                       ! ND‰ñƒ‹[ƒv‚·‚é
+  *DO,i,1,ND,1                       ! NDï¿½ñƒ‹[ï¿½vï¿½ï¿½ï¿½ï¿½
     idx=i+NN+(j-1)*(NN+ND)
-    TIME,ITIME(idx)                  ! ŽžŠÔ‚ðŽw’è 
-    SOLVE                            !!! ‰ðÍŽÀs
+    TIME,ITIME(idx)                  ! ï¿½ï¿½ï¿½Ô‚ï¿½ï¿½wï¿½ï¿½ 
+    SOLVE                            !!! ï¿½ï¿½ÍŽï¿½ï¿½s
 
-    NSEL,S,TEMP,,liquidus,,          !!! •²‘Ì—n—Z—v‘f‚ð•²‘Ì‹ÃŒÅ•”—v‘f‚É•ÏŠ·
+    NSEL,S,TEMP,,liquidus,,          !!! ï¿½ï¿½ï¿½Ì—nï¿½Zï¿½vï¿½fï¿½ð•²‘Ì‹ÃŒÅ•ï¿½ï¿½vï¿½fï¿½É•ÏŠï¿½
     ESEL,S,TYPE,,1
     ESEL,R,MAT,,3
     ESLN,R,1,ALL
     MPCHG,2,all
     ALLSEL
   *ENDDO
-  SAVE,%FTITLE%-%idx%,db,,ALL        !!! .dbƒtƒ@ƒCƒ‹•Û‘¶
+  SAVE,%FTITLE%-%idx%,db,,ALL        !!! .dbï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Û‘ï¿½
 *ENDDO
-!ƒ‹[ƒvI—¹
-SAVE,%FTITLE%,db,,ALL !.dbƒtƒ@ƒCƒ‹•Û‘¶
+!ï¿½ï¿½ï¿½[ï¿½vï¿½Iï¿½ï¿½
+SAVE,%FTITLE%,db,,ALL !.dbï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Û‘ï¿½
 FINISH
 !--------------------------------------------------
 !!!  Terminal End
