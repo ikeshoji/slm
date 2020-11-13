@@ -231,8 +231,8 @@ SOLVE
     idx=i+(j-1)*(NN+ND)
     *VREAD,flgstp(1,1),test,stp,,IJK,2,1,1,1
     (F8.0)
-    *IF,flgstp(1),LT,0,THEN
-        *IF,flgstp(2),LE,i,THEN
+    *IF,flgstp(1,1),LT,0,THEN
+        *IF,flgstp(1,2),LE,i,THEN
             *MSG,INFO,i,flgstp(1,1),flgstp(1,2)
             At %G step, will STOP ......Flag %G Step %G
             FINISH
