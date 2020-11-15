@@ -275,7 +275,7 @@ SOLVE
     num_ebsf = 0 ! Number of elements bulk surface
     num_ebtm = 0 ! Number of elements bulk under powder layer
     ! �n�Z�r
-    NSEL,S,TEMP,,liquidus,, ! �t���_�ȏ�̐ߓ_
+    NSEL,S,TEMP,,liquidus,, ! Select elements with temperature above liquidus
     *GET,num_nmlt,NODE,,COUNT
     *IF,num_nmlt,GT,0,THEN
       CM,nmlt,NODE          ! Nodes above liquidus
@@ -460,44 +460,39 @@ SOLVE
     elm_hgen=
     *SET,elm_hgen,
     ALLSEL
-    
-    !!! ���̗n�Z�v�f�𕲑̋Ìŕ��v�f�ɕϊ� 
-    NSEL,S,TEMP,,liquidus,,
+
+    NSEL,S,TEMP,,liquidus,,         !!! Elements' phase transformation
     ESEL,S,TYPE,,1
     ESEL,R,MAT,,3
     ESLN,R,1,ALL
     MPCHG,2,all
     ALLSEL
 
-    *IF,MOD(i,ndbstep),EQ,0,then      !!! .db�t�@�C���ۑ�
+    *IF,MOD(i,ndbstep),EQ,0,then
       SAVE,%FTITLE%-%idx%,db,,ALL
     *ENDIF        
-  *ENDDO
-  *IF,MOD(NN,ndbstep),NE,0,then        !!! .db�t�@�C���ۑ�
+  *ENDDO  ! END of i loop
+  *IF,MOD(NN,ndbstep),NE,0,then
     SAVE,%FTITLE%-%NN+(j-1)*(NN+ND)%,db,,ALL
   *ENDIF        
-  !*RETURN
-  ! ���[�U�������̊�/��p�ߒ�
+  ! Dwelling between scanning lines or the last cooling
   ESEL,S,TYPE,,1,1
   bfedele,all,all,all
   ALLSEL
-  *DO,i,1,ND,1                       ! ND�񃋁[�v����
+  *DO,i,1,ND,1                       ! ND: Dwelling steps
     idx=i+NN+(j-1)*(NN+ND)
-    TIME,ITIME(idx)                  ! ���Ԃ��w�� 
-    SOLVE                            !!! ��͎��s
-
-    NSEL,S,TEMP,,liquidus,,          !!! ���̗n�Z�v�f�𕲑̋Ìŕ��v�f�ɕϊ�
+    TIME,ITIME(idx) 
+    SOLVE
+    NSEL,S,TEMP,,liquidus,,          !!! Elements' phase transformation
     ESEL,S,TYPE,,1
     ESEL,R,MAT,,3
     ESLN,R,1,ALL
     MPCHG,2,all
     ALLSEL
-  *ENDDO
-  SAVE,%FTITLE%-%idx%,db,,ALL        !!! .db�t�@�C���ۑ�
-*ENDDO
-!���[�v�I��
-SAVE,%FTITLE%,db,,ALL !.db�t�@�C���ۑ�
-FINISH
+  *ENDDO  ! END of i loop
+  SAVE,%FTITLE%-%idx%,db,,ALL
+*ENDDO  ! END of j loop
+SAVE,%FTITLE%,db,,ALL
 !--------------------------------------------------
 !!!  Terminal End
 !--------------------------------------------------
