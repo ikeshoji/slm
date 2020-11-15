@@ -229,20 +229,20 @@ SOLVE
 *DO,j,1,NS                             ! Loop for lines                 
   *DO,i,1,NN                           ! Loop for a line scanning
     idx=i+(j-1)*(NN+ND)
+    ! Check stop or go
     *VREAD,flgstp(1),test,stp,,IJK,2,1,1,1
     (F8.0)
-    *IF,flgstp(1),LT,0,THEN
+    *IF,flgstp(1),GT,0,THEN
         *IF,flgstp(2),LE,idx,THEN
             *MSG,INFO,idx,flgstp(1),flgstp(2)
             At %G step, will STOP ......Flag %G Step %G
             FINISH
             *RETURN
         *ENDIF
-    *ELSE
-        *MSG,INFO,idx,flgstp(1),flgstp(2)
-          At %G step, will GO ......Flag %G Step %G
     *ENDIF
-
+    *MSG,INFO,idx,flgstp(1),flgstp(2)
+    At %G step, will GO ......Flag %G Step %G
+ 
     TIME,ITIME(idx)                    ! ���Ԃ��w��
 
     !!! HGEN (�M�׏d) ����
