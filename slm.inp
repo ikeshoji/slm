@@ -36,8 +36,8 @@ h2=pwdthick     ! Podwer layer thickness
 h3=3*pwdthick   ! Fine mesh region in depth
 w1=0.90E-3      ! Fine mesh region in width
 !
-PI=ACOS(-1)    ! �~����
-!! ��́E�v�f�����ݒ�
+PI=ACOS(-1)     ! PI
+!! Parameters for calculation
 nlay=4          ! Division number in layer depth
 es2= h2/nlay    ! Fine mesh size
 es1=150.0E-6    ! Coarse mesh size!
@@ -142,9 +142,9 @@ LNSRCH,ON
 DELTIM,dt,dt/2000,dt,ON
 NEQIT,200  
 OUTRES,ALL,LAST                        ! ���ʃf�[�^�o�͕p�x
-!! �������x�ݒ�
+!! Baseplate templature
 TUNIF,bsptemp
-!! ���E�����ݒ�
+!! Heat transfer at surface
 ESEL,S,TYPE,,2                         !! �x�[�X�v���[�g�M�`�B
 SFE,ALL,1,CONV,2,bsptemp               ! 
 SFE,ALL,1,CONV,0,380                   ! �M�`�B�W��
@@ -156,7 +156,7 @@ ALLSEL
 ! Laser center location
 *DIM,xloc,,(NN+ND)*NS
 *DIM,yloc,,(NN+ND)*NS
-*DO,jj,0,NS-1,2                         ! ���H
+*DO,jj,0,NS-1,2                         ! Outgoing going scan
     idx=(NN+ND)*jj+1
     *VLEN,NN+ND,1
     *VFILL,xloc(idx),RAMP,ws*jj,0
@@ -165,7 +165,7 @@ ALLSEL
     *VLEN,ND,1
     *VFILL,yloc(idx+NN),RAMP,dy*NN,0
 *ENDDO
-*DO,jj,1,NS-1,2                         ! ���H
+*DO,jj,1,NS-1,2                         ! Return going scan
     idx=(NN+ND)*jj+1
     *VLEN,NN+ND,1
     *VFILL,xloc(idx),RAMP,ws*jj,0
@@ -194,13 +194,13 @@ NNLY = nnl(2) ! table size in y
 *DIM,lsrprf,table,NNLX,NNLY,,X,Y,,
 *TREAD,lsrprf(0,0),%LASERPROFILE%,txt,,4
 ! ���M�����p�z��
-LOCAL,11,CART,0,0,0   ! ���[�U�[�Ǝ˕����S�ʒu�ɍ��W�n���쐬
-*DIM,heatfn_mls,table,NNLX,NNLY,,X,Y,,11 ! �n�Z�r�\�ʗv�f�̔��M
-*DIM,heatfn_ptp,table,NNLX,NNLY,,X,Y,,11 ! ���̑w�㕔�v�f�̔��M
-*DIM,heatfn_pbt,table,NNLX,NNLY,,X,Y,,11 ! ���̑w�����v�f�̔��M
-*DIM,heatfn_bsf,table,NNLX,NNLY,,X,Y,,11 ! �ő́i��n�Z�j�v�f�̔��M
-*DIM,heatfn_btm,table,NNLX,NNLY,,X,Y,,11 ! ���̑w�����ő̗v�f�̔��M
-!! �����ݒ�
+LOCAL,11,CART,0,0,0   ! Local coordinate
+*DIM,heatfn_mls,table,NNLX,NNLY,,X,Y,,11 ! Melt surface
+*DIM,heatfn_ptp,table,NNLX,NNLY,,X,Y,,11 ! powder layer top surface
+*DIM,heatfn_pbt,table,NNLX,NNLY,,X,Y,,11 ! powder layer bottom part
+*DIM,heatfn_bsf,table,NNLX,NNLY,,X,Y,,11 ! bulk surface
+*DIM,heatfn_btm,table,NNLX,NNLY,,X,Y,,11 ! bulk surface at powder layer bottom
+!! Time table
 *DIM,ITIME,,(NN+ND)*NS
 *VFILL,ITIME,RAMP,0,0
 *DIM,ITMDW,,ND
@@ -220,7 +220,7 @@ PP=(LOG(DWELL)-LOG(ND1*dt))/(ND2*LOG(dt))
   *VOPER,ITIME(jj*(NN+ND)+NN+1),ITIME(jj*(NN+ND)+NN+1),ADD,ITMDW(1)
 *ENDDO
 !
-!!!Loop
+!!! Loop
 SAVE,%FTITLE%-0,db,,ALL                ! .db�t�@�C���ۑ�
 LOCAL,11,CART,0,0,0                    ! �Ǐ����W�n���쐬
 !!! Initial dammy step to make uniform temp.
