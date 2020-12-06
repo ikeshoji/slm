@@ -1,0 +1,498 @@
+!--------------------------------------------------
+! slm
+! Transient heat transfer analysis with melting/
+! solidification phase transform and powder/bulk 
+! transform during the laser scanning of 
+! PBF-LB(Laser Beam Powder Bed Fusion)
+! by Toshi-Taka Ikeshoji 
+!--------------------------------------------------
+/UIS,MSGPOP,3
+!
+/NOPR   
+KEYW,PR_SET,1   
+KEYW,PR_STRUC,0 
+KEYW,PR_THERM,1 
+KEYW,PR_FLUID,0 
+KEYW,PR_ELMAG,0 
+KEYW,MAGNOD,0   
+KEYW,MAGEDG,0   
+KEYW,MAGHFE,0   
+KEYW,MAGELC,0   
+KEYW,PR_MULTI,0 
+/GO 
+!
+/PREP7  
+ndbstep = 25
+!--------------------------------------------------
+!!! Calculation region
+!--------------------------------------------------
+!! Dimensions unit <m> (meter not millimeter!)
+w2=0.50E-3      ! Margin in width direction
+ws=hatch        ! Scan pitch
+L1=scan_len     ! Line to scan
+L2=w2           ! Margin in scanning direction
+h1=6*pwdthick   ! Region depth
+h2=pwdthick     ! Podwer layer thickness
+h3=3*pwdthick   ! Fine mesh region in depth
+w1=0.90E-3      ! Fine mesh region in width
+!
+PI=ACOS(-1)     ! PI
+!! Parameters for calculation
+nlay=4          ! Division number in layer depth
+es2= h2/nlay    ! Fine mesh size
+es1=150.0E-6    ! Coarse mesh size!
+NN=L1/es2       ! Step per 1 scan line
+dy=L1/NN        ! A step distance of laser scanning
+dt=L1/svel/NN   ! Time duration for a step distance
+ND=20           ! Step for dwell time
+! Keypoints
+K,21,-w2-laser_r*4,           -L2-laser_r*4,    0.0
+K,22,-w2-laser_r*4,            L2+laser_r*4+L1, 0.0
+K,23, w2+laser_r*4+ws*(NS-1),  L2+laser_r*4+L1, 0.0
+K,24, w2+laser_r*4+ws*(NS-1), -L2-laser_r*4,    0.0
+K,25,-laser_r*4,           -laser_r*4,    0.0
+K,26,-laser_r*4,            laser_r*4+L1, 0.0
+K,27, laser_r*4+ws*(NS-1),  laser_r*4+L1, 0.0
+K,28, laser_r*4+ws*(NS-1), -laser_r*4,    0.0
+KGEN,2,21,28,1,0.0,0.0,-h2,20,0,0  ! 41-48
+KGEN,2,21,28,1,0.0,0.0,-h3,40,0,0  ! 61-68
+KGEN,2,21,24,1,0.0,0.0,-h1,60,0,0  ! 81-88 
+! Volumes
+V,25,26,27,28,45,46,47,48   ! Powder layer fine mesh
+VSEL,ALL
+CM,vpwdfine,VOLU
+V,45,46,47,48,65,66,67,68   ! Substrate fine mesh
+VSEL,ALL
+CMSEL,U,vpwdfine
+CM,vsubfine,VOLU
+V,21,22,23,24,41,42,43,44   ! Powder layer outer region 
+V,41,42,43,44,81,82,83,84   ! Substrate outer region
+VSEL,ALL
+VOVLAP,ALL
+!! Input from physical property file
+/INPUT,%MATPROP%,inp
+!!! �v�f����
+ET,1,70     !�v�f�^�C�v��`
+MAT,3
+! Powder layer fine mesh
+CMSEL,S,vpwdfine
+ESIZE,es2
+MSHAPE,0,3D ! 3D hexahedral-shaped elements
+MSHKEY,1    ! Mapped mesh
+VMESH,ALL
+ALLSEL
+! Powder layer outer region 
+VSEL,S,LOC,Z,-h2,0.0
+CMSEL,U,vpwdfine
+ESIZE,es1
+MSHAPE,1,3D ! 3D tetrahedral-shaped elements
+MSHKEY,0    ! Free mesh
+VMESH,ALL
+ALLSEL
+! Substrate fine mesh
+MAT,1
+CMSEL,S,vsubfine
+ESIZE,es2
+MSHAPE,0,3D
+MSHKEY,1
+VMESH,ALL
+ALLSEL
+! Substrate outer region
+VSEL,S,LOC,Z,-h1,-h2
+CMSEL,U,vsubfine
+ESIZE,es1
+MSHAPE,1,3D
+MSHKEY,0
+VMESH,ALL
+ALLSEL
+/VIEW,1,1,1,1  
+! 
+!�\�ʌ��ʗv�f�쐬�i�M�`�B�p�j
+ET,2,152
+KEYOPT,2,8,2
+type,2
+NSEL,S,EXT
+ESURF
+!�\�ʌ��ʗv�f�쐬�i�M�����p�j
+et,3,152
+keyopt,3,8,1
+type,3
+nsel,r,loc,z,0
+esurf
+allsel
+!
+EPLOT
+FINISH
+!--------------------------------------------------
+!!! Analysing
+!--------------------------------------------------
+/SOLU
+*DIM,flgstp,ARRAY,2
+flgstp(1,1)=0,0
+*CFOPEN,test,stp
+*VWRITE
+('stp/go  ,@step   , 1: stop, 0:go @step number')
+*VWRITE,flgstp(1)
+(F8.0)
+*CFCLOS
+!�\���o�[�ݒ�
+ANTYPE,TRANS                           ! �ߓn�`�M���
+AUTOTS,ON
+LNSRCH,ON
+DELTIM,dt,dt/2000,dt,ON
+NEQIT,200  
+OUTRES,ALL,LAST                        ! ���ʃf�[�^�o�͕p�x
+!! Baseplate templature
+TUNIF,bsptemp
+!! Heat transfer at surface
+ESEL,S,TYPE,,2                         !! �x�[�X�v���[�g�M�`�B
+SFE,ALL,1,CONV,2,bsptemp               ! 
+SFE,ALL,1,CONV,0,380                   ! �M�`�B�W��
+ESEL,R,CENT,Z,0.0,1.0E-3               !! ���͋C���̔M�`�B
+SFE,ALL,1,CONV,2,ambtemp               ! ���͋C���x
+SFE,ALL,1,CONV,0,20                    ! �M�`�B�W��
+ALLSEL
+!! �׏d�����ݒ�
+! Laser center location
+*DIM,xloc,,(NN+ND)*NS
+*DIM,yloc,,(NN+ND)*NS
+*DO,jj,0,NS-1,2                         ! Outgoing going scan
+    idx=(NN+ND)*jj+1
+    *VLEN,NN+ND,1
+    *VFILL,xloc(idx),RAMP,ws*jj,0
+    *VLEN,NN,1
+    *VFILL,yloc(idx),RAMP,0,dy
+    *VLEN,ND,1
+    *VFILL,yloc(idx+NN),RAMP,dy*NN,0
+*ENDDO
+*DO,jj,1,NS-1,2                         ! Return going scan
+    idx=(NN+ND)*jj+1
+    *VLEN,NN+ND,1
+    *VFILL,xloc(idx),RAMP,ws*jj,0
+    *VLEN,NN,1
+    *VFILL,yloc(idx),RAMP,dy*NN,-dy
+    *VLEN,ND,1
+    *VFILL,yloc(idx+NN),RAMP,0,0
+*ENDDO
+!! Laser profile
+*dim,xyl,,4
+! x,y���W�ő�l�C�ŏ��l�擾
+*VREAD,xyl(1,1),%LASERPROFILE%,txt,,IJK,4,1,,1
+(4F12.8)
+xL1 = xyl(1)
+xL2 = xyl(2)
+yL1 = xyl(3)
+yL2 = xyl(4)
+! �e�[�u���T�C�Y�̎擾
+*dim,nnl,,2
+*VREAD,nnl(1,1),%LASERPROFILE%,txt,,IJK,2,1,,2
+(2F3.0)
+NNLX = nnl(1) ! table size in x
+NNLY = nnl(2) ! table size in y
+! �e�[�u���̎擾
+*DIM,edat,ARRAY,NNLX*NNLY  ! �z��̒�`
+*DIM,lsrprf,table,NNLX,NNLY,,X,Y,,
+*TREAD,lsrprf(0,0),%LASERPROFILE%,txt,,4
+! ���M�����p�z��
+LOCAL,11,CART,0,0,0   ! Local coordinate
+*DIM,heatfn_mls,table,NNLX,NNLY,,X,Y,,11 ! Melt surface
+*DIM,heatfn_ptp,table,NNLX,NNLY,,X,Y,,11 ! powder layer top surface
+*DIM,heatfn_pbt,table,NNLX,NNLY,,X,Y,,11 ! powder layer bottom part
+*DIM,heatfn_bsf,table,NNLX,NNLY,,X,Y,,11 ! bulk surface
+*DIM,heatfn_btm,table,NNLX,NNLY,,X,Y,,11 ! bulk surface at powder layer bottom
+!! Time table
+*DIM,ITIME,,(NN+ND)*NS
+*VFILL,ITIME,RAMP,0,0
+*DIM,ITMDW,,ND
+ND1=ND/2
+ND2=ND-ND1
+PP=(LOG(DWELL)-LOG(ND1*dt))/(ND2*LOG(dt))
+*VLEN,ND1,1
+*VFILL,ITMDW(1),RAMP,dt,dt
+*VLEN,ND2,1
+*VFILL,ITMDW(ND1+1),RAMP,LOG(ND1*dt)+PP*LOG(dt),PP*LOG(dt)
+*VFUN,ITMDW(ND1+1),EXP,ITMDW(ND1+1)
+*DO,jj,0,NS-1,1
+  *VLEN,NN,1
+  *VFILL,ITIME(jj*(NN+ND)+1),RAMP,jj*(NN*dt+DWELL)+dt,dt
+  *VLEN,ND,1
+  *VFILL,ITIME(jj*(NN+ND)+NN+1),RAMP,ITIME(jj*(NN+ND)+NN),0
+  *VOPER,ITIME(jj*(NN+ND)+NN+1),ITIME(jj*(NN+ND)+NN+1),ADD,ITMDW(1)
+*ENDDO
+!
+!!! Loop
+SAVE,%FTITLE%-0,db,,ALL                ! .db�t�@�C���ۑ�
+LOCAL,11,CART,0,0,0                    ! �Ǐ����W�n���쐬
+!!! Initial dammy step to make uniform temp.
+TIME,dt*0.0001
+SOLVE
+*DO,j,1,NS                             ! Loop for lines                 
+  *DO,i,1,NN                           ! Loop for a line scanning
+    idx=i+(j-1)*(NN+ND)
+    ! Check stop or go
+    *VREAD,flgstp(1),test,stp,,IJK,2,1,1,1
+    (F8.0)
+    *IF,flgstp(1),GT,0,THEN
+        *IF,flgstp(2),LE,idx,THEN
+            *MSG,INFO,idx,flgstp(1),flgstp(2)
+            At %G step, will STOP ......Flag %G Step %G
+            FINISH
+            *RETURN
+        *ENDIF
+    *ENDIF
+    *MSG,INFO,idx,flgstp(1),flgstp(2)
+    At %G step, will GO ......Flag %G Step %G
+ 
+    TIME,ITIME(idx)                    ! ���Ԃ��w��
+
+    !!! HGEN (�M�׏d) ����
+    !!! ���[�U�[�Ǝ˂ɂ�锭�M�̐ݒ�
+    ESEL,S,TYPE,,1,1
+    BFEDELE,ALL,ALL,ALL
+                                        
+    LOCAL,11,CART,xloc(idx),yloc(idx),0   ! ���[�U�[�Ǝ˕����S�ʒu�ɍ��W�n���쐬
+
+    ! ���M���E�����K�p
+    ! parameter list
+    ! enum ! �I�������v�f�̐�
+    ! emin ! �I�����������v�f�̒��̍ŏ��v�f�ԍ�
+    ! edat ! �I�������v�f�̔ԍ����i�[����z��
+    ! Components subset list
+    ! nmlt ! Nodes above liquidus
+    ! emlt ! Elements melt pool
+    ! emls ! Elements melt pool surface
+    ! eptp ! Elements powder layer at top
+    ! epbt ! Elements powder layer at bottom
+    ! ebsf ! Elements bulk surface
+    ! ebtm ! Elements bulk under powder layer
+    num_nmlt = 0 ! Numbee of nodes w/ temp. > liquidus
+    num_emlt = 0 ! Number of elements melt pool
+    num_emls = 0 ! Number of elements melt pool surface
+    num_eptp = 0 ! Number of elements powder layer at top
+    *DO,kk,1,nlay
+      num_epbt%kk% = 0 ! Number of elements powder layer at kk-th layer from top
+    *ENDDO
+    num_ebsf = 0 ! Number of elements bulk surface
+    num_ebtm = 0 ! Number of elements bulk under powder layer
+    ! �n�Z�r
+    NSEL,S,TEMP,,liquidus,, ! Select elements with temperature above liquidus
+    *GET,num_nmlt,NODE,,COUNT
+    *IF,num_nmlt,GT,0,THEN
+      CM,nmlt,NODE          ! Nodes above liquidus
+      ESEL,S,TYPE,,1,1
+      ESEL,R,MAT,,1,3
+      ESLN,R,1,ALL          ! �t���_�ȏ�̐ߓ_�ň͂܂ꂽ�v�f�̂ݑI��
+      *GET,num_emlt,ELEM,,COUNT
+      *IF,num_emlt,GT,0,THEN
+        CM,emlt,ELEM       ! Element melt pool
+      *ENDIF
+      ESEL,R,CENT,Z,-es2,0.0
+      ESEL,R,CENT,X,xL1,xL2
+      ESEL,R,CENT,Y,yL1,yL2
+      *GET,num_emls,ELEM,,COUNT
+      *IF,num_emls,GT,0,THEN
+        CM,emls,ELEM        ! Element melt pool surface
+      *ENDIF
+    *ENDIF
+    ALLSEL
+    ! ��n�Z�ő�
+    ESEL,S,TYPE,,1
+    ESEL,R,MAT,,1,2
+    ESEL,R,CENT,Z,-es2,0.0
+    ESEL,R,CENT,X,xL1,xL2
+    ESEL,R,CENT,Y,yL1,yL2
+    *IF,num_emlt,GT,0,THEN
+      CMSEL,U,emlt          ! �n�Z�v�f�����O
+    *ENDIF
+    *GET,num_ebsf,ELEM,,COUNT
+    *IF,num_ebsf,GT,0,THEN
+      CM,ebsf,ELEM          ! Element bulk surface
+    *ENDIF
+    ALLSEL
+    !  ���̑w�㕔�̕���(�n�Z���Ă��Ȃ����̑w�j
+    ESEL,S,TYPE,,1
+    ESEL,R,MAT,,3           ! ���̂�I��
+    ESEL,R,CENT,Z,-es2,0.0  ! ���̂̍ŏ�w��I��
+    ESEL,R,CENT,X,xL1,xL2   ! ���[�U�v���t�@�C���͈͓̔���I��
+    ESEL,R,CENT,Y,yL1,yL2
+    *IF,num_emlt,GT,0,THEN
+      CMSEL,U,emlt          ! �n�Z�v�f�����O
+    *ENDIF
+    *GET,num_eptp,ELEM,,COUNT
+    *IF,num_eptp,GT,0,THEN
+      CM,eptp,ELEM         ! Element powder top layer
+    *ENDIF
+    !  ���̑w�����̕��́i�㕔���n�Z���Ă��Ȃ����̑w�j
+    num_=num_eptp           ! �I��v�f���̎擾
+    *IF,num_,GT,0,THEN
+      CMSEL,S,eptp
+      ! �n�Z���Ă��Ȃ��㕔���̑w�̗v�f�ԍ����i�[
+      *GET,emin,ELEM,,NUM,MIN ! �ŏ��v�f�ԍ��̎擾
+      edat(1)=emin
+      *DO,ii,2,num_           ! ���̑w�㕔�̕��̗̂v�f�ԍ��擾
+        emin=ELNEXT(emin)     ! emin �̎��ɑ傫�ȗv�f�ԍ���emin��u������
+        edat(ii)=emin         ! �v�f�ԍ����i�[
+      *ENDDO
+      ALLSEL
+      !  z���������̗אڗv�f�T��
+      *DO,kk,1,nlay-1
+        *DO,jj,1,num_
+          ez = edat(jj)
+          *GET,zmin,ELEM,edat(jj),CENT,Z
+          *DO,i i,1,6,1                   ! (����) �Z�ʑ̗v�f������
+            *GET,ei,ELEM,edat(jj),ADJ,ii  ! �אڗv�f�ԍ��擾
+            *IF,ei,GT,0,THEN              ! �אڗv�f�����݂����...
+              *GET,zi,ELEM,ei,CENT,Z      !   ���S�����W���擾
+              *IF,zi,LT,zmin,THEN         !   z���W�����݂̍ŏ���z���W
+                zmin = zi                 !   ��菬������Ό���
+                ez = ei
+              *ENDIF
+            *ENDIF
+          *ENDDO
+          edat(jj)=ez                     ! �ŏ��̂����W�����v�f�ԍ����擾
+        *ENDDO
+        ESEL,S,ELEM,,edat(1)              ! edat�Ɋi�[�����v�f�ԍ��̗v�f��I��
+        *DO,ii,2,num_
+          ESEL,A,ELEM,,edat(ii)
+        *ENDDO
+        *GET,num_epbt%kk%,ELEM,,COUNT         ! �I�������v�f�̐����擾
+        *IF,num_epbt%kk%,GT,0,THEN
+          CM,epbt%kk%,ELEM                    ! Element powder bottom layer
+        *ENDIF                            ! epbt: �v�f�O���[�v
+      *ENDDO
+    *ENDIF
+    !  ���̑w�����̌ő�
+    *DO,jj,1,num_                     ! �����������̗אڗv�f�T��
+      ez = edat(jj)
+      *GET,zmin,ELEM,edat(jj),CENT,Z
+      *DO,ii,1,6,1
+        *GET,ei,ELEM,edat(jj),ADJ,ii
+        *IF,ei,GT,0,THEN              ! �אڗv�f�����݂����...
+          *GET,zi,ELEM,ei,CENT,Z
+          *IF,zi,LT,zmin,THEN
+            zmin = zi
+            ez = ei
+          *ENDIF
+        *ENDIF
+      *ENDDO
+      edat(jj)=ez
+    *ENDDO
+    ESEL,S,ELEM,,edat(1)
+    *DO,ii,2,num_
+      ESEL,A,ELEM,,edat(ii)
+    *ENDDO
+    CM,ebtm,ELEM ! Elements bulk under powder layer
+    *GET,num_ebtm,ELEM,,COUNT
+    ALLSEL
+
+    *IF,i*dt,LT,i*NN/2,THEN
+      coefl = laser_w/es2**3 ! (���[�U�o��)/(�ו����v�f�̐�)
+    *ELSEIF,i*dt,LT,i*dt*NN/2+1.0E-6,THEN
+      coefl = 0.0 ! 
+    *ELSE
+      coefl = 1.5*laser_w/es2**3 ! (���[�U�o��)/(�ו����v�f�̐�)
+    *ENDIF
+    *TOPER,heatfn_mls,lsrprf,ADD,lsrprf,ems_mls*coefl,0,0
+    *TOPER,heatfn_ptp,lsrprf,ADD,lsrprf,ems_ptp*coefl,0,0
+    *TOPER,heatfn_pbt,lsrprf,ADD,lsrprf,ems_pbt*coefl,0,0
+    *TOPER,heatfn_bsf,lsrprf,ADD,lsrprf,ems_bsf*coefl,0,0
+    *TOPER,heatfn_btm,lsrprf,ADD,lsrprf,ems_btm*coefl,0,0
+    
+    *IF,num_emls,GT,0,THEN
+      CMSEL,S,emls
+      BFE,all,HGEN,1,%heatfn_mls% ! �n�Z�r�\�ʗv�f�̔��M
+    *ENDIF
+    *IF,num_eptp,GT,0,THEN
+      CMSEL,S,eptp
+      BFE,all,HGEN,1,%heatfn_ptp% ! ���̑w�㕔�v�f�̔��M
+    *ENDIF
+    *DO,kk,1,nlay-1,
+      *IF,num_epbt,GT,0,THEN
+        CMSEL,S,epbt%kk%
+        BFE,all,HGEN,1,%heatfn_pbt% ! ���̑w�����v�f�̔��M
+      *ENDIF
+    *ENDDO
+    *IF,num_ebsf,GT,0,THEN
+      CMSEL,S,ebsf
+      BFE,all,HGEN,1,%heatfn_bsf% ! �ő́i��n�Z�j�v�f�̔��M
+    *ENDIF
+    *IF,num_ebtm,GT,0,THEN
+      CMSEL,S,ebtm
+      BFE,all,HGEN,1,%heatfn_btm% ! ���̑w�����ő̗v�f�̔��M
+    *ENDIF
+    CMDELE,nmlt
+    CMDELE,emlt
+    CMDELE,emls
+    CMDELE,eptp
+    *DO,kk,1,nlay-1
+      CMDELE,epbt%kk%
+    *ENDDO
+    CMDELE,ebsf
+    CMDELE,ebtm
+    ALLSEL
+    !! ��͎��s
+    SOLVE						
+
+    !!! HGEN���E�����o��
+    htsum=0.0
+    ALLSEL
+    ESEL,S,BFE,HGEN,0.0,1e20
+    *GET,num_hgen,ELEM,,COUNT
+    *DIM,elm_hgen,,num_hgen
+    *VGET,elm_hgen(1),ELEM,1,ELIST
+    *IF,num_hgen,GT,0,THEN
+      *DO,ii,1,num_hgen
+        *GET,vhgen,ELEM,elm_hgen(ii),HGEN
+        *GET,vvolu,ELEM,elm_hgen(ii),VOLU
+        htsum=htsum+vhgen*vvolu
+      *ENDDO
+    *ENDIF
+    *IF,i,GT,1,THEN
+      *CFOPEN,%FTITLE%,hgn,,APPEND
+    *ELSE
+      *CFOPEN,%FTITLE%,hgn,,
+      *VWRITE
+      ('Stp  , Num   , Input, W   ,BLK Srf, MP Srf, PW Top, PW Bt1, PW Bt2, PW Bt3, BLK Btm')
+    *ENDIF
+    *VWRITE,%idx%,num_hgen,htsum,num_ebsf,num_emls,num_eptp,num_epbt1,num_epbt2,num_epbt3,num_ebtm
+    (F6.0,F8.0,E13.5,7F8.0)
+    *CFCLOS
+    elm_hgen=
+    *SET,elm_hgen,
+    ALLSEL
+
+    NSEL,S,TEMP,,liquidus,,         !!! Elements' phase transformation
+    ESEL,S,TYPE,,1
+    ESEL,R,MAT,,3
+    ESLN,R,1,ALL
+    MPCHG,2,all
+    ALLSEL
+
+    *IF,MOD(i,ndbstep),EQ,0,then
+      SAVE,%FTITLE%-%idx%,db,,ALL
+    *ENDIF        
+  *ENDDO  ! END of i loop
+  *IF,MOD(NN,ndbstep),NE,0,then
+    SAVE,%FTITLE%-%NN+(j-1)*(NN+ND)%,db,,ALL
+  *ENDIF        
+  ! Dwelling between scanning lines or the last cooling
+  ESEL,S,TYPE,,1,1
+  bfedele,all,all,all
+  ALLSEL
+  *DO,i,1,ND,1                       ! ND: Dwelling steps
+    idx=i+NN+(j-1)*(NN+ND)
+    TIME,ITIME(idx) 
+    SOLVE
+    NSEL,S,TEMP,,liquidus,,          !!! Elements' phase transformation
+    ESEL,S,TYPE,,1
+    ESEL,R,MAT,,3
+    ESLN,R,1,ALL
+    MPCHG,2,all
+    ALLSEL
+  *ENDDO  ! END of i loop
+  SAVE,%FTITLE%-%idx%,db,,ALL
+*ENDDO  ! END of j loop
+SAVE,%FTITLE%,db,,ALL
+!--------------------------------------------------
+!!!  Terminal End
+!--------------------------------------------------

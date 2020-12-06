@@ -1,0 +1,45 @@
+/BATCH
+/CLEAR
+!--------------------------------------------------
+! slmcond.inp
+! A template for slm.inp's condition input
+! by Toshi-Taka Ikeshoji
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - -
+! 
+!--------------------------------------------------
+FINISH
+/CLEAR
+!
+*GET,ftitle,ACTIVE,0,JOBNAM
+/INQUIRE,strbuf,DIRECTORY
+directory = strbuf(1)
+*DEL,strbuf
+! 
+/CWD,%directory%
+/TITLE,%ftitle%
+/FILNAME,%ftitle%
+! 物性値
+MATPROP='in718' !拡張子 .inp
+! レーザープロファイル
+LASERPROFILE='lp102-125' !拡張子 .txt
+! 造形条件
+laser_d=1.000E-4	! Spot size diameter, m
+laser_w=2.000E+2	! Input laser power, W
+svel=1.200E+0	! Scan velocity, m/s
+hatch=1.000E-4	! Hatch pitch, m
+pwdthick=5.000E-5	! Podwer layer thickness, m
+ambtemp=5.000E+1	! Ambient temperature, degC
+bsptemp=1.000E+2	! Baseplate temperture, degC
+laser_r=0.5*laser_d ! Spot size radius, m
+!解析設定
+NS=2
+DWELL=50E-3    ! dwelling time between scanning lines, s
+!!! 溶融凝固シミュレーション
+/input,slm,inp
+!
+! 追加 input ルーチン
+/input,mltplxyz541,inp! xyz srf
+/input,mltplxyz601,inp! xyz btm
+!
+/EXIT,ALL

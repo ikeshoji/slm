@@ -1,0 +1,1372 @@
+
+ ANSYS Academic Research                           
+
+
+ *------------------------------------------------------------------*
+ |                                                                  |
+ |   W E L C O M E   T O   T H E   A N S Y S (R)  P R O G R A M     |
+ |                                                                  |
+ *------------------------------------------------------------------*
+
+
+
+
+ ***************************************************************
+ *            ANSYS 2020 R1          LEGAL NOTICES             *
+ ***************************************************************
+ *                                                             *
+ * Copyright 1971-2020 ANSYS, Inc.  All rights reserved.       *
+ * Unauthorized use, distribution or duplication is            *
+ * prohibited.                                                 *
+ *                                                             *
+ * Ansys is a registered trademark of ANSYS, Inc. or its       *
+ * subsidiaries in the United States or other countries.       *
+ * See the ANSYS, Inc. online documentation or the ANSYS, Inc. *
+ * documentation CD or online help for the complete Legal      *
+ * Notice.                                                     *
+ *                                                             *
+ ***************************************************************
+ *                                                             *
+ * THIS ANSYS SOFTWARE PRODUCT AND PROGRAM DOCUMENTATION       *
+ * INCLUDE TRADE SECRETS AND CONFIDENTIAL AND PROPRIETARY      *
+ * PRODUCTS OF ANSYS, INC., ITS SUBSIDIARIES, OR LICENSORS.    *
+ * The software products and documentation are furnished by    *
+ * ANSYS, Inc. or its subsidiaries under a software license    *
+ * agreement that contains provisions concerning               *
+ * non-disclosure, copying, length and nature of use,          *
+ * compliance with exporting laws, warranties, disclaimers,    *
+ * limitations of liability, and remedies, and other           *
+ * provisions.  The software products and documentation may be *
+ * used, disclosed, transferred, or copied only in accordance  *
+ * with the terms and conditions of that software license      *
+ * agreement.                                                  *
+ *                                                             *
+ * ANSYS, Inc. is a UL registered                              *
+ * ISO 9001:2015 company.                                      *
+ *                                                             *
+ ***************************************************************
+ *                                                             *
+ * This product is subject to U.S. laws governing export and   *
+ * re-export.                                                  *
+ *                                                             *
+ * For U.S. Government users, except as specifically granted   *
+ * by the ANSYS, Inc. software license agreement, the use,     *
+ * duplication, or disclosure by the United States Government  *
+ * is subject to restrictions stated in the ANSYS, Inc.        *
+ * software license agreement and FAR 12.212 (for non-DOD      *
+ * licenses).                                                  *
+ *                                                             *
+ ***************************************************************
+
+ 2020 R1 
+     
+ Point Releases and Patches installed:   
+     
+ ANSYS, Inc. Products 2020 R1
+ SpaceClaim 2020 R1  
+ AIM 2020 R1 
+ Live (includes SpaceClaim) 2020 R1  
+ Autodyn 2020 R1 
+ CFD-Post only 2020 R1   
+ CFX (includes CFD-Post) 2020 R1 
+ Chemkin 2020 R1 
+ FENSAP-ICE 2020 R1  
+ Fluent (includes CFD-Post) 2020 R1  
+ Forte 2020 R1   
+ Polyflow (includes CFD-Post) 2020 R1
+ TurboGrid 2020 R1   
+ ICEM CFD 2020 R1
+ Aqwa 2020 R1
+ Customization Files for User Programmable Features 2020 R1  
+ Mechanical Products 2020 R1 
+ Additive 2020 R1
+ Icepak (includes CFD-Post) 2020 R1  
+ Remote Solve Manager Standalone Services 2020 R1
+ Viewer 2020 R1  
+ ACIS Geometry Interface 2020 R1 
+ AutoCAD Geometry Interface 2020 R1  
+ Catia, Version 4 Geometry Interface 2020 R1 
+ Catia, Version 5 Geometry Interface 2020 R1 
+ Catia, Version 6 Geometry Interface 2020 R1 
+ Creo Elements/Direct Modeling Geometry Interface 2020 R1
+ Creo Parametric Geometry Interface 2020 R1  
+ Inventor Geometry Interface 2020 R1 
+ JTOpen Geometry Interface 2020 R1   
+ NX Geometry Interface 2020 R1   
+ Parasolid Geometry Interface  2020 R1   
+ Solid Edge Geometry Interface 2020 R1   
+ SOLIDWORKS Geometry Interface 2020 R1   
+ ANSYS, Inc. License Manager 2020 R1 
+
+
+          *****  ANSYS COMMAND LINE ARGUMENTS  *****
+  INITIAL JOBNAME              = 20201013a                                                                                                                                                                                                                                               
+  BATCH MODE REQUESTED (-b)    = LIST
+  INPUT FILE COPY MODE (-c)    = COPY
+  DISTRIBUTED MEMORY PARALLEL REQUESTED
+      16 PARALLEL PROCESSES REQUESTED WITH SINGLE THREAD PER PROCESS
+    TOTAL OF    16 CORES REQUESTED
+  DESIGNXPLORER REQUESTED
+  MPI OPTION                   = INTELMPI
+  INPUT FILE NAME              = D:\20201013\20201013a.inp
+  OUTPUT FILE NAME             = D:\20201013\20201013a.out
+  START-UP FILE MODE           = READ  
+  STOP FILE MODE               = READ  
+  GRAPHICS DEVICE REQUESTED    = win32   
+  GRAPHICAL ENTRY              = YES   
+  LANGUAGE                     = en-us               
+  INITIAL DIRECTORY = D:\20201013
+
+ RELEASE= 2020 R1              BUILD= 20.1      UP20191203   VERSION=WINDOWS x64 
+ CURRENT JOBNAME=20201013a0  00:54:16  OCT 13, 2020 CP=      0.328
+
+     1  /BATCH  
+     2  /CLEAR  
+     3  !-------------------------------------------------- 
+     4  ! 20200910a2.inp
+     5  ! by Toshi-Taka Ikeshoji
+     6  !   
+     7  ! - - - - - - - - - - - - - - - - - - - - - - - - - 
+     8  ! 溶融凝固シミュレーション条件設定ファイル  
+     9  !-------------------------------------------------- 
+    10  ! 2020/09/10 作成   
+    11  !-------------------------------------------------- 
+    12  FINISH  
+    13  /CLEAR  
+    14  !   
+    15  *GET,ftitle,ACTIVE,0,JOBNAM 
+    16  /INQUIRE,strbuf,DIRECTORY   
+    17  directory = strbuf(1)   
+    18  *DEL,strbuf 
+    19  !   
+    20  /CWD,%directory%
+    21  /TITLE,%ftitle% 
+    22  /FILNAME,%ftitle%   
+    23  ! 物性値
+    24  MATPROP='in718' !拡張子 .inp
+    25  ! レーザープロファイル  
+    26  LASERPROFILE='lp102-125' !拡張子 .txt   
+    27  ! 造形条件  
+    28  laser_d=1.000E-4	! Spot size diameter, m
+    29  laser_w=2.000E+2	! Input laser power, W 
+    30  svel=1.200E+0	! Scan velocity, m/s  
+    31  hatch=1.000E-4	! Hatch pitch, m 
+    32  pwdthick=5.000E-5	! Podwer layer thickness, m   
+    33  ambtemp=5.000E+1	! Ambient temperature, degC
+    34  bsptemp=1.000E+2	! Baseplate temperture, degC   
+    35  laser_r=0.5*laser_d ! Spot size radius, m   
+    36  !解析設定   
+    37  NS=1
+    38  !!! 溶融凝固シミュレーション
+    39  /input,slm20190903,inp  
+    40  !   
+    41  ! 追加 input ルーチン   
+    42  /input,mltplxyz541,inp! xyz srf 
+    43  /input,mltplxyz601,inp! xyz btm 
+    44  !   
+    45  /EXIT,ALL   
+
+ RUN SETUP PROCEDURE FROM FILE= C:\Program Files\ANSYS Inc\v201\ANSYS\apdl\start.ans
+
+ /INPUT FILE= C:\Program Files\ANSYS Inc\v201\ANSYS\apdl\start.ans  LINE=       0
+
+ CLEAR DATABASE AND RERUN START.ANS
+
+ RUN SETUP PROCEDURE FROM FILE= C:\Program Files\ANSYS Inc\v201\ANSYS\apdl\start.ans
+
+ ANSYS Academic Research                           
+
+ /INPUT FILE= C:\Program Files\ANSYS Inc\v201\ANSYS\apdl\start.ans  LINE=       0
+
+ CLEAR DATABASE AND RERUN START.ANS
+
+ RUN SETUP PROCEDURE FROM FILE= C:\Program Files\ANSYS Inc\v201\ANSYS\apdl\start.ans
+
+ ANSYS Academic Research                           
+
+ /INPUT FILE= C:\Program Files\ANSYS Inc\v201\ANSYS\apdl\start.ans  LINE=       0
+
+ *GET  FTITLE    FROM  ACTI  ITEM=JOBN           VALUE=20201013a                                                                                                                       
+
+ PARAMETER STRBUF   = D:\20201013
+
+ PARAMETER DIRECTORY = D:\20201013     
+
+ ARRAY PARAMETER STRBUF    DELETED.
+
+ Current working directory switched to D:\20201013                                                                                                                                                                                                                                             
+
+ TITLE= 
+ 20201013a                                                                     
+
+
+ CURRENT JOBNAME REDEFINED AS 20201013a
+
+ PARAMETER MATPROP = in718   
+
+ PARAMETER LASERPROFILE = lp102-125       
+
+ PARAMETER LASER_D =    0.1000000000E-03
+
+ PARAMETER LASER_W =     200.0000000    
+
+ PARAMETER SVEL =     1.200000000    
+
+ PARAMETER HATCH =    0.1000000000E-03
+
+ PARAMETER PWDTHICK =    0.5000000000E-04
+
+ PARAMETER AMBTEMP =     50.00000000    
+
+ PARAMETER BSPTEMP =     100.0000000    
+
+ PARAMETER LASER_R =    0.5000000000E-04
+
+ PARAMETER NS =     1.000000000    
+
+ /INPUT FILE= slm20190903.inp  LINE=       0
+
+ MESSAGE POPUP LEVEL =    3
+
+ *** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE 2020 R1          20.1     ***
+ DISTRIBUTED ANSYS Academic Research                           
+
+ 01061318  VERSION=WINDOWS x64   00:54:16  OCT 13, 2020 CP=      0.797
+
+ 20201013a                                                                     
+
+
+
+          ***** ANSYS ANALYSIS DEFINITION (PREP7) *****
+
+ PARAMETER NDBSTEP =     50.00000000    
+
+ PARAMETER W2 =    0.5000000000E-03
+
+ PARAMETER WS =    0.1000000000E-03
+
+ PARAMETER L1 =    0.1000000000E-03
+
+ PARAMETER L2 =    0.5000000000E-03
+
+ PARAMETER H1 =    0.3000000000E-03
+
+ PARAMETER H2 =    0.5000000000E-04
+
+ PARAMETER H3 =    0.1500000000E-03
+
+ PARAMETER W1 =    0.9000000000E-03
+
+ PARAMETER PI =     3.141592654    
+
+ PARAMETER NLAY =     4.000000000    
+
+ PARAMETER ES2 =    0.1250000000E-04
+
+ PARAMETER ES1 =    0.1500000000E-03
+
+ PARAMETER NN =     8.000000000    
+
+ PARAMETER DY =    0.1250000000E-04
+
+ PARAMETER DT =    0.1041666667E-04
+
+ KEYPOINT     21   X,Y,Z= -0.700000E-03 -0.700000E-03   0.00000      IN CSYS=  0
+
+ KEYPOINT     22   X,Y,Z= -0.700000E-03  0.800000E-03   0.00000      IN CSYS=  0
+
+ KEYPOINT     23   X,Y,Z=  0.700000E-03  0.800000E-03   0.00000      IN CSYS=  0
+
+ KEYPOINT     24   X,Y,Z=  0.700000E-03 -0.700000E-03   0.00000      IN CSYS=  0
+
+ KEYPOINT     25   X,Y,Z= -0.200000E-03 -0.200000E-03   0.00000      IN CSYS=  0
+
+ KEYPOINT     26   X,Y,Z= -0.200000E-03  0.300000E-03   0.00000      IN CSYS=  0
+
+ KEYPOINT     27   X,Y,Z=  0.200000E-03  0.300000E-03   0.00000      IN CSYS=  0
+
+ KEYPOINT     28   X,Y,Z=  0.200000E-03 -0.200000E-03   0.00000      IN CSYS=  0
+
+ GENERATE     2 TOTAL SETS OF KEYPOINTS    
+   SET IS FROM    21 TO    28 IN STEPS OF     1
+   DX,DY,DZ=    0.00        0.00      -0.500E-04       CSYS=  0
+   KEYPOINT INCREMENT =     20
+
+ GENERATE     2 TOTAL SETS OF KEYPOINTS    
+   SET IS FROM    21 TO    28 IN STEPS OF     1
+   DX,DY,DZ=    0.00        0.00      -0.150E-03       CSYS=  0
+   KEYPOINT INCREMENT =     40
+
+ GENERATE     2 TOTAL SETS OF KEYPOINTS    
+   SET IS FROM    21 TO    24 IN STEPS OF     1
+   DX,DY,DZ=    0.00        0.00      -0.300E-03       CSYS=  0
+   KEYPOINT INCREMENT =     60
+
+ VOLUME CONNECTING KEYPOINTS    25    26    27    28    45    46    47    48
+    (GENERATED LINES AND AREAS FITTED IN ACTIVE CSYS =  0)
+
+     VOLUME NUMBER =      1
+
+ ALL SELECT   FOR ITEM=VOLU COMPONENT=    
+  IN RANGE         1 TO          1 STEP          1
+
+        1  VOLUMES (OF        1  DEFINED) SELECTED BY  VSEL  COMMAND.
+
+ DEFINITION OF COMPONENT = VPWDFINE  ENTITY=VOLU
+
+ VOLUME CONNECTING KEYPOINTS    45    46    47    48    65    66    67    68
+    (GENERATED LINES AND AREAS FITTED IN ACTIVE CSYS =  0)
+
+     VOLUME NUMBER =      2
+
+ ALL SELECT   FOR ITEM=VOLU COMPONENT=    
+  IN RANGE         1 TO          2 STEP          1
+
+        2  VOLUMES (OF        2  DEFINED) SELECTED BY  VSEL  COMMAND.
+
+ UNSELECT    COMPONENT VPWDFINE                        
+
+ DEFINITION OF COMPONENT = VSUBFINE  ENTITY=VOLU
+
+ VOLUME CONNECTING KEYPOINTS    21    22    23    24    41    42    43    44
+    (GENERATED LINES AND AREAS FITTED IN ACTIVE CSYS =  0)
+
+     VOLUME NUMBER =      3
+
+ VOLUME CONNECTING KEYPOINTS    41    42    43    44    81    82    83    84
+    (GENERATED LINES AND AREAS FITTED IN ACTIVE CSYS =  0)
+
+     VOLUME NUMBER =      4
+
+ ALL SELECT   FOR ITEM=VOLU COMPONENT=    
+  IN RANGE         1 TO          4 STEP          1
+
+        4  VOLUMES (OF        4  DEFINED) SELECTED BY  VSEL  COMMAND.
+
+ OVERLAP VOLUMES
+      INPUT VOLUMES =     1    2    3    4
+      INPUT VOLUMES WILL BE DELETED IF POSSIBLE
+      OUTPUT VOLUMES =     1    2    5    6
+
+ /INPUT FILE= in718.inp  LINE=       0
+
+ PARAMETER LIQUIDUS =     1336.850000    
+
+ PARAMETER BOILING =     2626.850000    
+
+ PARAMETER PWDEPS =    0.4306400000    
+
+ TEMPERATURE OFFSET FROM ABSOLUTE ZERO= 273.150
+ *** Material property : Alloy 718
+
+ TEMPERATURE TABLE ERASED.
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  1 ***
+ SLOC=   1     26.85000    
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  2 ***
+ SLOC=   2     1254.850    
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  3 ***
+ SLOC=   3     1336.850    
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  4 ***
+ SLOC=   4     2626.850    
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  5 ***
+ SLOC=   5     2726.850    
+
+ PROPERTY TABLE ENTH  MAT=      1  NUM. POINTS=  1
+ SLOC=   1     0.000000    
+
+ PROPERTY TABLE ENTH  MAT=      1  NUM. POINTS=  2
+ SLOC=   2    0.5553090E+10
+
+ PROPERTY TABLE ENTH  MAT=      1  NUM. POINTS=  3
+ SLOC=   3    0.7787010E+10
+
+ PROPERTY TABLE ENTH  MAT=      1  NUM. POINTS=  4
+ SLOC=   4    0.1507890E+11
+
+ PROPERTY TABLE ENTH  MAT=      1  NUM. POINTS=  5
+ SLOC=   5    0.6821890E+11
+
+ PROPERTY TABLE DENS  MAT=      1  NUM. POINTS=  1
+ SLOC=   1     8262.700    
+
+ PROPERTY TABLE DENS  MAT=      1  NUM. POINTS=  2
+ SLOC=   2     7733.400    
+
+ PROPERTY TABLE DENS  MAT=      1  NUM. POINTS=  3
+ SLOC=   3     7580.300    
+
+ PROPERTY TABLE DENS  MAT=      1  NUM. POINTS=  4
+ SLOC=   4     6950.800    
+
+ PROPERTY TABLE DENS  MAT=      1  NUM. POINTS=  5
+ SLOC=   5     6902.000    
+
+ PROPERTY TABLE KXX   MAT=      1  NUM. POINTS=  1
+ SLOC=   1     10.87200    
+
+ PROPERTY TABLE KXX   MAT=      1  NUM. POINTS=  2
+ SLOC=   2     31.13400    
+
+ PROPERTY TABLE KXX   MAT=      1  NUM. POINTS=  3
+ SLOC=   3     26.79500    
+
+ PROPERTY TABLE KXX   MAT=      1  NUM. POINTS=  4
+ SLOC=   4     44.33900    
+
+ PROPERTY TABLE KXX   MAT=      1  NUM. POINTS=  5
+ SLOC=   5     45.69900    
+ *** Material property : Alloy 718 powder
+ ***   Once liuquidized and then solidified
+
+ TEMPERATURE TABLE ERASED.
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  1 ***
+ SLOC=   1     26.85000    
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  2 ***
+ SLOC=   2     1254.850    
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  3 ***
+ SLOC=   3     1336.850    
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  4 ***
+ SLOC=   4     2626.850    
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  5 ***
+ SLOC=   5     2726.850    
+
+ PROPERTY TABLE ENTH  MAT=      2  NUM. POINTS=  1
+ SLOC=   1     0.000000    
+
+ PROPERTY TABLE ENTH  MAT=      2  NUM. POINTS=  2
+ SLOC=   2    0.3161707E+10
+
+ PROPERTY TABLE ENTH  MAT=      2  NUM. POINTS=  3
+ SLOC=   3    0.4433612E+10
+
+ PROPERTY TABLE ENTH  MAT=      2  NUM. POINTS=  4
+ SLOC=   4    0.8585323E+10
+
+ PROPERTY TABLE ENTH  MAT=      2  NUM. POINTS=  5
+ SLOC=   5    0.3884111E+11
+
+ PROPERTY TABLE DENS  MAT=      2  NUM. POINTS=  1
+ SLOC=   1     4704.451    
+
+ PROPERTY TABLE DENS  MAT=      2  NUM. POINTS=  2
+ SLOC=   2     4403.089    
+
+ PROPERTY TABLE DENS  MAT=      2  NUM. POINTS=  3
+ SLOC=   3     4315.920    
+
+ PROPERTY TABLE DENS  MAT=      2  NUM. POINTS=  4
+ SLOC=   4     3957.507    
+
+ PROPERTY TABLE DENS  MAT=      2  NUM. POINTS=  5
+ SLOC=   5     3929.723    
+
+ PROPERTY TABLE KXX   MAT=      2  NUM. POINTS=  1
+ SLOC=   1     10.87200    
+
+ PROPERTY TABLE KXX   MAT=      2  NUM. POINTS=  2
+ SLOC=   2     31.13400    
+
+ PROPERTY TABLE KXX   MAT=      2  NUM. POINTS=  3
+ SLOC=   3     26.79500    
+
+ PROPERTY TABLE KXX   MAT=      2  NUM. POINTS=  4
+ SLOC=   4     44.33900    
+
+ PROPERTY TABLE KXX   MAT=      2  NUM. POINTS=  5
+ SLOC=   5     45.69900    
+ *** Material property : Alloy 718 powder
+
+ TEMPERATURE TABLE ERASED.
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  1 ***
+ SLOC=   1     26.85000    
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  2 ***
+ SLOC=   2     1254.850    
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  3 ***
+ SLOC=   3     1336.850    
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  4 ***
+ SLOC=   4     2626.850    
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  5 ***
+ SLOC=   5     2726.850    
+
+ PROPERTY TABLE ENTH  MAT=      3  NUM. POINTS=  1
+ SLOC=   1     0.000000    
+
+ PROPERTY TABLE ENTH  MAT=      3  NUM. POINTS=  2
+ SLOC=   2    0.3161707E+10
+
+ PROPERTY TABLE ENTH  MAT=      3  NUM. POINTS=  3
+ SLOC=   3    0.4433612E+10
+
+ PROPERTY TABLE ENTH  MAT=      3  NUM. POINTS=  4
+ SLOC=   4    0.8585323E+10
+
+ PROPERTY TABLE ENTH  MAT=      3  NUM. POINTS=  5
+ SLOC=   5    0.3884111E+11
+
+ PROPERTY TABLE DENS  MAT=      3  NUM. POINTS=  1
+ SLOC=   1     4704.451    
+
+ PROPERTY TABLE DENS  MAT=      3  NUM. POINTS=  2
+ SLOC=   2     4403.089    
+
+ PROPERTY TABLE DENS  MAT=      3  NUM. POINTS=  3
+ SLOC=   3     4315.920    
+
+ PROPERTY TABLE DENS  MAT=      3  NUM. POINTS=  4
+ SLOC=   4     3957.507    
+
+ PROPERTY TABLE DENS  MAT=      3  NUM. POINTS=  5
+ SLOC=   5     3929.723    
+
+ PROPERTY TABLE KXX   MAT=      3  NUM. POINTS=  1
+ SLOC=   1    0.1933780    
+
+ PROPERTY TABLE KXX   MAT=      3  NUM. POINTS=  2
+ SLOC=   2    0.6701607    
+
+ PROPERTY TABLE KXX   MAT=      3  NUM. POINTS=  3
+ SLOC=   3     26.79500    
+
+ PROPERTY TABLE KXX   MAT=      3  NUM. POINTS=  4
+ SLOC=   4     44.33900    
+
+ PROPERTY TABLE KXX   MAT=      3  NUM. POINTS=  5
+ SLOC=   5     45.69900    
+
+ PARAMETER EMS_MLS =    0.4000000000    
+
+ PARAMETER EMS_PTP =    0.6000000000    
+
+ PARAMETER EMS_PBT =    0.3000000000    
+
+ PARAMETER EMS_BSF =    0.2000000000    
+
+ PARAMETER EMS_BTM =    0.1000000000    
+
+ ELEMENT TYPE       1 IS SOLID70      3-D THERMAL SOLID           
+  KEYOPT( 1- 6)=        0      0      0        0      0      0
+  KEYOPT( 7-12)=        0      0      0        0      0      0
+  KEYOPT(13-18)=        0      0      0        0      0      0
+
+ CURRENT NODAL DOF SET IS  TEMP
+  THREE-DIMENSIONAL MODEL
+
+ MATERIAL NUMBER SET TO         3
+
+ SELECT      COMPONENT VPWDFINE                        
+
+ DEFAULT ELEMENT DIVISIONS PER LINE BASED ON ELEMENT SIZE =  0.125E-04
+ PRODUCE ALL HEXAHEDRAL ELEMENTS IN 3D.
+ USE THE MAPPED MESHER.
+
+ GENERATE NODES AND ELEMENTS   IN  ALL  SELECTED VOLUMES  
+
+ NUMBER OF VOLUMES MESHED   =         1
+ MAXIMUM NODE NUMBER        =      6765
+ MAXIMUM ELEMENT NUMBER     =      5120
+
+ SELECT ALL ENTITIES OF TYPE= ALL  AND BELOW
+
+ SELECT       FOR ITEM=LOC  COMPONENT=Z     BETWEEN-0.50000E-04 AND   0.0000    
+   KABS=  0.  TOLERANCE= 0.500000E-12
+
+        2  VOLUMES (OF        4  DEFINED) SELECTED BY  VSEL  COMMAND.
+
+ UNSELECT    COMPONENT VPWDFINE                        
+
+ DEFAULT ELEMENT DIVISIONS PER LINE BASED ON ELEMENT SIZE =  0.150E-03
+ PRODUCE ALL TETRAHEDRAL ELEMENTS IN 3D.
+ USE THE FREE MESHER.
+
+ GENERATE NODES AND ELEMENTS   IN  ALL  SELECTED VOLUMES  
+
+ *** NOTE ***                            CP =       5.750   TIME= 00:54:17
+ 576 Pyramid transition elements automatically defined in volume 5 at    
+ boundary between brick (or quad) and tetrahedral elements.              
+
+ NUMBER OF VOLUMES MESHED   =         1
+ MAXIMUM NODE NUMBER        =      9007
+ MAXIMUM ELEMENT NUMBER     =     15868
+
+ SELECT ALL ENTITIES OF TYPE= ALL  AND BELOW
+
+ MATERIAL NUMBER SET TO         1
+
+ SELECT      COMPONENT VSUBFINE                        
+
+ DEFAULT ELEMENT DIVISIONS PER LINE BASED ON ELEMENT SIZE =  0.125E-04
+ PRODUCE ALL HEXAHEDRAL ELEMENTS IN 3D.
+ USE THE MAPPED MESHER.
+
+ GENERATE NODES AND ELEMENTS   IN  ALL  SELECTED VOLUMES  
+
+ NUMBER OF VOLUMES MESHED   =         1
+ MAXIMUM NODE NUMBER        =     19831
+ MAXIMUM ELEMENT NUMBER     =     26108
+
+ SELECT ALL ENTITIES OF TYPE= ALL  AND BELOW
+
+ SELECT       FOR ITEM=LOC  COMPONENT=Z     BETWEEN-0.30000E-03 AND -0.50000E-04
+   KABS=  0.  TOLERANCE= 0.250000E-11
+
+        2  VOLUMES (OF        4  DEFINED) SELECTED BY  VSEL  COMMAND.
+
+ UNSELECT    COMPONENT VSUBFINE                        
+
+ DEFAULT ELEMENT DIVISIONS PER LINE BASED ON ELEMENT SIZE =  0.150E-03
+ PRODUCE ALL TETRAHEDRAL ELEMENTS IN 3D.
+ USE THE FREE MESHER.
+
+ GENERATE NODES AND ELEMENTS   IN  ALL  SELECTED VOLUMES  
+
+ *** NOTE ***                            CP =      11.062   TIME= 00:54:18
+ 2432 Pyramid transition elements automatically defined in volume 6 at   
+ boundary between brick (or quad) and tetrahedral elements.              
+
+ NUMBER OF VOLUMES MESHED   =         1
+ MAXIMUM NODE NUMBER        =     22332
+ MAXIMUM ELEMENT NUMBER     =     49274
+
+ ------------------------------------------------------------------------------
+            <<<<<<          SHAPE TESTING SUMMARY           >>>>>>
+            <<<<<<       FOR NEW OR MODIFIED ELEMENTS       >>>>>>
+ ------------------------------------------------------------------------------
+                    --------------------------------------
+                    |  Element count     21010 SOLID70   |
+                    --------------------------------------
+
+  Test                Number tested  Warning count  Error count    Warn+Err %
+  ----                -------------  -------------  -----------    ----------
+  Aspect Ratio              21010              2             0         0.01 %
+  Parallel Deviation         2432              0             0         0.00 %
+  Maximum Angle             21010              6             0         0.03 %
+  Jacobian Ratio            21010              0             0         0.00 %
+  Warping Factor             2432              0             0         0.00 %
+
+  Any                       21010              6             0         0.03 %
+ ------------------------------------------------------------------------------
+
+ *** WARNING ***                         CP =      11.062   TIME= 00:54:18
+ Shape testing revealed that 6 of the 21010 new or modified elements     
+ violate shape warning limits.  To review test results, please see the   
+ output file or issue the CHECK command.                                 
+
+ SELECT ALL ENTITIES OF TYPE= ALL  AND BELOW
+
+ view point for window  1    1.0000      1.0000      1.0000    
+
+ ELEMENT TYPE       2 IS SURF152      3-D THERMAL SURFACE         
+  KEYOPT( 1- 6)=        0      0      0        0      0      0
+  KEYOPT( 7-12)=        0      0      0        0      0      0
+  KEYOPT(13-18)=        0      0      0        0      0      0
+
+ CURRENT NODAL DOF SET IS  TEMP
+  THREE-DIMENSIONAL MODEL
+
+ ELEMENT TYPE       2 IS SURF152      3-D THERMAL SURFACE         
+  KEYOPT( 1- 6)=        0      0      0        0      0      0
+  KEYOPT( 7-12)=        0      2      0        0      0      0
+  KEYOPT(13-18)=        0      0      0        0      0      0
+
+ CURRENT NODAL DOF SET IS  TEMP
+  THREE-DIMENSIONAL MODEL
+
+ ELEMENT TYPE SET TO         2
+
+ SELECT      NODES ON EXTERIOR OF SELECTED ELEMENTS
+
+       2290  NODES (OF      22332  DEFINED) SELECTED BY  NSEL  COMMAND.
+
+ GENERATE ELEMENTS ON SURFACE DEFINED BY SELECTED NODES
+  TYPE=        2  REAL=        1  MATERIAL=        1  ESYS=    0
+
+ NUMBER OF ELEMENTS GENERATED=       3296                         
+
+ ELEMENT TYPE       3 IS SURF152      3-D THERMAL SURFACE         
+  KEYOPT( 1- 6)=        0      0      0        0      0      0
+  KEYOPT( 7-12)=        0      0      0        0      0      0
+  KEYOPT(13-18)=        0      0      0        0      0      0
+
+ CURRENT NODAL DOF SET IS  TEMP
+  THREE-DIMENSIONAL MODEL
+
+ ELEMENT TYPE       3 IS SURF152      3-D THERMAL SURFACE         
+  KEYOPT( 1- 6)=        0      0      0        0      0      0
+  KEYOPT( 7-12)=        0      1      0        0      0      0
+  KEYOPT(13-18)=        0      0      0        0      0      0
+
+ CURRENT NODAL DOF SET IS  TEMP
+  THREE-DIMENSIONAL MODEL
+
+ ELEMENT TYPE SET TO         3
+
+ RESELECT     FOR ITEM=LOC  COMPONENT=Z     BETWEEN  0.0000     AND   0.0000    
+   KABS=  0.  TOLERANCE= 0.100000E-05
+
+       2058  NODES (OF      22332  DEFINED) SELECTED BY  NSEL  COMMAND.
+
+ GENERATE ELEMENTS ON SURFACE DEFINED BY SELECTED NODES
+  TYPE=        3  REAL=        1  MATERIAL=        1  ESYS=    0
+
+ NUMBER OF ELEMENTS GENERATED=       2794                         
+
+ SELECT ALL ENTITIES OF TYPE= ALL  AND BELOW
+
+ *** NOTE *** Display device has not yet been specified with the /SHOW command.  Display commands ignored. 
+
+
+ ***** ROUTINE COMPLETED *****  CP =        16.562
+
+
+
+ *****  ANSYS SOLUTION ROUTINE  *****
+
+ SET PARAMETER DIMENSIONS ON  FLGSTP TYPE=ARRA  DIMENSIONS=     2     1     1
+
+ PARAMETER FLGSTP(1,1) =     0.000000000      0.000000000    
+
+ OPENED FILE= test.stp FOR COMMAND FILE DATA 
+
+
+  COMMAND FILE CLOSED 
+
+
+
+ PERFORM A TRANSIENT ANALYSIS
+  THIS WILL BE A NEW ANALYSIS
+
+ USE AUTOMATIC TIME STEPPING THIS LOAD STEP
+
+ USE A LINE SEARCH FOR  ALL DEGREES OF FREEDOM
+
+ USE INITIAL TIME STEP SIZE OF 0.1041667E-04 FOR ALL  DEGREES OF FREEDOM
+ FOR AUTOMATIC TIME STEPPING:
+   USE 0.5208333E-08 AS THE MINIMUM TIME STEP SIZE
+   USE 0.1041667E-04 AS THE MAXIMUM TIME STEP SIZE
+   USE THE FINAL TIME STEP SIZE OF THE PREVIOUS LOAD STEP
+     AS THE STARTING TIME STEP SIZE.
+
+ USE A MAXIMUM OF   200 EQUILIBRIUM ITERATIONS EACH SUBSTEP
+
+ WRITE ALL  ITEMS TO THE DATABASE WITH A FREQUENCY OF LAST
+   FOR ALL APPLICABLE ENTITIES
+
+ UNIFORM TEMPERATURE=   100.000  (TREF=     0.000)
+
+ UNIFORM TEMPERATURE=   100.000  (TREF=     0.000)
+
+ SELECT       FOR ITEM=TYPE COMPONENT=    
+  IN RANGE         2 TO          2 STEP          1
+
+       3296  ELEMENTS (OF      52603  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ SPECIFIED SURFACE LOAD CONV FOR ALL SELECTED ELEMENTS  LKEY = 1   KVAL = 2
+     VALUES =     100.00         100.00         100.00         100.00    
+
+ SPECIFIED SURFACE LOAD CONV FOR ALL SELECTED ELEMENTS  LKEY = 1   KVAL = 1
+     VALUES =     380.00         380.00         380.00         380.00    
+
+ RESELECT     FOR ITEM=CENT COMPONENT=Z     BETWEEN  0.0000     AND  0.10000E-02
+   KABS=  0.  TOLERANCE=  0.00000    
+
+       2794  ELEMENTS (OF      52603  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ SPECIFIED SURFACE LOAD CONV FOR ALL SELECTED ELEMENTS  LKEY = 1   KVAL = 2
+     VALUES =     50.000         50.000         50.000         50.000    
+
+ SPECIFIED SURFACE LOAD CONV FOR ALL SELECTED ELEMENTS  LKEY = 1   KVAL = 1
+     VALUES =     20.000         20.000         20.000         20.000    
+
+ SELECT ALL ENTITIES OF TYPE= ALL  AND BELOW
+
+ SET PARAMETER DIMENSIONS ON  XLOC TYPE=ARRA  DIMENSIONS=     8     1     1
+
+ SET PARAMETER DIMENSIONS ON  YLOC TYPE=ARRA  DIMENSIONS=     8     1     1
+
+ *DO LOOP ON PARAMETER= JJ FROM  0.0000     TO  0.0000     BY  2.0000    
+
+ *DO LOOP ON PARAMETER= II FROM  1.0000     TO  8.0000     BY  1.0000    
+
+ PARAMETER XLOC(II+NN*JJ) =     0.000000000    
+
+ PARAMETER YLOC(II+NN*JJ) =     0.000000000    
+
+ *ENDDO  INDEX= II                              
+
+ *ENDDO  INDEX= JJ                              
+
+ *DO LOOP ON PARAMETER= JJ FROM  1.0000     TO  0.0000     BY  2.0000    
+
+ *** WARNING ***                         CP =      16.812   TIME= 00:54:18
+ No *DO trips needed, enter *ENDDO .                                     
+
+ *ENDDO  INDEX= JJ                              
+
+ SET PARAMETER DIMENSIONS ON  XYL TYPE=ARRA  DIMENSIONS=     4     1     1
+
+ VECTOR READ OPERATION  *VREAD  
+  XYL      READ FROM FILE lp102-125.txt
+ VECTOR LENGTH=      4
+ LOOP DIRECTIONS=IJK   COUNTS=       4       1       1
+ NUMBER OF LINES TO SKIP AT START OF FILE=      1
+ FORMAT=(4F12.8)                                                              
+
+ PARAMETER XL1 =   -0.9375000000E-04
+
+ PARAMETER XL2 =    0.8125000000E-04
+
+ PARAMETER YL1 =   -0.9375000000E-04
+
+ PARAMETER YL2 =    0.8125000000E-04
+
+ SET PARAMETER DIMENSIONS ON  NNL TYPE=ARRA  DIMENSIONS=     2     1     1
+
+ VECTOR READ OPERATION  *VREAD  
+  NNL      READ FROM FILE lp102-125.txt
+ VECTOR LENGTH=      2
+ LOOP DIRECTIONS=IJK   COUNTS=       2       1       1
+ NUMBER OF LINES TO SKIP AT START OF FILE=      2
+ FORMAT=(2F3.0)                                                               
+
+ PARAMETER NNLX =     14.00000000    
+
+ PARAMETER NNLY =     14.00000000    
+
+ SET PARAMETER DIMENSIONS ON  EDAT TYPE=ARRA  DIMENSIONS=   196     1     1
+
+ SET PARAMETER DIMENSIONS ON  LSRPRF TYPE=TABL  DIMENSIONS=    14    14     1
+  X         Y                 
+
+ TABLE READ OPERATION  *TREAD  
+ TABLE ARRAY PARAMETER LSRPRF   READ FROM FILE lp102-125.txt                                                                                                                                                                                                                                                       
+ FOLLOWING   4 LINES ARE SKIPPED AT START OF FILE:
+Laser Profile for Single Laser : Spot size 0.102                                
+ -0.00009375  0.00008125 -0.00009375  0.00008125                                
+ 14 14                                                                          
+Y       X-location                                                              
+
+ *** WARNING ***                         CP =      16.812   TIME= 00:54:18
+ Axis 1 on table must be in ascending order.                             
+  0.87500E-04  0.0000     0.28480E-04 0.30053E-03 0.19789E-02 0.81330E-02
+  0.20866E-01 0.33420E-01 0.33420E-01 0.20866E-01 0.81330E-02 0.19789E-02
+  0.30053E-03 0.28480E-04
+
+ COORDINATE SYSTEM      11 DEFINITION.  TYPE= 0  (CARTESIAN)  
+   XC,YC,ZC=  0.0000      0.0000      0.0000    
+   ANGLES=    0.00    0.00    0.00   PARAMETERS=   1.000   1.000
+   ORIENTATION=  1.00  0.00  0.00   0.00  1.00  0.00   0.00  0.00  1.00
+
+ ACTIVE COORDINATE SYSTEM SET TO        11  (CARTESIAN)  
+
+ SET PARAMETER DIMENSIONS ON  HEATFN_MLS
+  TYPE=TABL  DIMENSIONS=       14       14        1
+  X         Y                   (CSYS=11)
+
+ SET PARAMETER DIMENSIONS ON  HEATFN_PTP
+  TYPE=TABL  DIMENSIONS=       14       14        1
+  X         Y                   (CSYS=11)
+
+ SET PARAMETER DIMENSIONS ON  HEATFN_PBT
+  TYPE=TABL  DIMENSIONS=       14       14        1
+  X         Y                   (CSYS=11)
+
+ SET PARAMETER DIMENSIONS ON  HEATFN_BSF
+  TYPE=TABL  DIMENSIONS=       14       14        1
+  X         Y                   (CSYS=11)
+
+ SET PARAMETER DIMENSIONS ON  HEATFN_BTM
+  TYPE=TABL  DIMENSIONS=       14       14        1
+  X         Y                   (CSYS=11)
+
+ SAVE ALL MODEL, SOLUTION AND POST DATA.
+
+ ALL CURRENT ANSYS DATA WRITTEN TO FILE NAME= 20201013a-0.db
+  FOR POSSIBLE RESUME FROM THIS POINT
+
+ COORDINATE SYSTEM      11 DEFINITION.  TYPE= 0  (CARTESIAN)  
+   XC,YC,ZC=  0.0000      0.0000      0.0000    
+   ANGLES=    0.00    0.00    0.00   PARAMETERS=   1.000   1.000
+   ORIENTATION=  1.00  0.00  0.00   0.00  1.00  0.00   0.00  0.00  1.00
+
+ ACTIVE COORDINATE SYSTEM SET TO        11  (CARTESIAN)  
+
+ TIME= 0.10417E-07
+
+ *** NOTE ***                            CP =      20.281   TIME= 00:54:19
+ The automatic domain decomposition logic has selected the MESH domain   
+ decomposition method with 16 processes per solution.                    
+
+ *****  ANSYS SOLVE    COMMAND  *****
+
+ *** WARNING ***                         CP =      20.781   TIME= 00:54:19
+ Previous testing revealed that 6 of the 52603 selected elements violate 
+ shape warning limits.  To review warning messages, please see the       
+ output or error file, or issue the CHECK command.                       
+
+ *** NOTE ***                            CP =      20.781   TIME= 00:54:19
+ The model data was checked and warning messages were found.             
+  Please review output or errors file ( D:\20201013\20201013a0.err )     
+ for these warning messages.                                             
+
+ *** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE 2020 R1          20.1     ***
+ DISTRIBUTED ANSYS Academic Research                           
+
+ 01061318  VERSION=WINDOWS x64   00:54:19  OCT 13, 2020 CP=     20.781
+
+ 20201013a                                                                     
+
+
+
+                       S O L U T I O N   O P T I O N S
+
+   PROBLEM DIMENSIONALITY. . . . . . . . . . . . .3-D                  
+   DEGREES OF FREEDOM. . . . . . TEMP
+   ANALYSIS TYPE . . . . . . . . . . . . . . . . .TRANSIENT            
+      SOLUTION METHOD. . . . . . . . . . . . . . .FULL                 
+   OFFSET TEMPERATURE FROM ABSOLUTE ZERO . . . . .  273.15    
+   NEWTON-RAPHSON OPTION . . . . . . . . . . . . .PROGRAM CHOSEN   
+   GLOBALLY ASSEMBLED MATRIX . . . . . . . . . . .SYMMETRIC  
+
+ *** NOTE ***                            CP =      21.281   TIME= 00:54:19
+ This nonlinear analysis defaults to using the full Newton-Raphson       
+ solution procedure.  This can be modified using the NROPT command.      
+
+ *** NOTE ***                            CP =      21.281   TIME= 00:54:19
+ The conditions for direct assembly have been met.  No .emat or .erot    
+ files will be produced.                                                 
+
+  
+  
+     D I S T R I B U T E D   D O M A I N   D E C O M P O S E R
+  
+  ...Number of elements: 52603
+  ...Number of nodes:    22332
+  ...Decompose to 16 CPU domains
+  ...Element load balance ratio =     1.048
+
+
+                      L O A D   S T E P   O P T I O N S
+
+   LOAD STEP NUMBER. . . . . . . . . . . . . . . .     1
+   TIME AT END OF THE LOAD STEP. . . . . . . . . . 0.10417E-07
+   AUTOMATIC TIME STEPPING . . . . . . . . . . . .    ON
+      STARTING TIME STEP SIZE. . . . . . . . . . . 0.10417E-07
+      MINIMUM TIME STEP SIZE . . . . . . . . . . . 0.52083E-08
+      MAXIMUM TIME STEP SIZE . . . . . . . . . . . 0.10417E-07
+      START WITH TIME STEP FROM PREVIOUS SUBSTEP .   YES
+   MAXIMUM NUMBER OF EQUILIBRIUM ITERATIONS. . . .   200
+   STEP CHANGE BOUNDARY CONDITIONS . . . . . . . .   YES
+   TRANSIENT (INERTIA) EFFECTS
+      THERMAL DOFS . . . . . . . . . . . . . . . .    ON
+   TRANSIENT INTEGRATION PARAMETERS
+      THETA. . . . . . . . . . . . . . . . . . . .  1.0000    
+      OSCILLATION LIMIT CRITERION. . . . . . . . . 0.50000    
+      TOLERANCE. . . . . . . . . . . . . . . . . .  0.0000    
+   LINE SEARCH . . . . . . . . . . . . . . . . . .    ON
+   TERMINATE ANALYSIS IF NOT CONVERGED . . . . . .YES (EXIT)  
+   CONVERGENCE CONTROLS. . . . . . . . . . . . . .USE DEFAULTS
+   PRINT OUTPUT CONTROLS . . . . . . . . . . . . .NO PRINTOUT
+   DATABASE OUTPUT CONTROLS
+      ITEM     FREQUENCY   COMPONENT
+       ALL       LAST               
+
+
+ SOLUTION MONITORING INFO IS WRITTEN TO FILE= 20201013a.mntr                                                                                                                                                                                                                                                      
+
+
+
+
+            **** CENTER OF MASS, MASS, AND MASS MOMENTS OF INERTIA ****
+
+  CALCULATIONS ASSUME ELEMENT MASS AT ELEMENT CENTROID
+
+  TOTAL MASS =  0.48134E-05
+
+                           MOM. OF INERTIA         MOM. OF INERTIA
+  CENTER OF MASS            ABOUT ORIGIN        ABOUT CENTER OF MASS
+
+  XC = -0.36148E-06      IXX =   0.1075E-11      IXX =   0.9384E-12
+  YC =  0.50537E-04      IYY =   0.9557E-12      IYY =   0.8312E-12
+  ZC = -0.16081E-03      IZZ =   0.1710E-11      IZZ =   0.1698E-11
+                         IXY =   0.1204E-14      IXY =   0.1116E-14
+                         IYZ =   0.3988E-13      IYZ =   0.7593E-15
+                         IZX =   0.3962E-15      IZX =   0.6761E-15
+
+
+  *** MASS SUMMARY BY ELEMENT TYPE ***
+
+  TYPE      MASS
+     1  0.481345E-05
+
+ Range of element maximum matrix coefficients in global coordinates
+ Maximum = 2.449253285E-03 at element 38961.                             
+ Minimum = 3.040073158E-10 at element 51429.                             
+
+   *** ELEMENT MATRIX FORMULATION TIMES
+     TYPE    NUMBER   ENAME      TOTAL CP  AVE CP
+
+        1     46513  SOLID70       0.828   0.000018
+        2      3296  SURF152       0.031   0.000009
+        3      2794  SURF152       0.109   0.000039
+ Time at end of element matrix formulation CP = 26.875.                  
+
+ ALL CURRENT ANSYS DATA WRITTEN TO FILE NAME= 20201013a.rdb
+  FOR POSSIBLE RESUME FROM THIS POINT
+     HT FLOW CONVERGENCE VALUE=  0.1253E-03  CRITERION=  0.9715E-05
+
+ DISTRIBUTED SPARSE MATRIX DIRECT SOLVER.
+  Number of equations =       22332,    Maximum wavefront =     26
+
+  Local memory allocated for solver              =     20.166 MB
+  Local memory required for in-core solution     =     10.228 MB
+  Local memory required for out-of-core solution =      5.196 MB
+
+  Total memory allocated for solver              =    316.237 MB
+  Total memory required for in-core solution     =    158.381 MB
+  Total memory required for out-of-core solution =     81.979 MB
+
+ *** NOTE ***                            CP =      27.188   TIME= 00:54:20
+ The Distributed Sparse Matrix Solver is currently running in the        
+ in-core memory mode.  This memory mode uses the most amount of memory   
+ in order to avoid using the hard drive as much as possible, which most  
+ often results in the fastest solution time.  This mode is recommended   
+ if enough physical memory is present to accommodate all of the solver   
+ data.                                                                   
+ Distributed sparse solver maximum pivot= 1309.88392 at node 20886 TEMP. 
+ Distributed sparse solver minimum pivot= 5.875101312E-02 at node 9006   
+ TEMP.                                                                   
+ Distributed sparse solver minimum pivot in absolute value=              
+ 5.875101312E-02 at node 9006 TEMP.                                      
+    EQUIL ITER   1 COMPLETED.  NEW TRIANG MATRIX.  MAX DOF INC= -0.1904E-05
+     LINE SEARCH PARAMETER =   1.000     SCALED MAX DOF INC = -0.1904E-05
+     HT FLOW CONVERGENCE VALUE=  0.1376E-10  CRITERION=  0.9721E-05 <<< CONVERGED
+    >>> SOLUTION CONVERGED AFTER EQUILIBRIUM ITERATION   1
+
+   *** ELEMENT RESULT CALCULATION TIMES
+     TYPE    NUMBER   ENAME      TOTAL CP  AVE CP
+
+        1     46513  SOLID70       0.469   0.000010
+        2      3296  SURF152       0.000   0.000000
+        3      2794  SURF152       0.000   0.000000
+
+   *** NODAL LOAD CALCULATION TIMES
+     TYPE    NUMBER   ENAME      TOTAL CP  AVE CP
+
+        1     46513  SOLID70       0.469   0.000010
+        2      3296  SURF152       0.000   0.000000
+        3      2794  SURF152       0.000   0.000000
+ *** LOAD STEP     1   SUBSTEP     1  COMPLETED.    CUM ITER =      1
+ *** TIME =  0.104167E-07     TIME INC =  0.104167E-07
+ *** RESPONSE EIGENVALUE =  489.7       OSCILLATION LIMIT = 0.5101E-05
+
+
+ *** ANSYS BINARY FILE STATISTICS
+  BUFFER SIZE USED= 16384
+        0.188 MB WRITTEN ON ELEMENT SAVED DATA FILE: 20201013a0.esav
+        0.312 MB WRITTEN ON ASSEMBLED MATRIX FILE: 20201013a0.full
+        2.062 MB WRITTEN ON RESULTS FILE: 20201013a0.rth
+
+ *DO LOOP ON PARAMETER= I FROM  1.0000     TO  8.0000     BY  1.0000    
+
+ VECTOR READ OPERATION  *VREAD  
+  FLGSTP   READ FROM FILE test.stp
+ VECTOR LENGTH=      2
+ LOOP DIRECTIONS=IJK   COUNTS=       2       1       1
+ NUMBER OF LINES TO SKIP AT START OF FILE=      1
+ FORMAT=(F8.0)                                                                
+
+ *IF  flgstp(1)                         ( =   0.00000     )  LT  
+      0                                 ( =   0.00000     )  THEN    
+
+ *ELSE
+ At 0 step, will GO ......Flag 1 Step 0.                                 
+
+ *ENDIF
+
+ TIME= 0.10417E-04
+
+ SELECT       FOR ITEM=TYPE COMPONENT=    
+  IN RANGE         1 TO          1 STEP          1
+
+      46513  ELEMENTS (OF      52603  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ COORDINATE SYSTEM      11 DEFINITION.  TYPE= 0  (CARTESIAN)  
+   XC,YC,ZC=  0.0000      0.0000      0.0000    
+   ANGLES=    0.00    0.00    0.00   PARAMETERS=   1.000   1.000
+   ORIENTATION=  1.00  0.00  0.00   0.00  1.00  0.00   0.00  0.00  1.00
+
+ ACTIVE COORDINATE SYSTEM SET TO        11  (CARTESIAN)  
+
+ PARAMETER NUM_NMLT =     0.000000000    
+
+ PARAMETER NUM_EMLT =     0.000000000    
+
+ PARAMETER NUM_EMLS =     0.000000000    
+
+ PARAMETER NUM_EPTP =     0.000000000    
+
+ *DO LOOP ON PARAMETER= KK FROM  1.0000     TO  4.0000     BY  1.0000    
+
+ PARAMETER NUM_EPBT1 =     0.000000000    
+
+ *ENDDO  INDEX= KK                              
+
+ PARAMETER NUM_EBSF =     0.000000000    
+
+ PARAMETER NUM_EBTM =     0.000000000    
+
+ SELECT       FOR ITEM=TEMP COMPONENT=      BETWEEN  1336.8     AND  0.12677E+31
+   KABS=  0.  TOLERANCE= 0.133685E-04
+
+          0  NODES (OF      22332  DEFINED) SELECTED BY  NSEL  COMMAND.
+
+ *GET  NUM_NMLT  FROM  NODE  ITEM=COUN       VALUE=  0.00000000     
+
+ *IF  num_nmlt                          ( =   0.00000     )  GT  
+      0                                 ( =   0.00000     )  THEN    
+
+ *ENDIF
+
+ SELECT ALL ENTITIES OF TYPE= ALL  AND BELOW
+
+ SELECT       FOR ITEM=TYPE COMPONENT=    
+  IN RANGE         1 TO          1 STEP          1
+
+      46513  ELEMENTS (OF      52603  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ RESELECT     FOR ITEM=MAT  COMPONENT=    
+  IN RANGE         1 TO          2 STEP          1
+
+      31250  ELEMENTS (OF      52603  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ RESELECT     FOR ITEM=CENT COMPONENT=Z     BETWEEN-0.12500E-04 AND   0.0000    
+   KABS=  0.  TOLERANCE=  0.00000    
+
+          0  ELEMENTS (OF      52603  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ RESELECT     FOR ITEM=CENT COMPONENT=X     BETWEEN-0.93750E-04 AND  0.81250E-04
+   KABS=  0.  TOLERANCE=  0.00000    
+
+          0  ELEMENTS (OF      52603  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ RESELECT     FOR ITEM=CENT COMPONENT=Y     BETWEEN-0.93750E-04 AND  0.81250E-04
+   KABS=  0.  TOLERANCE=  0.00000    
+
+          0  ELEMENTS (OF      52603  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ *IF  num_emlt                          ( =   0.00000     )  GT  
+      0                                 ( =   0.00000     )  THEN    
+
+ *ENDIF
+
+ *GET  NUM_EBSF  FROM  ELEM  ITEM=COUN           VALUE=  0.00000000    
+
+ *IF  num_ebsf                          ( =   0.00000     )  GT  
+      0                                 ( =   0.00000     )  THEN    
+
+ *ENDIF
+
+ SELECT ALL ENTITIES OF TYPE= ALL  AND BELOW
+
+ SELECT       FOR ITEM=TYPE COMPONENT=    
+  IN RANGE         1 TO          1 STEP          1
+
+      46513  ELEMENTS (OF      52603  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ RESELECT     FOR ITEM=MAT  COMPONENT=    
+  IN RANGE         3 TO          3 STEP          1
+
+      15263  ELEMENTS (OF      52603  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ RESELECT     FOR ITEM=CENT COMPONENT=Z     BETWEEN-0.12500E-04 AND   0.0000    
+   KABS=  0.  TOLERANCE=  0.00000    
+
+       4130  ELEMENTS (OF      52603  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ RESELECT     FOR ITEM=CENT COMPONENT=X     BETWEEN-0.93750E-04 AND  0.81250E-04
+   KABS=  0.  TOLERANCE=  0.00000    
+
+       1195  ELEMENTS (OF      52603  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ RESELECT     FOR ITEM=CENT COMPONENT=Y     BETWEEN-0.93750E-04 AND  0.81250E-04
+   KABS=  0.  TOLERANCE=  0.00000    
+
+        201  ELEMENTS (OF      52603  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ *IF  num_emlt                          ( =   0.00000     )  GT  
+      0                                 ( =   0.00000     )  THEN    
+
+ *ENDIF
+
+ *GET  NUM_EPTP  FROM  ELEM  ITEM=COUN           VALUE=  201.000000    
+
+ *IF  num_eptp                          ( =   201.000     )  GT  
+      0                                 ( =   0.00000     )  THEN    
+
+ DEFINITION OF COMPONENT = EPTP      ENTITY=ELEM
+
+ *ENDIF
+
+ PARAMETER NUM_ =     201.0000000    
+
+ *IF  num_                              ( =   201.000     )  GT  
+      0                                 ( =   0.00000     )  THEN    
+
+ SELECT      COMPONENT EPTP                            
+
+ *GET  EMIN      FROM  ELEM  ITEM=NUM  MIN       VALUE=  331.000000    
+
+ PARAMETER EDAT(1) =     331.0000000    
+
+ *DO LOOP ON PARAMETER= II FROM  2.0000     TO  201.00     BY  1.0000    
+
+ PARAMETER EMIN =     332.0000000    
+
+ PARAMETER EDAT(II) =     332.0000000    
+
+ *ENDDO  INDEX= II                              
+
+ *** ERROR ***                           CP =      27.641   TIME= 00:54:20
+ Subscript 1 is out of range for parameter EDAT                          
+  Specified value is 197 Maximum value is 196.                           
+
+
+ NUMBER OF WARNING MESSAGES ENCOUNTERED=          4
+ NUMBER OF ERROR   MESSAGES ENCOUNTERED=          1
+
++--------- D I S T R I B U T E D   A N S Y S   S T A T I S T I C S ------------+
+
+Release: 2020 R1            Build: 20.1       Update: UP20191203   Platform: WINDOWS x64 
+Date Run: 10/13/2020   Time: 00:54     Process ID: 13700
+Operating System: Windows 10  (Build: 19041)
+
+Processor Model: Intel(R) Xeon(R) Gold 6126 CPU @ 2.60GHz
+
+Compiler: Intel(R) FORTRAN Compiler Version 19.0.0  (Build: 20190206)
+          Intel(R) C/C++ Compiler Version 19.0.0  (Build: 20190206)
+          Intel(R) Math Kernel Library Version 2019.0.3 Product Build 20190125
+
+Number of machines requested            :    1
+Total number of cores available         :   24
+Number of physical cores available      :   24
+Number of processes requested           :   16
+Number of threads per process requested :    1
+Total number of cores requested         :   16 (Distributed Memory Parallel)               
+MPI Type: INTELMPI
+MPI Version: Intel(R) MPI Library 2018 Update 3 for Windows* OS
+
+
+GPU Acceleration: Not Requested
+
+Job Name: 20201013a0
+Input File: 20201013a.inp
+
+  Core                Machine Name   Working Directory
+ -----------------------------------------------------
+     0         VT2.kuring-am.local   D:\20201013
+     1         VT2.kuring-am.local   D:\20201013
+     2         VT2.kuring-am.local   D:\20201013
+     3         VT2.kuring-am.local   D:\20201013
+     4         VT2.kuring-am.local   D:\20201013
+     5         VT2.kuring-am.local   D:\20201013
+     6         VT2.kuring-am.local   D:\20201013
+     7         VT2.kuring-am.local   D:\20201013
+     8         VT2.kuring-am.local   D:\20201013
+     9         VT2.kuring-am.local   D:\20201013
+    10         VT2.kuring-am.local   D:\20201013
+    11         VT2.kuring-am.local   D:\20201013
+    12         VT2.kuring-am.local   D:\20201013
+    13         VT2.kuring-am.local   D:\20201013
+    14         VT2.kuring-am.local   D:\20201013
+    15         VT2.kuring-am.local   D:\20201013
+ 
+Latency time from master to core     1 =    1.930 microseconds
+Latency time from master to core     2 =    1.881 microseconds
+Latency time from master to core     3 =    1.853 microseconds
+Latency time from master to core     4 =    1.880 microseconds
+Latency time from master to core     5 =    1.878 microseconds
+Latency time from master to core     6 =    1.872 microseconds
+Latency time from master to core     7 =    1.955 microseconds
+Latency time from master to core     8 =    2.327 microseconds
+Latency time from master to core     9 =    2.267 microseconds
+Latency time from master to core    10 =    2.309 microseconds
+Latency time from master to core    11 =    2.181 microseconds
+Latency time from master to core    12 =    2.273 microseconds
+Latency time from master to core    13 =    2.213 microseconds
+Latency time from master to core    14 =    2.196 microseconds
+Latency time from master to core    15 =    2.163 microseconds
+ 
+Communication speed from master to core     1 =  6230.53 MB/sec
+Communication speed from master to core     2 =  6679.92 MB/sec
+Communication speed from master to core     3 =  6729.98 MB/sec
+Communication speed from master to core     4 =  6716.88 MB/sec
+Communication speed from master to core     5 =  6678.24 MB/sec
+Communication speed from master to core     6 =  6752.48 MB/sec
+Communication speed from master to core     7 =  6946.37 MB/sec
+Communication speed from master to core     8 =  3921.30 MB/sec
+Communication speed from master to core     9 =  3965.68 MB/sec
+Communication speed from master to core    10 =  3939.45 MB/sec
+Communication speed from master to core    11 =  3959.55 MB/sec
+Communication speed from master to core    12 =  3981.39 MB/sec
+Communication speed from master to core    13 =  3957.14 MB/sec
+Communication speed from master to core    14 =  3979.07 MB/sec
+Communication speed from master to core    15 =  3975.10 MB/sec
+
+Total CPU time for main thread                    :        4.5 seconds
+Total CPU time summed for all threads             :       28.1 seconds
+
+Elapsed time spent obtaining a license            :        0.5 seconds
+Elapsed time spent pre-processing model (/PREP7)  :        2.0 seconds
+Elapsed time spent solution - preprocessing       :        0.3 seconds
+Elapsed time spent computing solution             :        0.8 seconds
+Elapsed time spent solution - postprocessing      :        0.0 seconds
+Elapsed time spent post-processing model (/POST1) :        0.0 seconds
+ 
+Equation solver used                              :            Sparse (symmetric)
+Equation solver computational rate                :       32.3 Gflops
+Equation solver effective I/O rate                :       19.9 GB/sec
+
+Maximum total memory used                         :     2630.0 MB
+Maximum total memory allocated                    :    17472.0 MB
+Total physical memory available                   :        191 GB
+
+Total amount of I/O written to disk               :        0.1 GB
+Total amount of I/O read from disk                :        0.0 GB
+
++------ E N D   D I S T R I B U T E D   A N S Y S   S T A T I S T I C S -------+
+
+
+ *---------------------------------------------------------------------------*
+ |                                                                           |
+ |                       DISTRIBUTED ANSYS RUN COMPLETED                     |
+ |                                                                           |
+ |---------------------------------------------------------------------------|
+ |                                                                           |
+ | Ansys 2020 R1               Build 20.1         UP20191203     WINDOWS x64 |
+ |                                                                           |
+ |---------------------------------------------------------------------------|
+ |                                                                           |
+ | Database Requested(-db)  1024 MB    Scratch Memory Requested      1024 MB |
+ | Maximum Database Used      59 MB    Maximum Scratch Memory Used    481 MB |
+ |                                                                           |
+ |---------------------------------------------------------------------------|
+ |                                                                           |
+ |        CP Time      (sec) =         28.078       Time  =  00:54:20        |
+ |        Elapsed Time (sec) =          6.000       Date  =  10/13/2020      |
+ |                                                                           |
+ *---------------------------------------------------------------------------*
