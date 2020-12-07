@@ -21,12 +21,18 @@ CSYS,0
 !
 SET,LAST
 *GET,stpnum,ACTIVE,0,SOLU,NCMLS
-nstep=1 ! データ計算間隔
+nstep=1660 ! データ計算間隔
 *status,stpnum
 
-*DIM,tim,,stpnum/nstep+1
-*DIM,dms,,stpnum/nstep+1,9 ! Col 1:xmin, 2:xmax, 3:ymin, 4:ymax, 5:zmin, 6:zmax
-                           !     7: xmax-xmin, 8: ymax-ymin, 9: zmax-zmin
+NSIZE_=INT(stpnum/nstep)+1
+*DIM,tim ,,NSIZE_
+*DIM,dms ,,NSIZE_,9 ! Col 1:xmin, 2:xmax, 3:ymin, 4:ymax, 5:zmin, 6:zmax
+                    !     7:xmax-xmin, 8:ymax-ymin, 9:zmax-zmin
+*DIM,dmsi,,NSIZE_,6 ! 最大値，最小値をとる要素番号
+                    ! Col 1:xmin, 2:xmax, 3:ymin, 4:ymax, 5:zmin, 6:zmax
+*DIM,dmsc,,NSIZE_,9 ! 最大値，最小値をとる要素番号の要素の中心座標
+                    ! Col 1:xmin, 2:xmax, 3:ymin, 4:ymax, 5:zmin, 6:zmax                           
+                    !     7:xmax-xmin, 8:ymax-ymin, 9:zmax-zmin
 !
 ! ect : 要素数(Count of Elements)
 ALLSEL
@@ -35,18 +41,17 @@ ALLSEL
 *DIM,elmsk,,ectall ! mask
 *DIM,eldms,,ectall,6 ! Col 1:xmin, 2:xmax, 3:ymin, 4:ymax, 5:zmin, 6:zmax
 *DIM,bufeldms,,ectall,1 ! eldmsのバッファ
-*DIM,dmsi,,ectall,6 ! 最大値，最小値をとる要素番号
-                    ! Col 1:xmin, 2:xmax, 3:ymin, 4:ymax, 5:zmin, 6:zmax
-*DIM,dmsecnt,,ectall,6,3 ! 最大値，最小値をとる要素番号の要素の中心座標
-                         ! Col1 1:xmin, 2:xmax, 3:ymin, 4:ymax, 5:zmin, 6:zmax
-                         ! Col2 1:x, 2:y, 3:z
+
 ! 要素番号の格納
 *DIM,nds,,20  ! 要素内節点．最大20節点を想定
 *DIM,tmsk,,20*(20-1)/2   ! mask
 *DIM,tdms,,20*(20-1)/2,3 ! Col 1:x, 2:y, 3:z  
+! xyz文字
+*DIM,dd,char,3
+dd(1) = 'x','y','z'
 
-*DO,istp,1,stpnum,nstep
-  idx=NINT(istp/nstep)+1
+*DO,istp,nstep,stpnum,nstep
+  idx=INT(istp/nstep)
   SET,istp,LAST,1,  
   *GET,tim_,ACTIVE,0,SET,TIME
   tim(idx)=tim_
@@ -122,21 +127,21 @@ ALLSEL
     *VMASK,elmsk
     *VOPER,bufeldms(1),eldms(1,2*ii-1),EQ,buf
     *VSCFUN,buf,FIRST,bufeldms(1)
-    *status,buf
     dmsi(idx,2*ii-1)=buf
-    dmsecnt(idx,2*ii-1,1)=CENTRX(buf),CENTRY(buf),CENTRZ(buf)
+    *VGET,dmsc(idx,2*ii-1),ELEM,buf,LOC,%dd(ii)%
     ! 最大値
     *VMASK,elmsk  
     *VSCFUN,buf,MAX,eldms(1,2*ii)
     dms(idx,2*ii)=buf
-    dms(idx,ii+6)=dms(idx,2*ii)-dms(idx,2*ii-1)
     ! 最大値の要素番号と要素中心座標
     *VMASK,elmsk
-    *VOPER,bufeldms(1),eldms(1,2*ii-1),EQ,buf
+    *VOPER,bufeldms(1),eldms(1,2*ii),EQ,buf
     *VSCFUN,buf,FIRST,bufeldms(1)
-    *status,buf
     dmsi(idx,2*ii)=buf
-    dmsecnt(idx,2*ii,1)=CENTRX(buf),CENTRY(buf),CENTRZ(buf)
+    *VGET,dmsc(idx,2*ii),ELEM,buf,LOC,%dd(ii)%
+    ! 最大値 - 最小値
+    dms(idx,ii+6)=dms(idx,2*ii)-dms(idx,2*ii-1)
+    dmsc(idx,ii+6)=dmsc(idx,2*ii)-dmsc(idx,2*ii-1)
   *ENDDO
 
   !*IF,istp,EQ,101,THEN
@@ -172,14 +177,19 @@ ALLSEL
 (F5.0,E13.5,9E13.5)
 *CFCLOS
 
-*CFOPEN,%fnmlt%-sb,'mle'
+*CFOPEN,%fnmlt%-sb,'mli'
 *VWRITE
-('Step ',' time, ms    ',' x min, idx   ',' x max, idx   ',' y min, um   ',' y max, um   ',' z min, um   ',' z max, um   ',' width, um   ',' length, um  ',' depth, um   ')
-*VWRITE,sequ,tim(1),dmsi(1,1,1),dmsi(1,2,1),dmsi(1,3,1),dms(1,4),dms(1,5),dms(1,6),dms(1,7),dms(1,8),dms(1,9)
-(F5.0,E13.5,9E13.5)
+('Step ',' time, ms    ','x min','x max','y min','y max','z min','z max')
+*VWRITE,sequ,tim(1),dmsi(1,1),dmsi(1,2),dmsi(1,3),dmsi(1,4),dmsi(1,5),dmsi(1,6)
+(F5.0,E13.5,6F5.0)
 *CFCLOS
 
-
+*CFOPEN,%fnmlt%-sb,'mle'
+*VWRITE
+('Step ',' time, ms    ',' x min, um   ',' x max, um   ',' y min, um   ',' y max, um   ',' z min, um   ',' z max, um   ',' width, um   ',' length, um  ',' depth, um   ')
+*VWRITE,sequ,tim(1),dmsc(1,1),dmsc(1,2),dmsc(1,3),dmsc(1,4),dmsc(1,5),dmsc(1,6),dmsc(1,7),dmsc(1,8),dmsc(1,9)
+(F5.0,E13.5,9E13.5)
+*CFCLOS
 
 buf=
 x1=
@@ -193,12 +203,15 @@ t2=
 :term00
 *DEL,tim
 *DEL,dms
+*DEL,dmsi
+*DEL,dmsc
 *DEL,elnum
 *DEL,elmsk
 *DEL,eldms
 *DEL,nds
 *DEL,tmsk
-*DEL,tdms  
+*DEL,tdms
+*DEL,dd  
 !
 FINISH
 ! Module END
