@@ -16,7 +16,6 @@
 /POST1
 !
 FILE,fnmlt,'rth,'.'
-!liquidus = 1084.0
 !
 CSYS,0
 !
