@@ -45,7 +45,6 @@ ALLSEL
 *DIM,tmsk,,20*(20-1)/2   ! mask
 *DIM,tdms,,20*(20-1)/2,3 ! Col 1:x, 2:y, 3:z  
 
-!SET,FIRST
 *DO,istp,1,stpnum,nstep
   idx=NINT(istp/nstep)+1
   SET,istp,LAST,1,  
@@ -62,7 +61,7 @@ ALLSEL
   NSEL,S,TEMP,,liquidus,,
   ESLN,R,0,ACTIVE
   ESLN,U,1,ACTIVE
-  *GET,ect,ELEM,,COUNT
+  *GET,ect,ELEM,,COUNT  ! ect: —n—Z’r‹«ŠE–Ê—v‘f”
   *STATUS,ect
 
   *IF,ect,LT,1,*CYCLE ! —n—Z’rŠE–Ê‚ğŠÜ‚Ş—v‘f‚ª–³‚¢ê‡‚ÍDOƒ‹[ƒv‚ÌÅŒã‚Ö
