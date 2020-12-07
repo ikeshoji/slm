@@ -21,13 +21,13 @@ CSYS,0
 !
 SET,LAST
 *GET,stpnum,ACTIVE,0,SOLU,NCMLS
-nstep=1660 ! データ計算間隔
-*status,stpnum
-*status,nstep
-*IF,stpnum,LT,nstep,*GO,:term00
+nstep=420 ! データ計算間隔
+n0=400
+*IF,(stpnum-(n0+1)+1),LT,nstep,:term00
 
-NSIZE_=INT(stpnum/nstep)
+NSIZE_=((stpnum-(n0+1)+1)/nstep)-MOD((stpnum-(n0+1)+1)/nstep,1)+1
 *DIM,tim ,,NSIZE_
+*DIM,nstp,,NSIZE_
 *DIM,dms ,,NSIZE_,9 ! Col 1:xmin, 2:xmax, 3:ymin, 4:ymax, 5:zmin, 6:zmax
                     !     7:xmax-xmin, 8:ymax-ymin, 9:zmax-zmin
 *DIM,dmsi,,NSIZE_,6 ! 最大値，最小値をとる要素番号
@@ -42,7 +42,7 @@ ALLSEL
 *DIM,elnum,,ectall   ! 要素番号格納配列
 *DIM,elmsk,,ectall ! mask
 *DIM,eldms,,ectall,6 ! Col 1:xmin, 2:xmax, 3:ymin, 4:ymax, 5:zmin, 6:zmax
-*DIM,bufeldms,,ectall,1 ! eldmsのバッファ
+*DIM,elbuf,,ectall,1 ! eldmsのバッファ
 
 ! 要素番号の格納
 *DIM,nds,,20  ! 要素内節点．最大20節点を想定
@@ -52,10 +52,12 @@ ALLSEL
 *DIM,dd,char,3
 dd(1) = 'x','y','z'
 
-*DO,istp,nstep,stpnum,nstep
-  idx=INT(istp/nstep)
+idx=0
+*DO,istp,n0+1,stpnum,nstep
+  idx=idx+1
   SET,istp,LAST,1,  
   *GET,tim_,ACTIVE,0,SET,TIME
+  nstp(idx)=istp
   tim(idx)=tim_
   *status,istp
   *status,tim_
@@ -127,20 +129,20 @@ dd(1) = 'x','y','z'
     dms(idx,2*ii-1)=buf
     ! 最小値の要素番号と要素中心座標
     *VMASK,elmsk
-    *VOPER,bufeldms(1),eldms(1,2*ii-1),EQ,buf
-    *VSCFUN,buf,FIRST,bufeldms(1)
+    *VOPER,elbuf(1),eldms(1,2*ii-1),EQ,buf
+    *VSCFUN,buf,FIRST,elbuf(1)
     dmsi(idx,2*ii-1)=buf
-    *VGET,dmsc(idx,2*ii-1),ELEM,buf,LOC,%dd(ii)%
+    *VGET,dmsc(idx,2*ii-1),ELEM,buf,CENT,%dd(ii)%
     ! 最大値
     *VMASK,elmsk  
     *VSCFUN,buf,MAX,eldms(1,2*ii)
     dms(idx,2*ii)=buf
     ! 最大値の要素番号と要素中心座標
     *VMASK,elmsk
-    *VOPER,bufeldms(1),eldms(1,2*ii),EQ,buf
-    *VSCFUN,buf,FIRST,bufeldms(1)
+    *VOPER,elbuf(1),eldms(1,2*ii),EQ,buf
+    *VSCFUN,buf,LAST,elbuf(1)
     dmsi(idx,2*ii)=buf
-    *VGET,dmsc(idx,2*ii),ELEM,buf,LOC,%dd(ii)%
+    *VGET,dmsc(idx,2*ii),ELEM,buf,CENT,%dd(ii)%
     ! 最大値 - 最小値
     dms(idx,ii+6)=dms(idx,2*ii)-dms(idx,2*ii-1)
     dmsc(idx,ii+6)=dmsc(idx,2*ii)-dmsc(idx,2*ii-1)
@@ -171,25 +173,28 @@ dd(1) = 'x','y','z'
 *DO,ii,1,9
     *VOPER,dms(1,ii),dms(1,ii),MULTI,1.0E+6,, ! m >> um
 *ENDDO
+*DO,ii,1,9
+    *VOPER,dmsc(1,ii),dmsc(1,ii),MULTI,1.0E+6,, ! m >> um
+*ENDDO
 
 *CFOPEN,%fnmlt%-sb,'mlt'
 *VWRITE
 ('Step ',' time, ms    ',' x min, um   ',' x max, um   ',' y min, um   ',' y max, um   ',' z min, um   ',' z max, um   ',' width, um   ',' length, um  ',' depth, um   ')
-*VWRITE,sequ,tim(1),dms(1,1),dms(1,2),dms(1,3),dms(1,4),dms(1,5),dms(1,6),dms(1,7),dms(1,8),dms(1,9)
+*VWRITE,nstp(1),tim(1),dms(1,1),dms(1,2),dms(1,3),dms(1,4),dms(1,5),dms(1,6),dms(1,7),dms(1,8),dms(1,9)
 (F5.0,E13.5,9E13.5)
 *CFCLOS
 
 *CFOPEN,%fnmlt%-sb,'mli'
 *VWRITE
-('Step ',' time, ms    ','x min','x max','y min','y max','z min','z max')
-*VWRITE,sequ,tim(1),dmsi(1,1),dmsi(1,2),dmsi(1,3),dmsi(1,4),dmsi(1,5),dmsi(1,6)
-(F5.0,E13.5,6F5.0)
+('Step ',' time, ms    ','x min ','x max ','y min ','y max ','z min ','z max ')
+*VWRITE,nstp(1),tim(1),dmsi(1,1),dmsi(1,2),dmsi(1,3),dmsi(1,4),dmsi(1,5),dmsi(1,6)
+(F5.0,E13.5,6F6.0)
 *CFCLOS
 
 *CFOPEN,%fnmlt%-sb,'mle'
 *VWRITE
 ('Step ',' time, ms    ',' x min, um   ',' x max, um   ',' y min, um   ',' y max, um   ',' z min, um   ',' z max, um   ',' width, um   ',' length, um  ',' depth, um   ')
-*VWRITE,sequ,tim(1),dmsc(1,1),dmsc(1,2),dmsc(1,3),dmsc(1,4),dmsc(1,5),dmsc(1,6),dmsc(1,7),dmsc(1,8),dmsc(1,9)
+*VWRITE,nstp(1),tim(1),dmsc(1,1),dmsc(1,2),dmsc(1,3),dmsc(1,4),dmsc(1,5),dmsc(1,6),dmsc(1,7),dmsc(1,8),dmsc(1,9)
 (F5.0,E13.5,9E13.5)
 *CFCLOS
 
@@ -204,6 +209,7 @@ t1=
 t2=
 :term00
 *DEL,tim
+*DEL,nstp
 *DEL,dms
 *DEL,dmsi
 *DEL,dmsc
