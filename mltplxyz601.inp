@@ -23,8 +23,10 @@ SET,LAST
 *GET,stpnum,ACTIVE,0,SOLU,NCMLS
 nstep=1660 ! データ計算間隔
 *status,stpnum
+*status,nstep
+*IF,stpnum,LT,nstep,*GO,:term00
 
-NSIZE_=INT(stpnum/nstep)+1
+NSIZE_=INT(stpnum/nstep)
 *DIM,tim ,,NSIZE_
 *DIM,dms ,,NSIZE_,9 ! Col 1:xmin, 2:xmax, 3:ymin, 4:ymax, 5:zmin, 6:zmax
                     !     7:xmax-xmin, 8:ymax-ymin, 9:zmax-zmin
@@ -46,7 +48,7 @@ ALLSEL
 *DIM,nds,,20  ! 要素内節点．最大20節点を想定
 *DIM,tmsk,,20*(20-1)/2   ! mask
 *DIM,tdms,,20*(20-1)/2,3 ! Col 1:x, 2:y, 3:z  
-! xyz文字
+! 便利文字列
 *DIM,dd,char,3
 dd(1) = 'x','y','z'
 
