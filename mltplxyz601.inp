@@ -21,7 +21,6 @@ CSYS,0
 !
 SET,LAST
 *GET,stpnum,ACTIVE,0,SOLU,NCMLS
-!stpnum=400
 nstep=1 ! データ計算間隔
 *status,stpnum
 
@@ -35,6 +34,12 @@ ALLSEL
 *DIM,elnum,,ectall   ! 要素番号格納配列
 *DIM,elmsk,,ectall ! mask
 *DIM,eldms,,ectall,6 ! Col 1:xmin, 2:xmax, 3:ymin, 4:ymax, 5:zmin, 6:zmax
+*DIM,bufeldms,,ectall,1 ! eldmsのバッファ
+*DIM,dmsi,,ectall,6 ! 最大値，最小値をとる要素番号
+                    ! Col 1:xmin, 2:xmax, 3:ymin, 4:ymax, 5:zmin, 6:zmax
+*DIM,dmsecnt,,ectall,6,3 ! 最大値，最小値をとる要素番号の要素の中心座標
+                         ! Col1 1:xmin, 2:xmax, 3:ymin, 4:ymax, 5:zmin, 6:zmax
+                         ! Col2 1:x, 2:y, 3:z
 ! 要素番号の格納
 *DIM,nds,,20  ! 要素内節点．最大20節点を想定
 *DIM,tmsk,,20*(20-1)/2   ! mask
@@ -110,13 +115,29 @@ ALLSEL
   *ENDDO
 
   *DO,ii,1,3
+    ! 最小値
     *VMASK,elmsk  
     *VSCFUN,buf,MIN,eldms(1,2*ii-1)
     dms(idx,2*ii-1)=buf
+    ! 最小値の要素番号と要素中心座標
+    *VMASK,elmsk
+    *VOPER,bufeldms(1),eldms(1,2*ii-1),EQ,buf
+    *VSCFUN,buf,FIRST,bufeldms(1)
+    *status,buf
+    dmsi(idx,2*ii-1)=buf
+    dmsecnt(idx,2*ii-1,1)=CENTRX(buf),CENTRY(buf),CENTRZ(buf)
+    ! 最大値
     *VMASK,elmsk  
     *VSCFUN,buf,MAX,eldms(1,2*ii)
     dms(idx,2*ii)=buf
     dms(idx,ii+6)=dms(idx,2*ii)-dms(idx,2*ii-1)
+    ! 最大値の要素番号と要素中心座標
+    *VMASK,elmsk
+    *VOPER,bufeldms(1),eldms(1,2*ii-1),EQ,buf
+    *VSCFUN,buf,FIRST,bufeldms(1)
+    *status,buf
+    dmsi(idx,2*ii)=buf
+    dmsecnt(idx,2*ii,1)=CENTRX(buf),CENTRY(buf),CENTRZ(buf)
   *ENDDO
 
   !*IF,istp,EQ,101,THEN
