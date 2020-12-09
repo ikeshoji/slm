@@ -1,0 +1,7 @@
+mlpxyzpre
+*GET,ectall_,ELEM,,COUNT
+*DIM,emsk,,ectall
+*DIM,edms,,ectall,6
+
+mlpxyz
+
